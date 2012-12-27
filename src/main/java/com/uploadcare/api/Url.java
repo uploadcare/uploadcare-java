@@ -11,7 +11,20 @@ public class Url extends GenericUrl {
     }
 
     public static Url filesUrl(String fileId) {
-        return new Url(API_ROOT + "/files/" + fileId + "/");
+        return filesUrl(fileId, false);
+    }
+
+    public static Url filesUrl(String fileId, boolean storage) {
+        StringBuilder sb = new StringBuilder()
+                .append(API_ROOT)
+                .append("/files/")
+                .append(fileId);
+        if (storage) {
+            sb.append("/storage/");
+        } else {
+            sb.append("/");
+        }
+        return new Url(sb.toString());
     }
 
 }

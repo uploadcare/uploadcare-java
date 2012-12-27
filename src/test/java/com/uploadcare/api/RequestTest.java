@@ -6,40 +6,36 @@ import org.junit.Test;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.TimeZone;
 
 import static org.junit.Assert.assertEquals;
 
 public class RequestTest {
 
-    private String formattedDate;
-    private Client client;
+    private static final String fileId = "27c7846b-a019-4516-a5e4-de635f822161";
+    private static final String formattedDate = "Fri, 17 Nov 1989 00:00:00 +0000";;
+    private Request request;
 
     @Before
     public void setUp() {
-        client = Client.demoClient();
+        Url url = Url.filesUrl(fileId);
+        Client client = Client.demoClient();
+        request = new Request(client, HttpMethods.GET, url);
+    }
 
-        TimeZone utc = TimeZone.getTimeZone("UTC");
-        Calendar calendar = new GregorianCalendar(utc);
+    @Test
+    public void test_rfc2822() {
+        Calendar calendar = new GregorianCalendar(Request.UTC);
         calendar.set(1989, Calendar.NOVEMBER, 17, 0, 0, 0);
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat(Request.DATE_FORMAT);
-        dateFormat.setTimeZone(utc);
-        formattedDate = dateFormat.format(calendar.getTime());
+        String formattedDate = Request.rfc2822(calendar.getTime());
+        assertEquals(this.formattedDate, formattedDate);
     }
 
     @Test
     public void test_makeSignature() throws InvalidKeyException, NoSuchAlgorithmException {
-        assertEquals("Fri, 17 Nov 1989 00:00:00 +0000", formattedDate);
-
-        Url url = Url.filesUrl("27c7846b-a019-4516-a5e4-de635f822161");
-        Request request = new Request(client, HttpMethods.GET, url);
         String signature = request.makeSignature(formattedDate);
-
         assertEquals("3daee4a1cd7349bacc3e396b5bfff9e3cfb7648a", signature);
     }
 
