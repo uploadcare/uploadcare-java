@@ -23,7 +23,7 @@ public class RequestTest {
     }
 
     private Request fileGetRequest(String fileId) {
-        Url url = Url.filesUrl(fileId);
+        ApiUrl url = ApiUrl.filesUrl(fileId);
         Client client = Client.demoClient();
         return new Request(client, HttpMethods.GET, url);
     }

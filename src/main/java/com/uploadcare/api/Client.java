@@ -25,20 +25,20 @@ public class Client {
     }
 
     public File getFile(String fileId) {
-        Url url = Url.filesUrl(fileId);
+        ApiUrl url = ApiUrl.filesUrl(fileId);
         Request request = new Request(this, HttpMethods.GET, url);
         FileData fileBean = request.executeQuery(FileData.class);
         return new File(this, fileBean);
     }
 
     public void deleteFile(String fileId) {
-        Url url = Url.filesUrl(fileId);
+        ApiUrl url = ApiUrl.filesUrl(fileId);
         Request request = new Request(this, HttpMethods.DELETE, url);
         request.executeCommand();
     }
 
     public void saveFile(String fileId) {
-        Url url = Url.filesUrl(fileId, true);
+        ApiUrl url = ApiUrl.filesUrl(fileId, true);
         Request request = new Request(this, HttpMethods.POST, url);
         request.executeCommand();
     }

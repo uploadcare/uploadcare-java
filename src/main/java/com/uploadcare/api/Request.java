@@ -23,7 +23,7 @@ public class Request {
 
     private final Client client;
     private final String method;
-    private final Url url;
+    private final ApiUrl url;
 
     public static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss Z";
     public static final TimeZone UTC = TimeZone.getTimeZone("UTC");
@@ -38,7 +38,7 @@ public class Request {
                 }
             });
 
-    public Request(Client client, String method, Url url) {
+    public Request(Client client, String method, ApiUrl url) {
         this.client = client;
         this.method = method;
         this.url = url;
