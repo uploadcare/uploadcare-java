@@ -13,12 +13,27 @@ public class CdnUrlBuilder {
         sb.append(file.getFileId());
     }
 
+    private void dimensionGuard(int dim) {
+        if (dim < 1 || dim > 1024) {
+            throw new IllegalArgumentException("Dimensions must be in the range 1-1024");
+        }
+    }
+
+    private void dimensionsGuard(int width, int height) {
+        dimensionGuard(width);
+        dimensionGuard(height);
+        if (width > 634 && height > 634) {
+            throw new IllegalArgumentException("At least one dimension must be less than 634");
+        }
+    }
+
     private String colorToHex(Color color) {
         String rgb = Integer.toHexString(color.getRGB());
         return rgb.substring(2);
     }
 
     public CdnUrlBuilder crop(int width, int height) {
+        dimensionsGuard(width, height);
         sb.append("/-/crop/")
                 .append(width)
                 .append("x")
@@ -27,6 +42,7 @@ public class CdnUrlBuilder {
     }
 
     public CdnUrlBuilder cropCenter(int width, int height) {
+        dimensionsGuard(width, height);
         sb.append("/-/crop/")
                 .append(width)
                 .append("x")
@@ -36,6 +52,7 @@ public class CdnUrlBuilder {
     }
 
     public CdnUrlBuilder cropColor(int width, int height, Color color) {
+        dimensionsGuard(width, height);
         sb.append("/-/crop/")
                 .append(width)
                 .append("x")
@@ -46,6 +63,7 @@ public class CdnUrlBuilder {
     }
 
     public CdnUrlBuilder cropCenterColor(int width, int height, Color color) {
+        dimensionsGuard(width, height);
         sb.append("/-/crop/")
                 .append(width)
                 .append("x")
@@ -56,6 +74,7 @@ public class CdnUrlBuilder {
     }
 
     public CdnUrlBuilder resizeWidth(int width) {
+        dimensionGuard(width);
         sb.append("/-/resize/")
                 .append(width)
                 .append("x");
@@ -63,12 +82,14 @@ public class CdnUrlBuilder {
     }
 
     public CdnUrlBuilder resizeHeight(int height) {
+        dimensionGuard(height);
         sb.append("/-/resize/x")
                 .append(height);
         return this;
     }
 
     public CdnUrlBuilder resize(int width, int height) {
+        dimensionsGuard(width, height);
         sb.append("/-/resize/")
                 .append(width)
                 .append("x")
@@ -77,6 +98,7 @@ public class CdnUrlBuilder {
     }
 
     public CdnUrlBuilder scaleCrop(int width, int height) {
+        dimensionsGuard(width, height);
         sb.append("/-/scale_crop/")
                 .append(width)
                 .append("x")
@@ -85,6 +107,7 @@ public class CdnUrlBuilder {
     }
 
     public CdnUrlBuilder scaleCropCenter(int width, int height) {
+        dimensionsGuard(width, height);
         sb.append("/-/scale_crop/")
                 .append(width)
                 .append("x")

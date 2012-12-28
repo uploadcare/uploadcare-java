@@ -7,6 +7,7 @@ import org.junit.Test;
 import java.awt.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -63,6 +64,38 @@ public class CdnUrlBuilderTest {
                 "/",
                 url.getRawPath()
         );
+    }
+
+    @Test
+    public void test_dimensionGuard() {
+        builder.resizeWidth(1);
+        builder.resizeWidth(1024);
+        try {
+            builder.resizeWidth(0);
+        } catch (IllegalArgumentException e1) {
+            try {
+                builder.resizeWidth(1025);
+            } catch (IllegalArgumentException e2) {
+                return;
+            }
+        }
+        fail();
+    }
+
+    @Test
+    public void test_dimensionsGuard() {
+        builder.resize(1024, 634);
+        builder.resize(634, 1024);
+        try {
+            builder.resize(1024, 635);
+        } catch (IllegalArgumentException e1) {
+            try {
+                builder.resize(635, 1024);
+            } catch (IllegalArgumentException e2) {
+                return;
+            }
+        }
+        fail();
     }
 
 }
