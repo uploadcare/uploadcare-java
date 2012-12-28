@@ -1,7 +1,6 @@
 package com.uploadcare.api;
 
 import com.google.api.client.http.HttpMethods;
-import com.uploadcare.json.File;
 
 public class Client {
 
@@ -28,21 +27,14 @@ public class Client {
     public File getFile(String fileId) {
         Url url = Url.filesUrl(fileId);
         Request request = new Request(this, HttpMethods.GET, url);
-        return request.executeQuery(File.class);
-    }
-
-    public void deleteFile(File file) {
-        deleteFile(file.fileId);
+        FileData fileBean = request.executeQuery(FileData.class);
+        return new File(this, fileBean);
     }
 
     public void deleteFile(String fileId) {
         Url url = Url.filesUrl(fileId);
         Request request = new Request(this, HttpMethods.DELETE, url);
         request.executeCommand();
-    }
-
-    public void saveFile(File file) {
-        saveFile(file.fileId);
     }
 
     public void saveFile(String fileId) {

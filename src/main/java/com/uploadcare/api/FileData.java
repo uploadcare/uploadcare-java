@@ -1,8 +1,8 @@
-package com.uploadcare.json;
+package com.uploadcare.api;
 
 import com.google.api.client.util.Key;
 
-public class File {
+class FileData {
 
     @Key("file_id")
     public String fileId;

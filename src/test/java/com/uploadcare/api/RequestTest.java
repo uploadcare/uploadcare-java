@@ -19,9 +19,13 @@ public class RequestTest {
 
     @Before
     public void setUp() {
+        request = fileGetRequest(fileId);
+    }
+
+    private Request fileGetRequest(String fileId) {
         Url url = Url.filesUrl(fileId);
         Client client = Client.demoClient();
-        request = new Request(client, HttpMethods.GET, url);
+        return new Request(client, HttpMethods.GET, url);
     }
 
     @Test
