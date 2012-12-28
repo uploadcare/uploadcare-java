@@ -1,6 +1,7 @@
 package com.uploadcare.cdn;
 
 import com.uploadcare.api.File;
+import com.uploadcare.urls.CdnUrl;
 import org.junit.Before;
 import org.junit.Test;
 

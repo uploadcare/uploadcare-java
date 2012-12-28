@@ -1,8 +1,8 @@
-package com.uploadcare.upload;
+package com.uploadcare.data;
 
 import com.google.api.client.util.Key;
 
-public class FromUrlData {
+public class UploadFromUrlData {
 
     @Key
     public String token;

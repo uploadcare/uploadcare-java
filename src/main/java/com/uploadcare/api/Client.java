@@ -1,6 +1,10 @@
 package com.uploadcare.api;
 
 import com.google.api.client.http.HttpMethods;
+import com.uploadcare.data.FileData;
+import com.uploadcare.urls.ApiFileStorageUrl;
+import com.uploadcare.urls.ApiFileUrl;
+import com.uploadcare.urls.ApiUrl;
 
 public class Client {
 
@@ -25,20 +29,20 @@ public class Client {
     }
 
     public File getFile(String fileId) {
-        ApiUrl url = ApiUrl.filesUrl(fileId);
+        ApiFileUrl url = new ApiFileUrl(fileId);
         Request request = new Request(this, HttpMethods.GET, url);
         FileData fileBean = request.executeQuery(FileData.class);
         return new File(this, fileBean);
     }
 
     public void deleteFile(String fileId) {
-        ApiUrl url = ApiUrl.filesUrl(fileId);
+        ApiFileUrl url = new ApiFileUrl(fileId);
         Request request = new Request(this, HttpMethods.DELETE, url);
         request.executeCommand();
     }
 
     public void saveFile(String fileId) {
-        ApiUrl url = ApiUrl.filesUrl(fileId, true);
+        ApiFileStorageUrl url = new ApiFileStorageUrl(fileId);
         Request request = new Request(this, HttpMethods.POST, url);
         request.executeCommand();
     }

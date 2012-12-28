@@ -1,5 +1,8 @@
 package com.uploadcare.api;
 
+import com.uploadcare.urls.ApiFileStorageUrl;
+import com.uploadcare.urls.ApiFileUrl;
+import com.uploadcare.urls.ApiUrl;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -10,13 +13,13 @@ public class ApiUrlTest {
 
     @Test
     public void test_filesUrl() {
-        ApiUrl url = ApiUrl.filesUrl(fileId);
+        ApiFileUrl url = new ApiFileUrl(fileId);
         assertEquals("/files/" + fileId + "/", url.getRawPath());
     }
 
     @Test
     public void test_filesUrlStorage() {
-        ApiUrl url = ApiUrl.filesUrl(fileId, true);
+        ApiFileStorageUrl url = new ApiFileStorageUrl(fileId);
         assertEquals("/files/" + fileId + "/storage/", url.getRawPath());
     }
 }

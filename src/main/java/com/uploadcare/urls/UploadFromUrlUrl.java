@@ -1,9 +1,10 @@
-package com.uploadcare.upload;
+package com.uploadcare.urls;
 
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.util.Key;
+import com.uploadcare.Constants;
 
-class FromUrlUrl extends GenericUrl {
+public class UploadFromUrlUrl extends GenericUrl {
 
     @Key("source_url")
     private String sourceUrl;
@@ -11,8 +12,8 @@ class FromUrlUrl extends GenericUrl {
     @Key("pub_key")
     private String pubKey;
 
-    public FromUrlUrl(String sourceUrl, String pubKey) {
-        super("https://upload.uploadcare.com/from_url/");
+    public UploadFromUrlUrl(String sourceUrl, String pubKey) {
+        super(Constants.UPLOAD_BASE + "from_url/");
         this.sourceUrl = sourceUrl;
         this.pubKey = pubKey;
     }

@@ -1,8 +1,8 @@
-package com.uploadcare.upload;
+package com.uploadcare.data;
 
 import com.google.api.client.util.Key;
 
-public class FromUrlStatusData {
+public class UploadFromUrlStatusData {
 
     @Key
     public String status;

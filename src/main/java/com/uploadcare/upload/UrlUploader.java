@@ -6,6 +6,10 @@ import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.uploadcare.api.Client;
 import com.uploadcare.api.File;
+import com.uploadcare.data.UploadFromUrlData;
+import com.uploadcare.data.UploadFromUrlStatusData;
+import com.uploadcare.urls.UploadFromUrlStatusUrl;
+import com.uploadcare.urls.UploadFromUrlUrl;
 
 import java.io.IOException;
 
@@ -32,12 +36,12 @@ public class UrlUploader {
     }
 
     public File upload(int pollingInterval) throws UploadFailureException {
-        FromUrlUrl uploadUrl = new FromUrlUrl(sourceUrl, client.getPublicKey());
-        String token = request(HttpMethods.GET, uploadUrl, FromUrlData.class).token;
-        FromUrlStatusUrl statusUrl = new FromUrlStatusUrl(token);
+        UploadFromUrlUrl uploadUrl = new UploadFromUrlUrl(sourceUrl, client.getPublicKey());
+        String token = request(HttpMethods.GET, uploadUrl, UploadFromUrlData.class).token;
+        UploadFromUrlStatusUrl statusUrl = new UploadFromUrlStatusUrl(token);
         while (true) {
             sleep(pollingInterval);
-            FromUrlStatusData data = request(HttpMethods.GET, statusUrl, FromUrlStatusData.class);
+            UploadFromUrlStatusData data = request(HttpMethods.GET, statusUrl, UploadFromUrlStatusData.class);
             if (data.status.equals("success")) {
                 return client.getFile(data.fileId);
             } else if (data.status.equals("error") || data.status.equals("failed")) {

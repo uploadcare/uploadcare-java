@@ -2,6 +2,7 @@ package com.uploadcare.api;
 
 import com.google.api.client.util.Data;
 import com.uploadcare.cdn.CdnUrlBuilder;
+import com.uploadcare.data.FileData;
 
 public class File {
 

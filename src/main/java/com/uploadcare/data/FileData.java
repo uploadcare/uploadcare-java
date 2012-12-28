@@ -1,4 +1,4 @@
-package com.uploadcare.api;
+package com.uploadcare.data;
 
 import com.google.api.client.util.Key;
 

@@ -1,13 +1,13 @@
 package com.uploadcare.cdn;
 
 import com.uploadcare.api.File;
+import com.uploadcare.urls.CdnUrl;
 
 import java.awt.*;
 
 public class CdnUrlBuilder {
 
-    public static final String CDN_ROOT = "https://ucarecdn.com/";
-    private final StringBuilder sb = new StringBuilder(CDN_ROOT);
+    private final StringBuilder sb = new StringBuilder("/");
 
     public CdnUrlBuilder(File file) {
         sb.append(file.getFileId());
@@ -138,7 +138,9 @@ public class CdnUrlBuilder {
 
     public CdnUrl build() {
         String path = sb.append("/").toString();
-        return new CdnUrl(path);
+        CdnUrl url = new CdnUrl();
+        url.setRawPath(path);
+        return url;
     }
 
 }

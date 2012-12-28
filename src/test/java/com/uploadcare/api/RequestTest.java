@@ -1,6 +1,7 @@
 package com.uploadcare.api;
 
 import com.google.api.client.http.HttpMethods;
+import com.uploadcare.urls.ApiFileUrl;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,7 +24,7 @@ public class RequestTest {
     }
 
     private Request fileGetRequest(String fileId) {
-        ApiUrl url = ApiUrl.filesUrl(fileId);
+        ApiFileUrl url = new ApiFileUrl(fileId);
         Client client = Client.demoClient();
         return new Request(client, HttpMethods.GET, url);
     }
