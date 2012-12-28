@@ -2,7 +2,7 @@ package com.uploadcare.api;
 
 import com.google.api.client.util.Key;
 
-class FileData {
+public class FileData {
 
     @Key("file_id")
     public String fileId;

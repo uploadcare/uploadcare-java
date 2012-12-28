@@ -75,6 +75,7 @@ public class File {
 
     public void save() {
         client.saveFile(fileData.fileId);
+        fileData = client.getFile(fileData.fileId).fileData;
     }
 
     public CdnUrlBuilder cdnUrl() {
