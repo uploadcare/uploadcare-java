@@ -1,7 +1,6 @@
-package com.uploadcare.cdn;
+package com.uploadcare.urls;
 
 import com.uploadcare.api.File;
-import com.uploadcare.urls.CdnUrl;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,28 +11,28 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class CdnUrlBuilderTest {
+public class CdnPathBuilderTest {
 
-    private static final String fileId = "27c7846b-a019-4516-a5e4-de635f822161";
-    private CdnUrlBuilder builder;
+    private static final String FILE_ID = "27c7846b-a019-4516-a5e4-de635f822161";
+    private CdnPathBuilder builder;
 
     @Before
     public void setUp() {
         File file = mock(File.class);
-        when(file.getFileId()).thenReturn(fileId);
+        when(file.getFileId()).thenReturn(FILE_ID);
 
-        builder = new CdnUrlBuilder(file);
+        builder = new CdnPathBuilder(file);
     }
 
     @Test
     public void test_fileUrl() {
-        CdnUrl url = builder.build();
-        assertEquals("/" + fileId + "/", url.getRawPath());
+        String path = builder.build();
+        assertEquals("/" + FILE_ID + "/", path);
     }
 
     @Test
     public void test_allOperations() {
-        CdnUrl url = builder
+        String path = builder
                 .crop(100, 110)
                 .cropColor(120, 130, Color.BLACK)
                 .cropCenter(140, 150)
@@ -48,7 +47,7 @@ public class CdnUrlBuilderTest {
                 .invert()
                 .mirror()
                 .build();
-        assertEquals("/" + fileId +
+        assertEquals("/" + FILE_ID +
                 "/-/crop/100x110" +
                 "/-/crop/120x130/000000" +
                 "/-/crop/140x150/center" +
@@ -63,7 +62,7 @@ public class CdnUrlBuilderTest {
                 "/-/effect/invert" +
                 "/-/effect/mirror" +
                 "/",
-                url.getRawPath()
+                path
         );
     }
 

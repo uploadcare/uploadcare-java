@@ -1,7 +1,6 @@
 package com.uploadcare.api;
 
-import com.google.api.client.util.Data;
-import com.uploadcare.cdn.CdnUrlBuilder;
+import com.uploadcare.urls.CdnPathBuilder;
 import com.uploadcare.data.FileData;
 
 public class File {
@@ -19,7 +18,7 @@ public class File {
     }
 
     public boolean isStored() {
-        return !Data.isNull(fileData.lastKeepClaim);
+        return fileData.lastKeepClaim != null;
     }
 
     public String getLastKeepClaim() {
@@ -39,7 +38,7 @@ public class File {
     }
 
     public boolean hasOriginalFileUrl() {
-        return !Data.isNull(fileData.originalFileUrl);
+        return fileData.originalFileUrl != null;
     }
 
     public String getOriginalFileUrl() {
@@ -51,7 +50,7 @@ public class File {
     }
 
     public boolean isRemoved() {
-        return !Data.isNull(fileData.removed);
+        return fileData.removed != null;
     }
 
     public String getRemoved() {
@@ -79,8 +78,8 @@ public class File {
         fileData = client.getFile(fileData.fileId).fileData;
     }
 
-    public CdnUrlBuilder cdnUrl() {
-        return new CdnUrlBuilder(this);
+    public CdnPathBuilder cdnUrl() {
+        return new CdnPathBuilder(this);
     }
 
 }

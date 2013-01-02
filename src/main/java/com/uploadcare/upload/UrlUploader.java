@@ -1,30 +1,24 @@
 package com.uploadcare.upload;
 
-import com.google.api.client.http.*;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonObjectParser;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import com.uploadcare.api.Client;
 import com.uploadcare.api.File;
 import com.uploadcare.data.UploadFromUrlData;
 import com.uploadcare.data.UploadFromUrlStatusData;
-import com.uploadcare.urls.UploadFromUrlStatusUrl;
-import com.uploadcare.urls.UploadFromUrlUrl;
+import com.uploadcare.urls.Urls;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
+import java.net.URI;
 
 public class UrlUploader {
 
     private final Client client;
     private String sourceUrl;
-
-    private static final HttpRequestFactory requestFactory = new NetHttpTransport()
-            .createRequestFactory(new HttpRequestInitializer() {
-                @Override
-                public void initialize(HttpRequest httpRequest) throws IOException {
-                    httpRequest.setParser(new JsonObjectParser(new JacksonFactory()));
-                }
-            });
 
     public UrlUploader(Client client, String sourceUrl) {
         this.client = client;
@@ -36,12 +30,12 @@ public class UrlUploader {
     }
 
     public File upload(int pollingInterval) throws UploadFailureException {
-        UploadFromUrlUrl uploadUrl = new UploadFromUrlUrl(sourceUrl, client.getPublicKey());
-        String token = request(HttpMethods.GET, uploadUrl, UploadFromUrlData.class).token;
-        UploadFromUrlStatusUrl statusUrl = new UploadFromUrlStatusUrl(token);
+        URI uploadUrl = Urls.uploadFromUrl(sourceUrl, client.getPublicKey());
+        String token = request(new HttpGet(uploadUrl), UploadFromUrlData.class).token;
+        URI statusUrl = Urls.uploadFromUrlStatus(token);
         while (true) {
             sleep(pollingInterval);
-            UploadFromUrlStatusData data = request(HttpMethods.GET, statusUrl, UploadFromUrlStatusData.class);
+            UploadFromUrlStatusData data = request(new HttpGet(statusUrl), UploadFromUrlStatusData.class);
             if (data.status.equals("success")) {
                 return client.getFile(data.fileId);
             } else if (data.status.equals("error") || data.status.equals("failed")) {
@@ -50,11 +44,12 @@ public class UrlUploader {
         }
     }
 
-    private <T> T request(String requestMethod, GenericUrl url, Class<T> dataClass) {
+    private <T> T request(HttpUriRequest request, Class<T> dataClass) {
         try {
-            HttpRequest request = requestFactory.buildRequest(requestMethod, url, null);
-            HttpResponse response = request.execute();
-            return response.parseAs(dataClass);
+            HttpResponse response = client.getHttpClient().execute(request);
+            HttpEntity entity = response.getEntity();
+            String data = EntityUtils.toString(entity);
+            return client.getObjectMapper().readValue(data, dataClass);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -63,7 +58,7 @@ public class UrlUploader {
     private void sleep(long millis) {
         try {
             Thread.sleep(millis);
-        } catch (InterruptedException ex) {
+        } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
     }

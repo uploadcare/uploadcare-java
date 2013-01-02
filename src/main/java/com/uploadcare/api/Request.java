@@ -1,12 +1,11 @@
 package com.uploadcare.api;
 
-import com.google.api.client.http.*;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonObjectParser;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.uploadcare.urls.ApiUrl;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.util.EntityUtils;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -23,26 +22,16 @@ import java.util.TimeZone;
 public class Request {
 
     private final Client client;
-    private final String method;
-    private final ApiUrl url;
+    private final HttpUriRequest request;
 
     public static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss Z";
     public static final TimeZone UTC = TimeZone.getTimeZone("UTC");
     private static final String EMPTY_MD5 = DigestUtils.md5Hex("");
     private static final String JSON_CONTENT_TYPE = "application/json";
 
-    private static final HttpRequestFactory requestFactory = new NetHttpTransport()
-            .createRequestFactory(new HttpRequestInitializer() {
-                @Override
-                public void initialize(HttpRequest httpRequest) throws IOException {
-                    httpRequest.setParser(new JsonObjectParser(new JacksonFactory()));
-                }
-            });
-
-    public Request(Client client, String method, ApiUrl url) {
+    public Request(Client client, HttpUriRequest request) {
         this.client = client;
-        this.method = method;
-        this.url = url;
+        this.request = request;
     }
 
     public static String rfc2822(Date date) {
@@ -53,11 +42,11 @@ public class Request {
 
     public String makeSignature(String date) throws NoSuchAlgorithmException, InvalidKeyException {
         StringBuilder sb = new StringBuilder();
-        sb.append(method)
+        sb.append(request.getMethod())
                 .append("\n").append(EMPTY_MD5)
                 .append("\n").append(JSON_CONTENT_TYPE)
                 .append("\n").append(date)
-                .append("\n").append(url.getRawPath());
+                .append("\n").append(request.getURI().getPath());
 
         byte[] privateKeyBytes = client.getPrivateKey().getBytes();
         SecretKeySpec signingKey = new SecretKeySpec(privateKeyBytes, "HmacSHA1");
@@ -67,36 +56,33 @@ public class Request {
         return Hex.encodeHexString(hmacBytes);
     }
 
-    private HttpHeaders makeHeaders() {
+    private void makeHeaders() {
         Calendar calendar = new GregorianCalendar(UTC);
         String formattedDate = rfc2822(calendar.getTime());
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept("application/vnd.uploadcare-v0.2+json");
-        headers.setDate(formattedDate);
-        headers.setContentType(JSON_CONTENT_TYPE);
+        request.setHeader("Accept", "application/vnd.uploadcare-v0.2+json");
+        request.setHeader("Date", formattedDate);
+        request.setHeader("Content-Type", JSON_CONTENT_TYPE);
 
         try {
             String signature = makeSignature(formattedDate);
-            headers.set("Authentication", "Uploadcare " + client.getPublicKey() + ":" + signature);
+            request.setHeader("Authentication", "Uploadcare " + client.getPublicKey() + ":" + signature);
         } catch (GeneralSecurityException e) {
             throw new RuntimeException(e);
         }
-
-        return headers;
     }
 
     private HttpResponse execute() throws IOException {
-        HttpRequest request = requestFactory.buildRequest(method, url, null);
-        request.setHeaders(makeHeaders());
-        HttpResponse response = request.execute();
-        return response;
+        makeHeaders();
+        return client.getHttpClient().execute(request);
     }
 
     public <T> T executeQuery(Class<T> dataClass) {
         try {
             HttpResponse response = execute();
-            return response.parseAs(dataClass);
+            HttpEntity entity = response.getEntity();
+            String data = EntityUtils.toString(entity);
+            return client.getObjectMapper().readValue(data, dataClass);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

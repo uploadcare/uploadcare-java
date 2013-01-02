@@ -1,15 +1,14 @@
-package com.uploadcare.cdn;
+package com.uploadcare.urls;
 
 import com.uploadcare.api.File;
-import com.uploadcare.urls.CdnUrl;
 
 import java.awt.*;
 
-public class CdnUrlBuilder {
+public class CdnPathBuilder {
 
     private final StringBuilder sb = new StringBuilder("/");
 
-    public CdnUrlBuilder(File file) {
+    public CdnPathBuilder(File file) {
         sb.append(file.getFileId());
     }
 
@@ -32,7 +31,7 @@ public class CdnUrlBuilder {
         return rgb.substring(2);
     }
 
-    public CdnUrlBuilder crop(int width, int height) {
+    public CdnPathBuilder crop(int width, int height) {
         dimensionsGuard(width, height);
         sb.append("/-/crop/")
                 .append(width)
@@ -41,7 +40,7 @@ public class CdnUrlBuilder {
         return this;
     }
 
-    public CdnUrlBuilder cropCenter(int width, int height) {
+    public CdnPathBuilder cropCenter(int width, int height) {
         dimensionsGuard(width, height);
         sb.append("/-/crop/")
                 .append(width)
@@ -51,7 +50,7 @@ public class CdnUrlBuilder {
         return this;
     }
 
-    public CdnUrlBuilder cropColor(int width, int height, Color color) {
+    public CdnPathBuilder cropColor(int width, int height, Color color) {
         dimensionsGuard(width, height);
         sb.append("/-/crop/")
                 .append(width)
@@ -62,7 +61,7 @@ public class CdnUrlBuilder {
         return this;
     }
 
-    public CdnUrlBuilder cropCenterColor(int width, int height, Color color) {
+    public CdnPathBuilder cropCenterColor(int width, int height, Color color) {
         dimensionsGuard(width, height);
         sb.append("/-/crop/")
                 .append(width)
@@ -73,7 +72,7 @@ public class CdnUrlBuilder {
         return this;
     }
 
-    public CdnUrlBuilder resizeWidth(int width) {
+    public CdnPathBuilder resizeWidth(int width) {
         dimensionGuard(width);
         sb.append("/-/resize/")
                 .append(width)
@@ -81,14 +80,14 @@ public class CdnUrlBuilder {
         return this;
     }
 
-    public CdnUrlBuilder resizeHeight(int height) {
+    public CdnPathBuilder resizeHeight(int height) {
         dimensionGuard(height);
         sb.append("/-/resize/x")
                 .append(height);
         return this;
     }
 
-    public CdnUrlBuilder resize(int width, int height) {
+    public CdnPathBuilder resize(int width, int height) {
         dimensionsGuard(width, height);
         sb.append("/-/resize/")
                 .append(width)
@@ -97,7 +96,7 @@ public class CdnUrlBuilder {
         return this;
     }
 
-    public CdnUrlBuilder scaleCrop(int width, int height) {
+    public CdnPathBuilder scaleCrop(int width, int height) {
         dimensionsGuard(width, height);
         sb.append("/-/scale_crop/")
                 .append(width)
@@ -106,7 +105,7 @@ public class CdnUrlBuilder {
         return this;
     }
 
-    public CdnUrlBuilder scaleCropCenter(int width, int height) {
+    public CdnPathBuilder scaleCropCenter(int width, int height) {
         dimensionsGuard(width, height);
         sb.append("/-/scale_crop/")
                 .append(width)
@@ -116,31 +115,28 @@ public class CdnUrlBuilder {
         return this;
     }
 
-    public CdnUrlBuilder flip() {
+    public CdnPathBuilder flip() {
         sb.append("/-/effect/flip");
         return this;
     }
 
-    public CdnUrlBuilder grayscale() {
+    public CdnPathBuilder grayscale() {
         sb.append("/-/effect/grayscale");
         return this;
     }
 
-    public CdnUrlBuilder invert() {
+    public CdnPathBuilder invert() {
         sb.append("/-/effect/invert");
         return this;
     }
 
-    public CdnUrlBuilder mirror() {
+    public CdnPathBuilder mirror() {
         sb.append("/-/effect/mirror");
         return this;
     }
 
-    public CdnUrl build() {
-        String path = sb.append("/").toString();
-        CdnUrl url = new CdnUrl();
-        url.setRawPath(path);
-        return url;
+    public String build() {
+        return sb.append("/").toString();
     }
 
 }
