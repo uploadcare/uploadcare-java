@@ -23,6 +23,10 @@ public class Urls {
         return URI.create(CDN_BASE + builder.build());
     }
 
+    public static URI uploadBase() {
+        return URI.create(UPLOAD_BASE + "/base/");
+    }
+
     public static URI uploadFromUrl(String sourceUrl, String pubKey) {
         URIBuilder builder = new URIBuilder(URI.create(UPLOAD_BASE));
         builder.setPath("/from_url/")

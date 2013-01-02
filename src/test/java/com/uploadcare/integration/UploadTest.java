@@ -2,20 +2,29 @@ package com.uploadcare.integration;
 
 import com.uploadcare.api.Client;
 import com.uploadcare.api.File;
+import com.uploadcare.upload.FileUploader;
 import com.uploadcare.upload.UploadFailureException;
-import com.uploadcare.upload.UrlUploader;
+import com.uploadcare.upload.Uploader;
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 import static org.junit.Assert.assertEquals;
 
 public class UploadTest {
 
     @Test
-    public void test_upload() throws UploadFailureException {
+    public void test_uploadFile() throws UploadFailureException, IOException {
+        String filename = "olympia.jpg";
+        InputStream is = getClass().getClassLoader().getResourceAsStream(filename);
+        byte[] bytes = IOUtils.toByteArray(is);
+
         Client client = Client.demoClient();
-        UrlUploader uploader = new UrlUploader(client, "https://ucarecdn.com/assets/images/olympia.0939bbb3e820.jpg");
+        Uploader uploader = new FileUploader(client, bytes, filename);
         File file = uploader.upload();
-        assertEquals("olympia.0939bbb3e820.jpg", file.getOriginalFilename());
+        assertEquals(filename, file.getOriginalFilename());
     }
 
 }

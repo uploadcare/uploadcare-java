@@ -1,5 +1,6 @@
 package com.uploadcare.api;
 
+import com.uploadcare.data.DataUtils;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.HttpEntity;
@@ -72,27 +73,13 @@ public class Request {
         }
     }
 
-    private HttpResponse execute() throws IOException {
-        makeHeaders();
-        return client.getHttpClient().execute(request);
-    }
-
     public <T> T executeQuery(Class<T> dataClass) {
-        try {
-            HttpResponse response = execute();
-            HttpEntity entity = response.getEntity();
-            String data = EntityUtils.toString(entity);
-            return client.getObjectMapper().readValue(data, dataClass);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        makeHeaders();
+        return DataUtils.executeQuery(client, request, dataClass);
     }
 
     public void executeCommand() {
-        try {
-            execute();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        makeHeaders();
+        DataUtils.executeCommand(client, request);
     }
 }
