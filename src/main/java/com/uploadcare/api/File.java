@@ -71,13 +71,21 @@ public class File {
         return fileData.url;
     }
 
-    public void delete() {
-        client.deleteFile(fileData.fileId);
+    public File update() {
+        fileData = client.getFile(fileData.fileId).fileData;
+        return this;
     }
 
-    public void save() {
+    public File delete() {
+        client.deleteFile(fileData.fileId);
+        update();
+        return this;
+    }
+
+    public File save() {
         client.saveFile(fileData.fileId);
-        fileData = client.getFile(fileData.fileId).fileData;
+        update();
+        return this;
     }
 
     public CdnPathBuilder cdnUrl() {
