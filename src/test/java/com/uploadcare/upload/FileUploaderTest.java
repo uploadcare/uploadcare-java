@@ -1,10 +1,7 @@
-package com.uploadcare.integration;
+package com.uploadcare.upload;
 
 import com.uploadcare.api.Client;
 import com.uploadcare.api.File;
-import com.uploadcare.upload.FileUploader;
-import com.uploadcare.upload.UploadFailureException;
-import com.uploadcare.upload.Uploader;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
@@ -13,10 +10,10 @@ import java.io.InputStream;
 
 import static org.junit.Assert.assertEquals;
 
-public class UploadTest {
+public class FileUploaderTest {
 
     @Test
-    public void test_uploadFile() throws UploadFailureException, IOException {
+    public void test_upload() throws UploadFailureException, IOException {
         String filename = "olympia.jpg";
         InputStream is = getClass().getClassLoader().getResourceAsStream(filename);
         byte[] bytes = IOUtils.toByteArray(is);

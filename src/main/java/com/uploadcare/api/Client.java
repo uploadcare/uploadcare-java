@@ -60,8 +60,8 @@ public class Client {
     public File getFile(String fileId) {
         URI url = Urls.apiFile(fileId);
         Request request = new Request(this, new HttpGet(url));
-        FileData fileBean = request.executeQuery(FileData.class);
-        return new File(this, fileBean);
+        FileData fileData = request.executeQuery(FileData.class);
+        return new File(this, fileData);
     }
 
     public void deleteFile(String fileId) {

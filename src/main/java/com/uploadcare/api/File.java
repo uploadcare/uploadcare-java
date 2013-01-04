@@ -3,6 +3,8 @@ package com.uploadcare.api;
 import com.uploadcare.urls.CdnPathBuilder;
 import com.uploadcare.data.FileData;
 
+import java.util.Date;
+
 public class File {
 
     private Client client;
@@ -21,7 +23,7 @@ public class File {
         return fileData.lastKeepClaim != null;
     }
 
-    public String getLastKeepClaim() {
+    public Date getLastKeepClaim() {
         return fileData.lastKeepClaim;
     }
 
@@ -53,15 +55,15 @@ public class File {
         return fileData.removed != null;
     }
 
-    public String getRemoved() {
+    public Date getRemoved() {
         return fileData.removed;
     }
 
-    public Integer getSize() {
+    public int getSize() {
         return fileData.size;
     }
 
-    public String getUploadDate() {
+    public Date getUploadDate() {
         return fileData.uploadDate;
     }
 
