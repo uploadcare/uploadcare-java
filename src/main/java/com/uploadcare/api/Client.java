@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.uploadcare.data.AccountData;
 import com.uploadcare.data.FileData;
+import com.uploadcare.data.FilePageData;
 import com.uploadcare.urls.Urls;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
@@ -13,18 +14,25 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.net.URI;
+import java.util.List;
 
 public class Client {
 
     private final String publicKey;
     private final String privateKey;
+    private final boolean simpleAuth;
 
     private final HttpClient httpClient = new DefaultHttpClient();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public Client(String publicKey, String privateKey) {
+        this(publicKey, privateKey, true);
+    }
+
+    public Client(String publicKey, String privateKey, boolean simpleAuth) {
         this.publicKey = publicKey;
         this.privateKey = privateKey;
+        this.simpleAuth = simpleAuth;
 
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
@@ -42,6 +50,10 @@ public class Client {
         return privateKey;
     }
 
+    public boolean isSimpleAuth() {
+        return simpleAuth;
+    }
+
     public HttpClient getHttpClient() {
         return httpClient;
     }
@@ -52,27 +64,34 @@ public class Client {
 
     public Account getAccount() {
         URI url = Urls.apiAccount();
-        Request request = new Request(this, new HttpGet(url));
-        AccountData accountData = request.executeQuery(AccountData.class);
+        RequestHelper requestHelper = new RequestHelper(this);
+        AccountData accountData = requestHelper.executeQuery(new HttpGet(url), true, AccountData.class);
         return new Account(this, accountData);
     }
 
     public File getFile(String fileId) {
         URI url = Urls.apiFile(fileId);
-        Request request = new Request(this, new HttpGet(url));
-        FileData fileData = request.executeQuery(FileData.class);
+        RequestHelper requestHelper = new RequestHelper(this);
+        FileData fileData = requestHelper.executeQuery(new HttpGet(url), true, FileData.class);
         return new File(this, fileData);
+    }
+
+    public List<File> getFiles() {
+        URI url = Urls.apiFiles();
+        RequestHelper requestHelper = new RequestHelper(this);
+        FileDataWrapper dataWrapper = new FileDataWrapper(this);
+        return requestHelper.executePaginatedQuery(url, true, FilePageData.class, dataWrapper);
     }
 
     public void deleteFile(String fileId) {
         URI url = Urls.apiFile(fileId);
-        Request request = new Request(this, new HttpDelete(url));
-        request.executeCommand();
+        RequestHelper requestHelper = new RequestHelper(this);
+        requestHelper.executeCommand(new HttpDelete(url), true);
     }
 
     public void saveFile(String fileId) {
         URI url = Urls.apiFileStorage(fileId);
-        Request request = new Request(this, new HttpPost(url));
-        request.executeCommand();
+        RequestHelper requestHelper = new RequestHelper(this);
+        requestHelper.executeCommand(new HttpPost(url), true);
     }
 }

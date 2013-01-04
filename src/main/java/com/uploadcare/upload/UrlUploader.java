@@ -2,7 +2,7 @@ package com.uploadcare.upload;
 
 import com.uploadcare.api.Client;
 import com.uploadcare.api.File;
-import com.uploadcare.data.DataUtils;
+import com.uploadcare.api.RequestHelper;
 import com.uploadcare.data.UploadFromUrlData;
 import com.uploadcare.data.UploadFromUrlStatusData;
 import com.uploadcare.urls.Urls;
@@ -13,10 +13,12 @@ import java.net.URI;
 public class UrlUploader implements Uploader {
 
     private final Client client;
-    private String sourceUrl;
+    private final RequestHelper requestHelper;
+    private final String sourceUrl;
 
     public UrlUploader(Client client, String sourceUrl) {
         this.client = client;
+        this.requestHelper = new RequestHelper(client);
         this.sourceUrl = sourceUrl;
     }
 
@@ -27,12 +29,12 @@ public class UrlUploader implements Uploader {
 
     public File upload(int pollingInterval) throws UploadFailureException {
         URI uploadUrl = Urls.uploadFromUrl(sourceUrl, client.getPublicKey());
-        String token = DataUtils.executeQuery(client, new HttpGet(uploadUrl), UploadFromUrlData.class).token;
+        String token = requestHelper.executeQuery(new HttpGet(uploadUrl), false, UploadFromUrlData.class).token;
         URI statusUrl = Urls.uploadFromUrlStatus(token);
         while (true) {
             sleep(pollingInterval);
             HttpGet request = new HttpGet(statusUrl);
-            UploadFromUrlStatusData data = DataUtils.executeQuery(client, request, UploadFromUrlStatusData.class);
+            UploadFromUrlStatusData data = requestHelper.executeQuery(request, false, UploadFromUrlStatusData.class);
             if (data.status.equals("success")) {
                 return client.getFile(data.fileId);
             } else if (data.status.equals("error") || data.status.equals("failed")) {

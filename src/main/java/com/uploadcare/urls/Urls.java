@@ -3,7 +3,8 @@ package com.uploadcare.urls;
 import org.apache.http.client.utils.URIBuilder;
 
 import java.net.URI;
-import java.net.URISyntaxException;
+
+import static com.uploadcare.urls.UrlUtils.trustedBuild;
 
 public class Urls {
 
@@ -21,6 +22,10 @@ public class Urls {
 
     public static URI apiFileStorage(String fileId) {
         return URI.create(API_BASE + "/files/" + fileId + "/storage/");
+    }
+
+    public static URI apiFiles() {
+        return URI.create(API_BASE + "/files/");
     }
 
     public static URI cdn(CdnPathBuilder builder) {
@@ -44,14 +49,6 @@ public class Urls {
         builder.setPath("/from_url/status/")
                 .setParameter("token", token);
         return trustedBuild(builder);
-    }
-
-    private static URI trustedBuild(URIBuilder builder) {
-        try {
-            return builder.build();
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
     }
 
 }

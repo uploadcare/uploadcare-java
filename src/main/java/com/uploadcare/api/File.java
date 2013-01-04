@@ -1,7 +1,7 @@
 package com.uploadcare.api;
 
-import com.uploadcare.urls.CdnPathBuilder;
 import com.uploadcare.data.FileData;
+import com.uploadcare.urls.CdnPathBuilder;
 
 import java.util.Date;
 
@@ -83,5 +83,4 @@ public class File {
     public CdnPathBuilder cdnUrl() {
         return new CdnPathBuilder(this);
     }
-
 }
