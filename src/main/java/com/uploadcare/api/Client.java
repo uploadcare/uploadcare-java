@@ -3,6 +3,7 @@ package com.uploadcare.api;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.uploadcare.data.AccountData;
 import com.uploadcare.data.FileData;
 import com.uploadcare.urls.Urls;
 import org.apache.http.client.HttpClient;
@@ -47,6 +48,13 @@ public class Client {
 
     public ObjectMapper getObjectMapper() {
         return objectMapper;
+    }
+
+    public Account getAccount() {
+        URI url = Urls.apiAccount();
+        Request request = new Request(this, new HttpGet(url));
+        AccountData accountData = request.executeQuery(AccountData.class);
+        return new Account(this, accountData);
     }
 
     public File getFile(String fileId) {
