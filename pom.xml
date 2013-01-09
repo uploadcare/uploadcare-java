@@ -7,9 +7,34 @@
     <groupId>com.uploadcare</groupId>
     <artifactId>uploadcare</artifactId>
     <version>1.0-SNAPSHOT</version>
-
     <packaging>jar</packaging>
+
     <name>Uploadcare</name>
+    <description>
+        Java client for the Uploadcare API.
+
+        Uploadcare handles file uploads and storage for you, while you focus on other important things.
+    </description>
+    <url>http://uploadcare.com</url>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:git:git@github.com:uploadcare/uploadcare-java.git</connection>
+        <developerConnection>scm:git:git@github.com:uploadcare/uploadcare-java.git</developerConnection>
+        <url>git@github.com:uploadcare/uploadcare-java.git</url>
+    </scm>
+    <developers>
+        <developer>
+            <name>Dimitry Solovyov</name>
+            <id>dimituri</id>
+            <email>dimituri@gmail.com</email>
+        </developer>
+    </developers>
 
     <dependencies>
         <dependency>
