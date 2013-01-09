@@ -12,6 +12,7 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
 
 import java.net.URI;
 import java.util.List;
@@ -22,7 +23,7 @@ public class Client {
     private final String privateKey;
     private final boolean simpleAuth;
 
-    private final HttpClient httpClient = new DefaultHttpClient();
+    private final HttpClient httpClient = new DefaultHttpClient(new PoolingClientConnectionManager());
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public Client(String publicKey, String privateKey) {
