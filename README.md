@@ -8,7 +8,7 @@ Supported features:
 - Complete file and account API v2
 - Paginated resources fetched as `List<T>`
 - CDN path builder
-- File uploads from disk, byte array, and URL.
+- File uploads from disk, byte array, and URL
 
 ## Examples
 
