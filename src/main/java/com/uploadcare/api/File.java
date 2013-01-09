@@ -89,7 +89,7 @@ public class File {
         return this;
     }
 
-    public CdnPathBuilder cdnUrl() {
+    public CdnPathBuilder cdnPath() {
         return new CdnPathBuilder(this);
     }
 }
