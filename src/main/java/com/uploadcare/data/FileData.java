@@ -1,5 +1,6 @@
 package com.uploadcare.data;
 
+import java.net.URI;
 import java.util.Date;
 
 public class FileData {
@@ -9,11 +10,11 @@ public class FileData {
     public boolean madePublic;
     public String mimeType;
     public boolean onS3;
-    public String originalFileUrl;
+    public URI originalFileUrl;
     public String originalFilename;
     public Date removed;
     public int size;
     public Date uploadDate;
-    public String url;
+    public URI url;
 
 }

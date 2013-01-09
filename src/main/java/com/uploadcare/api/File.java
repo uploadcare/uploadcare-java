@@ -3,6 +3,7 @@ package com.uploadcare.api;
 import com.uploadcare.data.FileData;
 import com.uploadcare.urls.CdnPathBuilder;
 
+import java.net.URI;
 import java.util.Date;
 
 public class File {
@@ -43,7 +44,7 @@ public class File {
         return fileData.originalFileUrl != null;
     }
 
-    public String getOriginalFileUrl() {
+    public URI getOriginalFileUrl() {
         return fileData.originalFileUrl;
     }
 
@@ -67,7 +68,7 @@ public class File {
         return fileData.uploadDate;
     }
 
-    public String getUrl() {
+    public URI getUrl() {
         return fileData.url;
     }
 
