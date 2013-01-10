@@ -27,6 +27,12 @@ for (File file : files) {
 }
 ```
 
+See documentation for details:
+
+* [Client](http://uploadcare.github.com/uploadcare-java/master/apidocs/com/uploadcare/api/Client.html)
+* [File](http://uploadcare.github.com/uploadcare-java/master/apidocs/com/uploadcare/api/File.html)
+* [Account](http://uploadcare.github.com/uploadcare-java/master/apidocs/com/uploadcare/api/Account.html)
+
 ### Building CDN URLs
 
 ```java
@@ -37,6 +43,11 @@ CdnPathBuilder builder = file.cdnPath()
         .grayscale();
 URI url = Urls.cdn(builder);
 ```
+
+See documentation for details:
+
+* [CdnPathBuilder](http://uploadcare.github.com/uploadcare-java/master/apidocs/com/uploadcare/urls/CdnPathBuilder.html)
+* [Urls](http://uploadcare.github.com/uploadcare-java/master/apidocs/com/uploadcare/urls/Urls.html)
 
 ### File uploads
 
@@ -51,3 +62,8 @@ try {
     System.out.println("Upload failed :(");
 }
 ```
+
+See documentation for details:
+
+* [FileUploader](http://uploadcare.github.com/uploadcare-java/master/apidocs/com/uploadcare/upload/FileUploader.html)
+* [UrlUploader](http://uploadcare.github.com/uploadcare-java/master/apidocs/com/uploadcare/upload/UrlUploader.html)
