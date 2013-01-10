@@ -11,6 +11,8 @@
 
     <properties>
         <project.tag>master</project.tag>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <organization>
@@ -125,6 +127,7 @@
                 <reportSets>
                     <reportSet>
                         <reports>
+                            <report>index</report>
                             <report>summary</report>
                             <report>dependency-info</report>
                             <report>license</report>

@@ -2,6 +2,9 @@ package com.uploadcare.api;
 
 import com.uploadcare.data.AccountData;
 
+/**
+ *
+ */
 public class Account {
 
     private Client client;

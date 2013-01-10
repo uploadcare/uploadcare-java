@@ -6,6 +6,9 @@ import com.uploadcare.urls.CdnPathBuilder;
 import java.net.URI;
 import java.util.Date;
 
+/**
+ * The main Uploadcare resource, represents a user-uploaded file.
+ */
 public class File {
 
     private Client client;
@@ -68,27 +71,60 @@ public class File {
         return fileData.uploadDate;
     }
 
+    /**
+     * Returns the unique REST URL for this resource.
+     *
+     * @return REST URL
+     */
     public URI getUrl() {
         return fileData.url;
     }
 
+    /**
+     * Refreshes file data from Uploadcare.
+     *
+     * This does not mutate the current {@code File} instance,
+     * but creates a new one.
+     *
+     * @return New file resource instance
+     */
     public File update() {
-        fileData = client.getFile(fileData.fileId).fileData;
-        return this;
+        return client.getFile(fileData.fileId);
     }
 
+    /**
+     * Deletes this file from Uploadcare.
+     *
+     * This does not mutate the current {@code File} instance,
+     * but creates a new one.
+     *
+     * @return New file resource instance
+     */
     public File delete() {
         client.deleteFile(fileData.fileId);
-        update();
-        return this;
+        return update();
     }
 
+    /**
+     * Saves this file on Uploadcare (marks it to be kept).
+     *
+     * This does not mutate the current {@code File} instance,
+     * but creates a new one.
+     *
+     * @return New file resource instance
+     */
     public File save() {
         client.saveFile(fileData.fileId);
-        update();
-        return this;
+        return update();
     }
 
+    /**
+     * Creates a CDN path builder for this file.
+     *
+     * @return CDN path builder
+     *
+     * @see com.uploadcare.urls.Urls#cdn(CdnPathBuilder)
+     */
     public CdnPathBuilder cdnPath() {
         return new CdnPathBuilder(this);
     }

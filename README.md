@@ -44,6 +44,10 @@ URI url = Urls.cdn(builder);
 Client client = Client.demoClient();
 java.io.File file = new java.io.File("olympia.jpg");
 Uploader uploader = new FileUploader(client, sourceFile);
-File file = uploader.upload().save();
-System.out.println(file.getOriginalFileUrl());
+try {
+    File file = uploader.upload().save();
+    System.out.println(file.getOriginalFileUrl());
+} catch (UploadFailureException e) {
+    System.out.println("Upload failed :(");
+}
 ```
