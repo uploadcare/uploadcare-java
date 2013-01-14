@@ -52,6 +52,7 @@ public class Client {
      * @param publicKey Public key
      * @param privateKey Private key
      * @param simpleAuth If {@code false}, HMAC-based authentication is used
+     * @param requestHelperProvider Should be {@code null} to use {@link DefaultRequestHelperProvider}
      */
     public Client(
             String publicKey,
