@@ -19,7 +19,6 @@ import java.net.URI;
 public class FileUploader implements Uploader {
 
     private final Client client;
-    private final RequestHelper requestHelper;
     private final java.io.File file;
     private byte[] bytes;
     private final String filename;
@@ -33,7 +32,6 @@ public class FileUploader implements Uploader {
      */
     public FileUploader(Client client, java.io.File file) {
         this.client = client;
-        this.requestHelper = new RequestHelper(client);
         this.file = file;
         this.bytes = null;
         this.filename = null;
@@ -48,7 +46,6 @@ public class FileUploader implements Uploader {
      */
     public FileUploader(Client client, byte[] bytes, String filename) {
         this.client = client;
-        this.requestHelper = new RequestHelper(client);
         this.file = null;
         this.bytes = bytes;
         this.filename = filename;
@@ -77,7 +74,7 @@ public class FileUploader implements Uploader {
         }
         request.setEntity(entity);
 
-        String fileId = requestHelper.executeQuery(request, false, UploadBaseData.class).file;
+        String fileId = client.getRequestHelper().executeQuery(request, false, UploadBaseData.class).file;
         return client.getFile(fileId);
     }
 }

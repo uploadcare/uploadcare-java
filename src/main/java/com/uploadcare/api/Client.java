@@ -31,8 +31,9 @@ public class Client {
     private final String privateKey;
     private final boolean simpleAuth;
 
-    private final HttpClient httpClient = new DefaultHttpClient(new PoolingClientConnectionManager());
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final HttpClient httpClient;
+    private final ObjectMapper objectMapper;
+    private final RequestHelperProvider requestHelperProvider;
 
     /**
      * Initializes a client with custom access keys and simple authentication.
@@ -41,7 +42,7 @@ public class Client {
      * @param privateKey Private key
      */
     public Client(String publicKey, String privateKey) {
-        this(publicKey, privateKey, true);
+        this(publicKey, privateKey, true, null);
     }
 
     /**
@@ -52,13 +53,26 @@ public class Client {
      * @param privateKey Private key
      * @param simpleAuth If {@code false}, HMAC-based authentication is used
      */
-    public Client(String publicKey, String privateKey, boolean simpleAuth) {
+    public Client(
+            String publicKey,
+            String privateKey,
+            boolean simpleAuth,
+            RequestHelperProvider requestHelperProvider) {
         this.publicKey = publicKey;
         this.privateKey = privateKey;
         this.simpleAuth = simpleAuth;
 
-        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
-        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        if (requestHelperProvider != null) {
+            this.requestHelperProvider = requestHelperProvider;
+            httpClient = new DefaultHttpClient(new PoolingClientConnectionManager());
+            objectMapper = new ObjectMapper();
+            objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
+            objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        } else {
+            this.requestHelperProvider = new DefaultRequestHelperProvider();
+            httpClient = null;
+            objectMapper = null;
+        }
     }
 
     /**
@@ -101,12 +115,16 @@ public class Client {
         return simpleAuth;
     }
 
-    public HttpClient getHttpClient() {
+    HttpClient getHttpClient() {
         return httpClient;
     }
 
-    public ObjectMapper getObjectMapper() {
+    ObjectMapper getObjectMapper() {
         return objectMapper;
+    }
+
+    public RequestHelper getRequestHelper() {
+        return requestHelperProvider.get(this);
     }
 
     /**
@@ -116,7 +134,7 @@ public class Client {
      */
     public Account getAccount() {
         URI url = Urls.apiAccount();
-        RequestHelper requestHelper = new RequestHelper(this);
+        RequestHelper requestHelper = getRequestHelper();
         AccountData accountData = requestHelper.executeQuery(new HttpGet(url), true, AccountData.class);
         return new Account(this, accountData);
     }
@@ -129,7 +147,7 @@ public class Client {
      */
     public File getFile(String fileId) {
         URI url = Urls.apiFile(fileId);
-        RequestHelper requestHelper = new RequestHelper(this);
+        RequestHelper requestHelper = getRequestHelper();
         FileData fileData = requestHelper.executeQuery(new HttpGet(url), true, FileData.class);
         return new File(this, fileData);
     }
@@ -141,7 +159,7 @@ public class Client {
      */
     public List<File> getFiles() {
         URI url = Urls.apiFiles();
-        RequestHelper requestHelper = new RequestHelper(this);
+        RequestHelper requestHelper = getRequestHelper();
         FileDataWrapper dataWrapper = new FileDataWrapper(this);
         return requestHelper.executePaginatedQuery(url, true, FilePageData.class, dataWrapper);
     }
@@ -153,7 +171,7 @@ public class Client {
      */
     public void deleteFile(String fileId) {
         URI url = Urls.apiFile(fileId);
-        RequestHelper requestHelper = new RequestHelper(this);
+        RequestHelper requestHelper = getRequestHelper();
         requestHelper.executeCommand(new HttpDelete(url), true);
     }
 
@@ -167,7 +185,7 @@ public class Client {
      */
     public void saveFile(String fileId) {
         URI url = Urls.apiFileStorage(fileId);
-        RequestHelper requestHelper = new RequestHelper(this);
+        RequestHelper requestHelper = getRequestHelper();
         requestHelper.executeCommand(new HttpPost(url), true);
     }
 }

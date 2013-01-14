@@ -32,7 +32,7 @@ public class RequestHelper {
     private static final String EMPTY_MD5 = DigestUtils.md5Hex("");
     private static final String JSON_CONTENT_TYPE = "application/json";
 
-    public RequestHelper(Client client) {
+    RequestHelper(Client client) {
         this.client = client;
     }
 

@@ -16,7 +16,6 @@ import java.net.URI;
 public class UrlUploader implements Uploader {
 
     private final Client client;
-    private final RequestHelper requestHelper;
     private final String sourceUrl;
 
     /**
@@ -27,7 +26,6 @@ public class UrlUploader implements Uploader {
      */
     public UrlUploader(Client client, String sourceUrl) {
         this.client = client;
-        this.requestHelper = new RequestHelper(client);
         this.sourceUrl = sourceUrl;
     }
 
@@ -55,6 +53,7 @@ public class UrlUploader implements Uploader {
      * @throws UploadFailureException
      */
     public File upload(int pollingInterval) throws UploadFailureException {
+        RequestHelper requestHelper = client.getRequestHelper();
         URI uploadUrl = Urls.uploadFromUrl(sourceUrl, client.getPublicKey());
         String token = requestHelper.executeQuery(new HttpGet(uploadUrl), false, UploadFromUrlData.class).token;
         URI statusUrl = Urls.uploadFromUrlStatus(token);
