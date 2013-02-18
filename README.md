@@ -5,7 +5,7 @@ This is a Java library for Uploadcare.
 
 Supported features:
 
-- Complete file and account API v2
+- Complete file and project API v2
 - Paginated resources fetched as `List<T>`
 - CDN path builder
 - File uploads from disk, byte array, and URL
@@ -16,7 +16,8 @@ Supported features:
 
 ```java
 Client client = new Client("publickey", "privatekey");
-Account account = client.getAccount();
+Project project = client.getProject();
+Project.Collaborator owner = project.getOwner();
 
 List<URI> published = new ArrayList<URI>();
 List<File> files = client.getFiles();
@@ -31,7 +32,7 @@ See documentation for details:
 
 * [Client](http://uploadcare.github.com/uploadcare-java/master/apidocs/com/uploadcare/api/Client.html)
 * [File](http://uploadcare.github.com/uploadcare-java/master/apidocs/com/uploadcare/api/File.html)
-* [Account](http://uploadcare.github.com/uploadcare-java/master/apidocs/com/uploadcare/api/Account.html)
+* [Project](http://uploadcare.github.com/uploadcare-java/master/apidocs/com/uploadcare/api/Project.html)
 
 ### Building CDN URLs
 

@@ -16,12 +16,12 @@ public class Urls {
     private static final String UPLOAD_BASE = "https://upload.uploadcare.com";
 
     /**
-     * Creates a URL to an account resource.
+     * Creates a URL to a project resource.
      *
      * @see com.uploadcare.api.Client
      */
-    public static URI apiAccount() {
-        return URI.create(API_BASE + "/account/");
+    public static URI apiProject() {
+        return URI.create(API_BASE + "/project/");
     }
 
     /**

@@ -3,7 +3,7 @@ package com.uploadcare.api;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.uploadcare.data.AccountData;
+import com.uploadcare.data.ProjectData;
 import com.uploadcare.data.FileData;
 import com.uploadcare.data.FilePageData;
 import com.uploadcare.urls.Urls;
@@ -20,10 +20,10 @@ import java.util.List;
 /**
  * Uploadcare API client.
  *
- * Provides simple access to {@code File} and {@code Account} resources.
+ * Provides simple access to {@code File} and {@code Project} resources.
  *
  * @see com.uploadcare.api.File
- * @see com.uploadcare.api.Account
+ * @see Project
  */
 public class Client {
 
@@ -65,15 +65,13 @@ public class Client {
 
         if (requestHelperProvider != null) {
             this.requestHelperProvider = requestHelperProvider;
-            httpClient = new DefaultHttpClient(new PoolingClientConnectionManager());
-            objectMapper = new ObjectMapper();
-            objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
-            objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         } else {
             this.requestHelperProvider = new DefaultRequestHelperProvider();
-            httpClient = null;
-            objectMapper = null;
         }
+        httpClient = new DefaultHttpClient(new PoolingClientConnectionManager());
+        objectMapper = new ObjectMapper();
+        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     }
 
     /**
@@ -129,15 +127,15 @@ public class Client {
     }
 
     /**
-     * Requests account data from the API.
+     * Requests project info from the API.
      *
-     * @return Account resource
+     * @return Project resource
      */
-    public Account getAccount() {
-        URI url = Urls.apiAccount();
+    public Project getProject() {
+        URI url = Urls.apiProject();
         RequestHelper requestHelper = getRequestHelper();
-        AccountData accountData = requestHelper.executeQuery(new HttpGet(url), true, AccountData.class);
-        return new Account(this, accountData);
+        ProjectData projectData = requestHelper.executeQuery(new HttpGet(url), true, ProjectData.class);
+        return new Project(this, projectData);
     }
 
     /**
