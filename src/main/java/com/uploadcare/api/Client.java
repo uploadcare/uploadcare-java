@@ -65,13 +65,15 @@ public class Client {
 
         if (requestHelperProvider != null) {
             this.requestHelperProvider = requestHelperProvider;
+            httpClient = null;
+            objectMapper = null;
         } else {
             this.requestHelperProvider = new DefaultRequestHelperProvider();
+            httpClient = new DefaultHttpClient(new PoolingClientConnectionManager());
+            objectMapper = new ObjectMapper();
+            objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
+            objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         }
-        httpClient = new DefaultHttpClient(new PoolingClientConnectionManager());
-        objectMapper = new ObjectMapper();
-        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
-        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     }
 
     /**
