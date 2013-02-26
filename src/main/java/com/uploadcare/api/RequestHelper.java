@@ -2,6 +2,7 @@ package com.uploadcare.api;
 
 import com.uploadcare.data.DataWrapper;
 import com.uploadcare.data.PageData;
+import com.uploadcare.urls.UrlParameter;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.HttpEntity;
@@ -95,8 +96,15 @@ public class RequestHelper {
         }
     }
 
+    public static void setQueryParameters(URIBuilder builder, List<UrlParameter> parameters) {
+        for (UrlParameter parameter : parameters) {
+            builder.setParameter(parameter.getParam(), parameter.getValue());
+        }
+    }
+
     public <T, U> Iterable<T> executePaginatedQuery(
             final URI url,
+            final List<UrlParameter> urlParameters,
             final boolean apiHeaders,
             final Class<? extends PageData<U>> dataClass,
             final DataWrapper<T, U> dataWrapper) {
@@ -114,6 +122,7 @@ public class RequestHelper {
 
                     private void getNext() {
                         URIBuilder builder = new URIBuilder(url);
+                        setQueryParameters(builder, urlParameters);
                         builder.setParameter("page", Integer.toString(++page));
                         URI pageUrl = trustedBuild(builder);
                         PageData<U> pageData = executeQuery(new HttpGet(pageUrl), apiHeaders, dataClass);

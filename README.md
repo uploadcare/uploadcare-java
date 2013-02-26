@@ -20,7 +20,7 @@ Project project = client.getProject();
 Project.Collaborator owner = project.getOwner();
 
 List<URI> published = new ArrayList<URI>();
-Iterable<File> files = client.getFiles();
+Iterable<File> files = client.getFiles().asIterable();
 for (File file : files) {
     if (file.isMadePublic()) {
         published.add(file.getOriginalFileUrl());

@@ -3,9 +3,8 @@ package com.uploadcare.api;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.uploadcare.data.ProjectData;
 import com.uploadcare.data.FileData;
-import com.uploadcare.data.FilePageData;
+import com.uploadcare.data.ProjectData;
 import com.uploadcare.urls.Urls;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
@@ -15,9 +14,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Uploadcare API client.
@@ -156,28 +152,12 @@ public class Client {
     }
 
     /**
-     * Requests uploaded files for the current account, on-demand.
+     * Begins to build a request for uploaded files for the current account.
      *
-     * @return File resource iterable
+     * @return File resource request builder
      */
-    public Iterable<File> getFiles() {
-        URI url = Urls.apiFiles();
-        RequestHelper requestHelper = getRequestHelper();
-        FileDataWrapper dataWrapper = new FileDataWrapper(this);
-        return requestHelper.executePaginatedQuery(url, true, FilePageData.class, dataWrapper);
-    }
-
-    /**
-     * Requests all uploaded files for the current account.
-     *
-     * @return File resource list
-     */
-    public List<File> getFilesAsList() {
-        ArrayList<File> files = new ArrayList<File>();
-        for (File file : getFiles()) {
-            files.add(file);
-        }
-        return files;
+    public FilesQueryBuilder getFiles() {
+        return new FilesQueryBuilder(this);
     }
 
     /**
