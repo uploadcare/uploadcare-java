@@ -15,6 +15,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -154,15 +156,28 @@ public class Client {
     }
 
     /**
-     * Requests all uploaded files for the current account.
+     * Requests uploaded files for the current account, on-demand.
      *
-     * @return File resource list
+     * @return File resource iterable
      */
-    public List<File> getFiles() {
+    public Iterable<File> getFiles() {
         URI url = Urls.apiFiles();
         RequestHelper requestHelper = getRequestHelper();
         FileDataWrapper dataWrapper = new FileDataWrapper(this);
         return requestHelper.executePaginatedQuery(url, true, FilePageData.class, dataWrapper);
+    }
+
+    /**
+     * Requests all uploaded files for the current account.
+     *
+     * @return File resource list
+     */
+    public List<File> getFilesAsList() {
+        ArrayList<File> files = new ArrayList<File>();
+        for (File file : getFiles()) {
+            files.add(file);
+        }
+        return files;
     }
 
     /**

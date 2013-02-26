@@ -95,24 +95,56 @@ public class RequestHelper {
         }
     }
 
-    public <T, U> List<T> executePaginatedQuery(
-            URI url,
-            boolean apiHeaders,
-            Class<? extends PageData<U>> dataClass,
-            DataWrapper<T, U> dataWrapper) {
-        int page = 1;
-        ArrayList<T> itemList = new ArrayList<T>();
-        PageData<U> pageData;
-        do {
-            URIBuilder builder = new URIBuilder(url);
-            builder.setParameter("page", Integer.toString(page));
-            URI pageUrl = trustedBuild(builder);
-            pageData = executeQuery(new HttpGet(pageUrl), apiHeaders, dataClass);
-            for (U dataItem : pageData.getResults()) {
-                itemList.add(dataWrapper.wrap(dataItem));
+    public <T, U> Iterable<T> executePaginatedQuery(
+            final URI url,
+            final boolean apiHeaders,
+            final Class<? extends PageData<U>> dataClass,
+            final DataWrapper<T, U> dataWrapper) {
+        return new Iterable<T>() {
+            @Override
+            public Iterator<T> iterator() {
+                return new Iterator<T>() {
+                    private int page = 0;
+                    private boolean more;
+                    private Iterator<U> pageIterator;
+
+                    {
+                        getNext();
+                    }
+
+                    private void getNext() {
+                        URIBuilder builder = new URIBuilder(url);
+                        builder.setParameter("page", Integer.toString(++page));
+                        URI pageUrl = trustedBuild(builder);
+                        PageData<U> pageData = executeQuery(new HttpGet(pageUrl), apiHeaders, dataClass);
+                        more = pageData.hasMore();
+                        pageIterator = pageData.getResults().iterator();
+                    }
+
+                    @Override
+                    public boolean hasNext() {
+                        if (pageIterator.hasNext()) {
+                            return true;
+                        } else if (more) {
+                            getNext();
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+
+                    @Override
+                    public T next() {
+                        return dataWrapper.wrap(pageIterator.next());
+                    }
+
+                    @Override
+                    public void remove() {
+                        throw new UnsupportedOperationException();
+                    }
+                };
             }
-        } while (pageData.hasMore());
-        return itemList;
+        };
     }
 
     public void executeCommand(HttpUriRequest request, boolean apiHeaders) {
