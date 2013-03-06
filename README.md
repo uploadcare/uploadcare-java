@@ -1,6 +1,8 @@
 uploadcare-java
 ===============
 
+[![Build Status](https://travis-ci.org/uploadcare/uploadcare-java.png)](https://travis-ci.org/uploadcare/uploadcare-java)
+
 This is a Java library for Uploadcare.
 
 Supported features:
