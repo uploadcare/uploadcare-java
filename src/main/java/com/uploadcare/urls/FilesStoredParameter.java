@@ -8,12 +8,10 @@ public class FilesStoredParameter implements UrlParameter {
         this.stored = stored;
     }
 
-    @Override
     public String getParam() {
         return "stored";
     }
 
-    @Override
     public String getValue() {
         return stored ? "true" : "false";
     }

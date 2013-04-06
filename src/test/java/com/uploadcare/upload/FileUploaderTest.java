@@ -34,7 +34,6 @@ public class FileUploaderTest {
                 .thenReturn(uploadBaseData());
 
         Client client = new Client("public", "private", true, new RequestHelperProvider() {
-            @Override
             public RequestHelper get(Client client) {
                 return requestHelper;
             }
@@ -54,13 +53,11 @@ public class FileUploaderTest {
 
     private HttpUriRequest requestThat(final URI uri) {
         return argThat(new BaseMatcher<HttpUriRequest>() {
-            @Override
             public boolean matches(Object o) {
                 HttpUriRequest request = (HttpUriRequest) o;
                 return request.getURI().equals(uri);
             }
 
-            @Override
             public void describeTo(Description description) {
             }
         });

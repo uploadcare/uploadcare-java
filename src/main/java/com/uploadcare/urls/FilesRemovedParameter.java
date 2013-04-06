@@ -8,12 +8,10 @@ public class FilesRemovedParameter implements UrlParameter {
         this.removed = removed;
     }
 
-    @Override
     public String getParam() {
         return "removed";
     }
 
-    @Override
     public String getValue() {
         return removed ? "true" : "false";
     }

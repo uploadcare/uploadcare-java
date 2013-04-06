@@ -20,7 +20,7 @@ public class FileUploader implements Uploader {
 
     private final Client client;
     private final java.io.File file;
-    private byte[] bytes;
+    private final byte[] bytes;
     private final String filename;
 
     /**
@@ -59,7 +59,6 @@ public class FileUploader implements Uploader {
      * @return An Uploadcare file
      * @throws UploadFailureException
      */
-    @Override
     public File upload() throws UploadFailureException {
         URI uploadUrl = Urls.uploadBase();
         HttpPost request = new HttpPost(uploadUrl);

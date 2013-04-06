@@ -11,8 +11,8 @@ import java.util.Date;
  */
 public class File {
 
-    private Client client;
-    private FileData fileData;
+    private final Client client;
+    private final FileData fileData;
 
     File(Client client, FileData fileData) {
         this.client = client;

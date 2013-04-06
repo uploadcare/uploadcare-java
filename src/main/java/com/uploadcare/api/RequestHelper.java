@@ -109,7 +109,6 @@ public class RequestHelper {
             final Class<? extends PageData<U>> dataClass,
             final DataWrapper<T, U> dataWrapper) {
         return new Iterable<T>() {
-            @Override
             public Iterator<T> iterator() {
                 return new Iterator<T>() {
                     private int page = 0;
@@ -130,7 +129,6 @@ public class RequestHelper {
                         pageIterator = pageData.getResults().iterator();
                     }
 
-                    @Override
                     public boolean hasNext() {
                         if (pageIterator.hasNext()) {
                             return true;
@@ -142,12 +140,10 @@ public class RequestHelper {
                         }
                     }
 
-                    @Override
                     public T next() {
                         return dataWrapper.wrap(pageIterator.next());
                     }
 
-                    @Override
                     public void remove() {
                         throw new UnsupportedOperationException();
                     }

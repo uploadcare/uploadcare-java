@@ -38,7 +38,6 @@ public class UrlUploader implements Uploader {
      * @return An Uploadcare file
      * @throws UploadFailureException
      */
-    @Override
     public File upload() throws UploadFailureException {
         return upload(500);
     }

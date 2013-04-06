@@ -10,8 +10,8 @@ import java.util.List;
  */
 public class Project {
 
-    private Client client;
-    private ProjectData projectData;
+    private final Client client;
+    private final ProjectData projectData;
 
     public Project(Client client, ProjectData projectData) {
         this.client = client;
@@ -45,8 +45,8 @@ public class Project {
 
     public class Collaborator {
 
-        private Project project;
-        private ProjectData.CollaboratorData collaboratorData;
+        private final Project project;
+        private final ProjectData.CollaboratorData collaboratorData;
 
         private Collaborator(Project project, ProjectData.CollaboratorData collaboratorData) {
             this.project = project;

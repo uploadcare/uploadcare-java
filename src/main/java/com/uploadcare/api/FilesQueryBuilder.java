@@ -49,7 +49,6 @@ public class FilesQueryBuilder implements PaginatedQueryBuilder<File> {
         return this;
     }
 
-    @Override
     public Iterable<File> asIterable() {
         URI url = Urls.apiFiles();
         RequestHelper requestHelper = client.getRequestHelper();
@@ -57,7 +56,6 @@ public class FilesQueryBuilder implements PaginatedQueryBuilder<File> {
         return requestHelper.executePaginatedQuery(url, parameters, true, FilePageData.class, dataWrapper);
     }
 
-    @Override
     public List<File> asList() {
         List<File> files = new ArrayList<File>();
         for (File file : asIterable()) {
