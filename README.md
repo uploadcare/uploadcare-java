@@ -32,9 +32,9 @@ for (File file : files) {
 
 See documentation for details:
 
-* [Client](http://uploadcare.github.com/uploadcare-java/master/apidocs/com/uploadcare/api/Client.html)
-* [File](http://uploadcare.github.com/uploadcare-java/master/apidocs/com/uploadcare/api/File.html)
-* [Project](http://uploadcare.github.com/uploadcare-java/master/apidocs/com/uploadcare/api/Project.html)
+* [Client](http://uploadcare.github.io/uploadcare-java/apidocs/com/uploadcare/api/Client.html)
+* [File](http://uploadcare.github.io/uploadcare-java/apidocs/com/uploadcare/api/File.html)
+* [Project](http://uploadcare.github.io/uploadcare-java/apidocs/com/uploadcare/api/Project.html)
 
 ### Building CDN URLs
 
@@ -49,8 +49,8 @@ URI url = Urls.cdn(builder);
 
 See documentation for details:
 
-* [CdnPathBuilder](http://uploadcare.github.com/uploadcare-java/master/apidocs/com/uploadcare/urls/CdnPathBuilder.html)
-* [Urls](http://uploadcare.github.com/uploadcare-java/master/apidocs/com/uploadcare/urls/Urls.html)
+* [CdnPathBuilder](http://uploadcare.github.io/uploadcare-java/apidocs/com/uploadcare/urls/CdnPathBuilder.html)
+* [Urls](http://uploadcare.github.io/uploadcare-java/apidocs/com/uploadcare/urls/Urls.html)
 
 ### File uploads
 
@@ -68,5 +68,5 @@ try {
 
 See documentation for details:
 
-* [FileUploader](http://uploadcare.github.com/uploadcare-java/master/apidocs/com/uploadcare/upload/FileUploader.html)
-* [UrlUploader](http://uploadcare.github.com/uploadcare-java/master/apidocs/com/uploadcare/upload/UrlUploader.html)
+* [FileUploader](http://uploadcare.github.io/uploadcare-java/apidocs/com/uploadcare/upload/FileUploader.html)
+* [UrlUploader](http://uploadcare.github.io/uploadcare-java/apidocs/com/uploadcare/upload/UrlUploader.html)
