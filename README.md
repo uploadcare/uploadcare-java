@@ -12,6 +12,21 @@ Supported features:
 - CDN path builder
 - File uploads from disk, byte array, and URL
 
+## Maven
+
+Latest stable version is available from Maven Central.
+
+To include it in your build, add this to the `<dependencies />` section
+of the project's pom.xml file:
+
+```xml
+<dependency>
+    <groupId>com.uploadcare</groupId>
+    <artifactId>uploadcare</artifactId>
+    <version>1.0</version>
+</dependency>
+```
+
 ## Examples
 
 ### Basic API Usage
