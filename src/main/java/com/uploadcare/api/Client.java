@@ -1,19 +1,28 @@
 package com.uploadcare.api;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.uploadcare.data.FileData;
-import com.uploadcare.data.ProjectData;
-import com.uploadcare.urls.Urls;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.apache.http.message.BasicNameValuePair;
 
-import java.net.URI;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.uploadcare.data.CopyFileData;
+import com.uploadcare.data.FileData;
+import com.uploadcare.data.ProjectData;
+import com.uploadcare.urls.Urls;
 
 /**
  * Uploadcare API client.
@@ -184,4 +193,26 @@ public class Client {
         RequestHelper requestHelper = getRequestHelper();
         requestHelper.executeCommand(new HttpPost(url), true);
     }
+    
+    public CopyFileData copyFile(String fileId, String storage) throws URISyntaxException, UnsupportedEncodingException {
+        RequestHelper requestHelper = getRequestHelper();
+        HttpPost request = createCopyRequest(fileId, storage);
+        CopyFileData copyData = requestHelper.executeQuery(request, true, CopyFileData.class);
+        return copyData;
+    }
+
+	private HttpPost createCopyRequest(String fileId, String storage) throws UnsupportedEncodingException {
+		HttpPost request = new HttpPost(Urls.apiFiles());
+        setPostParameters(request, fileId, storage);
+		return request;
+	}
+
+	private void setPostParameters(HttpPost request, String fileId, String storage) throws UnsupportedEncodingException {
+		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+        nameValuePairs.add(new BasicNameValuePair("source", fileId));
+        if (storage != null && !storage.isEmpty()) {
+        	nameValuePairs.add(new BasicNameValuePair("target", storage));
+        }
+        request.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+	}
 }

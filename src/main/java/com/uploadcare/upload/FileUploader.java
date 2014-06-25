@@ -1,17 +1,17 @@
 package com.uploadcare.upload;
 
-import com.uploadcare.api.Client;
-import com.uploadcare.api.File;
-import com.uploadcare.api.RequestHelper;
-import com.uploadcare.data.UploadBaseData;
-import com.uploadcare.urls.Urls;
+import java.net.URI;
+
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 
-import java.net.URI;
+import com.uploadcare.api.Client;
+import com.uploadcare.api.File;
+import com.uploadcare.data.UploadBaseData;
+import com.uploadcare.urls.Urls;
 
 /**
  * Uploadcare uploader for files and binary data.
