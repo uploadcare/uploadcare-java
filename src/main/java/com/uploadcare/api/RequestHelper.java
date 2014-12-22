@@ -2,11 +2,16 @@ package com.uploadcare.api;
 
 import com.uploadcare.data.DataWrapper;
 import com.uploadcare.data.PageData;
+import com.uploadcare.exceptions.UploadcareApiException;
+import com.uploadcare.exceptions.UploadcareAuthenticationException;
+import com.uploadcare.exceptions.UploadcareInvalidRequestException;
+import com.uploadcare.exceptions.UploadcareNetworkException;
 import com.uploadcare.urls.UrlParameter;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URIBuilder;
@@ -15,6 +20,7 @@ import org.apache.http.util.EntityUtils;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
@@ -24,6 +30,11 @@ import java.util.*;
 
 import static com.uploadcare.urls.UrlUtils.trustedBuild;
 
+/**
+ * A helper class for doing API calls to the Uploadcare API. Supports API version 0.3.
+ *
+ * TODO Support of throttled requests needs to be added
+ */
 public class RequestHelper {
 
     private final Client client;
@@ -75,7 +86,7 @@ public class RequestHelper {
                 String signature = makeSignature(request, formattedDate);
                 authorization = "Uploadcare " + client.getPublicKey() + ":" + signature;
             } catch (GeneralSecurityException e) {
-                throw new RuntimeException(e);
+                throw new UploadcareApiException("Error when signing the request", e);
             }
         }
         request.setHeader("Authorization", authorization);
@@ -87,11 +98,14 @@ public class RequestHelper {
         }
         try {
             HttpResponse response = client.getHttpClient().execute(request);
-            HttpEntity entity = response.getEntity();
-            String data = EntityUtils.toString(entity);
-            return client.getObjectMapper().readValue(data, dataClass);
+
+			checkResponseStatus(response);
+
+			HttpEntity entity = response.getEntity();
+			String data = EntityUtils.toString(entity);
+			return client.getObjectMapper().readValue(data, dataClass);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UploadcareNetworkException(e);
         }
     }
 
@@ -151,14 +165,62 @@ public class RequestHelper {
         };
     }
 
-    public void executeCommand(HttpUriRequest request, boolean apiHeaders) {
+	/**
+	 * Executes the request et the Uploadcare API and return the HTTP Response object.
+	 *
+	 * The existence of this method(and it's return type) enables the end user to extend the functionality of the
+	 * Uploadcare API client by creating a subclass of {@link com.uploadcare.api.Client}.
+	 *
+	 * @param request request to be sent to the API
+	 * @param apiHeaders TRUE if the default API headers should be set
+	 *
+	 * @return HTTP Response object
+	 */
+    public HttpResponse executeCommand(HttpUriRequest request, boolean apiHeaders) {
         if (apiHeaders) {
             setApiHeaders(request);
         }
+
         try {
-            client.getHttpClient().execute(request);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            HttpResponse response = client.getHttpClient().execute(request);
+
+			checkResponseStatus(response);
+
+			return response;
+		} catch (IOException e) {
+            throw new UploadcareNetworkException(e);
         }
     }
+
+	/**
+	 * Verifies that the response status codes are within acceptable boundaries and throws corresponding exceptions
+	 * otherwise.
+	 *
+	 * @param response The response object to be checked
+	 * @throws IOException
+	 */
+	private void checkResponseStatus(HttpResponse response) throws IOException {
+
+		int statusCode = response.getStatusLine().getStatusCode();
+
+		if(statusCode >= 200 && statusCode < 300) {
+			return;
+		} else if(statusCode == 401 || statusCode == 403) {
+			throw new UploadcareAuthenticationException(streamToString(response.getEntity().getContent()));
+		} else if(statusCode == 400 || statusCode == 404) {
+			throw new UploadcareInvalidRequestException(streamToString(response.getEntity().getContent()));
+		} else {
+			throw new UploadcareApiException("Unknown exception during an API call, response:" + streamToString(response.getEntity().getContent()));
+		}
+	}
+
+	/**
+	 * Convert an InputStream into a String object. Method taken from http://stackoverflow.com/a/5445161/521535
+	 * @param is The stream to be converted
+	 * @return The resulting String
+	 */
+	private static String streamToString(InputStream is) {
+		java.util.Scanner s = new java.util.Scanner(is, "UTF-8").useDelimiter("\\A");
+		return s.hasNext() ? s.next() : "";
+	}
 }
