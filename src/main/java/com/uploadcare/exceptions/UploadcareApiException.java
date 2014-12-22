@@ -1,9 +1,7 @@
 package com.uploadcare.exceptions;
 
 /**
- * A generic error thrown by the
- *
- * Created by Yervand Aghababyan on 12/21/14.
+ * A generic error of the uploadcare API.
  */
 public class UploadcareApiException extends RuntimeException {
 

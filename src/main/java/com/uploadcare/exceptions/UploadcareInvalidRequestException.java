@@ -1,7 +1,7 @@
 package com.uploadcare.exceptions;
 
 /**
- * Created by yervandaghababyan on 12/22/14.
+ * Error produced in case the http request sent to the Uploadcare API was invalid.
  */
 public class UploadcareInvalidRequestException extends UploadcareApiException {
     public UploadcareInvalidRequestException(String message) {

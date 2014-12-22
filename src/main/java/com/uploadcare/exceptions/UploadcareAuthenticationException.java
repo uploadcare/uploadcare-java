@@ -1,7 +1,7 @@
 package com.uploadcare.exceptions;
 
 /**
- * Created by yervandaghababyan on 12/22/14.
+ *  An authentication error returned by the uploadcare API
  */
 public class UploadcareAuthenticationException extends UploadcareApiException {
 

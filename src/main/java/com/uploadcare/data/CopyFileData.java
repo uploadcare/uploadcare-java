@@ -3,7 +3,6 @@ package com.uploadcare.data;
 /**
  * Result of the file copy call
  *
- * Created by alcherin on 06/25/2014
  */
 public class CopyFileData {
 	public String detail;
