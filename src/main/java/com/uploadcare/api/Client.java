@@ -1,19 +1,29 @@
 package com.uploadcare.api;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.uploadcare.data.FileData;
-import com.uploadcare.data.ProjectData;
-import com.uploadcare.urls.Urls;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.uploadcare.exceptions.UploadcareApiException;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.apache.http.message.BasicNameValuePair;
 
-import java.net.URI;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.uploadcare.data.CopyFileData;
+import com.uploadcare.data.FileData;
+import com.uploadcare.data.ProjectData;
+import com.uploadcare.urls.Urls;
 
 /**
  * Uploadcare API client.
@@ -183,5 +193,31 @@ public class Client {
         URI url = Urls.apiFileStorage(fileId);
         RequestHelper requestHelper = getRequestHelper();
         requestHelper.executeCommand(new HttpPost(url), true);
+    }
+
+    /**
+     *
+     * @param fileId Resource UUID
+     * @param storage Target storage name
+     *
+     * @return An object containing the results of the copy request
+     */
+    public CopyFileData copyFile(String fileId, String storage) {
+        RequestHelper requestHelper = getRequestHelper();
+        HttpPost request = new HttpPost(Urls.apiFiles());
+
+        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+        nameValuePairs.add(new BasicNameValuePair("source", fileId));
+        if (storage != null && !storage.isEmpty()) {
+            nameValuePairs.add(new BasicNameValuePair("target", storage));
+        }
+
+        try {
+            request.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+        } catch (UnsupportedEncodingException e) {
+            throw new UploadcareApiException("Error during copyFile request creation", e);
+        }
+
+        return requestHelper.executeQuery(request, true, CopyFileData.class);
     }
 }

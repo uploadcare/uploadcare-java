@@ -20,27 +20,15 @@ public class File {
     }
 
     public String getFileId() {
-        return fileData.fileId;
+        return fileData.uuid;
     }
 
     public boolean isStored() {
-        return fileData.lastKeepClaim != null;
-    }
-
-    public Date getLastKeepClaim() {
-        return fileData.lastKeepClaim;
-    }
-
-    public boolean isMadePublic() {
-        return fileData.madePublic;
+        return fileData.datetimeStored != null;
     }
 
     public String getMimeType() {
         return fileData.mimeType;
-    }
-
-    public boolean isOnS3() {
-        return fileData.onS3;
     }
 
     public boolean hasOriginalFileUrl() {
@@ -56,11 +44,11 @@ public class File {
     }
 
     public boolean isRemoved() {
-        return fileData.removed != null;
+        return fileData.datetimeRemoved != null;
     }
 
     public Date getRemoved() {
-        return fileData.removed;
+        return fileData.datetimeRemoved;
     }
 
     public int getSize() {
@@ -68,7 +56,7 @@ public class File {
     }
 
     public Date getUploadDate() {
-        return fileData.uploadDate;
+        return fileData.datetimeUploaded;
     }
 
     /**
@@ -89,7 +77,7 @@ public class File {
      * @return New file resource instance
      */
     public File update() {
-        return client.getFile(fileData.fileId);
+        return client.getFile(fileData.uuid);
     }
 
     /**
@@ -101,7 +89,7 @@ public class File {
      * @return New file resource instance
      */
     public File delete() {
-        client.deleteFile(fileData.fileId);
+        client.deleteFile(fileData.uuid);
         return update();
     }
 
@@ -114,7 +102,7 @@ public class File {
      * @return New file resource instance
      */
     public File save() {
-        client.saveFile(fileData.fileId);
+        client.saveFile(fileData.uuid);
         return update();
     }
 
