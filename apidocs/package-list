@@ -1,4 +1,5 @@
 com.uploadcare.api
 com.uploadcare.data
+com.uploadcare.exceptions
 com.uploadcare.upload
 com.uploadcare.urls
