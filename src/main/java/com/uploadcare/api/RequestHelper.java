@@ -38,7 +38,7 @@ import javax.crypto.spec.SecretKeySpec;
 import static com.uploadcare.urls.UrlUtils.trustedBuild;
 
 /**
- * A helper class for doing API calls to the Uploadcare API. Supports API version 0.3.
+ * A helper class for doing API calls to the Uploadcare API. Supports API version 0.4.
  *
  * TODO Support of throttled requests needs to be added
  */
@@ -47,6 +47,8 @@ public class RequestHelper {
     private final Client client;
 
     public static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss Z";
+
+    public static final String DATE_FORMAT_ISO_8601 = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 
     public static final TimeZone UTC = TimeZone.getTimeZone("UTC");
 
@@ -60,6 +62,12 @@ public class RequestHelper {
 
     public static String rfc2822(Date date) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(RequestHelper.DATE_FORMAT);
+        dateFormat.setTimeZone(UTC);
+        return dateFormat.format(date);
+    }
+
+    public static String iso8601(Date date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(RequestHelper.DATE_FORMAT_ISO_8601);
         dateFormat.setTimeZone(UTC);
         return dateFormat.format(date);
     }
@@ -85,7 +93,7 @@ public class RequestHelper {
         Calendar calendar = new GregorianCalendar(UTC);
         String formattedDate = rfc2822(calendar.getTime());
 
-        request.setHeader("Accept", "application/vnd.uploadcare-v0.3+json");
+        request.setHeader("Accept", "application/vnd.uploadcare-v0.4+json");
         request.setHeader("Date", formattedDate);
 
         String authorization;
@@ -137,10 +145,9 @@ public class RequestHelper {
         return new Iterable<T>() {
             public Iterator<T> iterator() {
                 return new Iterator<T>() {
-                    private int page = 0;
+                    private int offset = 0;
 
                     private boolean more;
-
                     private Iterator<U> pageIterator;
 
                     {
@@ -150,11 +157,12 @@ public class RequestHelper {
                     private void getNext() {
                         URIBuilder builder = new URIBuilder(url);
                         setQueryParameters(builder, urlParameters);
-                        builder.setParameter("page", Integer.toString(++page));
+                        builder.setParameter("offset", Integer.toString(offset));
                         URI pageUrl = trustedBuild(builder);
                         PageData<U> pageData = executeQuery(new HttpGet(pageUrl), apiHeaders,
                                 dataClass);
                         more = pageData.hasMore();
+                        offset += pageData.getResults().size();
                         pageIterator = pageData.getResults().iterator();
                     }
 

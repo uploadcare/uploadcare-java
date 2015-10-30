@@ -5,6 +5,6 @@ import java.util.List;
 public interface PageData<T> {
 
     List<T> getResults();
-    boolean hasMore();
 
+    boolean hasMore();
 }
