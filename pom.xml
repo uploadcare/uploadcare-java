@@ -58,6 +58,11 @@
             <id>dnavre</id>
             <email>yervand.aghababyan@gmail.com</email>
         </developer>
+        <developer>
+            <name>Raphael Gilyazitdinov</name>
+            <id>raphaelnew</id>
+            <email>rafa@irafa.ru</email>
+        </developer>
     </developers>
 
     <dependencies>
