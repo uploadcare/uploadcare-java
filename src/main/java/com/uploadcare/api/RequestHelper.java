@@ -97,7 +97,7 @@ public class RequestHelper {
 
         request.setHeader("Accept", "application/vnd.uploadcare-v0.4+json");
         request.setHeader("Date", formattedDate);
-        request.setHeader("User-Agent",String.format("javauploadcare/{0}/{1}",LIBRARY_VERSION,client.getPublicKey()));
+        request.setHeader("User-Agent",String.format("javauploadcare/%s/%s",LIBRARY_VERSION,client.getPublicKey()));
 
         String authorization;
         if (client.isSimpleAuth()) {
