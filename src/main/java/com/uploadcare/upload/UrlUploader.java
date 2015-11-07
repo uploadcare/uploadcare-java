@@ -17,6 +17,7 @@ public class UrlUploader implements Uploader {
 
     private final Client client;
     private final String sourceUrl;
+    private String store = "auto";
 
     /**
      * Create a new uploader from a URL.
@@ -43,6 +44,17 @@ public class UrlUploader implements Uploader {
     }
 
     /**
+     * Store the file upon uploading.
+     *
+     * @param store is set true - store the file upon uploading. Requires “automatic file storing” setting to be enabled.
+     *              is set false - do not store file upon uploading.
+     */
+    public UrlUploader store(boolean store) {
+        this.store = store ? String.valueOf(1) : String.valueOf(0);
+        return this;
+    }
+
+    /**
      * Synchronously uploads the file to Uploadcare.
      *
      * The calling thread will be busy until the upload is finished.
@@ -53,7 +65,7 @@ public class UrlUploader implements Uploader {
      */
     public File upload(int pollingInterval) throws UploadFailureException {
         RequestHelper requestHelper = client.getRequestHelper();
-        URI uploadUrl = Urls.uploadFromUrl(sourceUrl, client.getPublicKey());
+        URI uploadUrl = Urls.uploadFromUrl(sourceUrl, client.getPublicKey(),store);
         String token = requestHelper.executeQuery(new HttpGet(uploadUrl), false, UploadFromUrlData.class).token;
         URI statusUrl = Urls.uploadFromUrlStatus(token);
         while (true) {
