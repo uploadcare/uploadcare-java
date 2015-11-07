@@ -2,7 +2,6 @@ package com.uploadcare.api;
 
 import com.uploadcare.data.FilePageData;
 import com.uploadcare.urls.FilesFromParameter;
-import com.uploadcare.urls.FilesLimitParameter;
 import com.uploadcare.urls.FilesRemovedParameter;
 import com.uploadcare.urls.FilesStoredParameter;
 import com.uploadcare.urls.FilesToParameter;
@@ -50,16 +49,6 @@ public class FilesQueryBuilder implements PaginatedQueryBuilder<File> {
      */
     public FilesQueryBuilder stored(boolean stored) {
         parameters.add(new FilesStoredParameter(stored));
-        return this;
-    }
-
-    /**
-     * Adds a filter for amount of files in one response.
-     *
-     * @param limit Amount of files in response. Default is 100, maximum is 1000.
-     */
-    public FilesQueryBuilder limit(int limit) {
-        parameters.add(new FilesLimitParameter(limit));
         return this;
     }
 
