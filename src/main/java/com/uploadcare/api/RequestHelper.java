@@ -46,6 +46,8 @@ public class RequestHelper {
 
     private final Client client;
 
+    public static final String LIBRARY_VERSION = "3.0";
+
     public static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss Z";
 
     public static final String DATE_FORMAT_ISO_8601 = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
@@ -95,6 +97,7 @@ public class RequestHelper {
 
         request.setHeader("Accept", "application/vnd.uploadcare-v0.4+json");
         request.setHeader("Date", formattedDate);
+        request.setHeader("User-Agent",String.format("javauploadcare/{0}/{1}",LIBRARY_VERSION,client.getPublicKey()));
 
         String authorization;
         if (client.isSimpleAuth()) {
