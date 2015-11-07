@@ -7,7 +7,7 @@ This is a Java library for Uploadcare.
 
 Supported features:
 
-- Complete file and project API v0.3
+- Complete file and project API v0.4
 - Paginated resources fetched as `List<T>`
 - CDN path builder
 - File uploads from disk, byte array, and URL
