@@ -1,5 +1,10 @@
 # History
 
+## 3.0
+- Support Uploadcare REST API v0.4
+- Fixed Threading problem with HttpClient.
+- Updated some of deprecated classes.
+
 ## 2.0
 - Support Uploadcare REST API v0.3
 - Improve error handling

@@ -23,7 +23,7 @@ of the project's pom.xml file:
 <dependency>
     <groupId>com.uploadcare</groupId>
     <artifactId>uploadcare</artifactId>
-    <version>2.0</version>
+    <version>3.0</version>
 </dependency>
 ```
 
