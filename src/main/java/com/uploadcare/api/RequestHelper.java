@@ -148,7 +148,7 @@ public class RequestHelper {
         return new Iterable<T>() {
             public Iterator<T> iterator() {
                 return new Iterator<T>() {
-                    private int offset = 0;
+                    private URI next =null;
 
                     private boolean more;
                     private Iterator<U> pageIterator;
@@ -158,14 +158,19 @@ public class RequestHelper {
                     }
 
                     private void getNext() {
-                        URIBuilder builder = new URIBuilder(url);
-                        setQueryParameters(builder, urlParameters);
-                        builder.setParameter("offset", Integer.toString(offset));
-                        URI pageUrl = trustedBuild(builder);
+                        URI pageUrl;
+                        if(next==null) {
+                            URIBuilder builder = new URIBuilder(url);
+                            setQueryParameters(builder, urlParameters);
+
+                            pageUrl = trustedBuild(builder);
+                        }else{
+                            pageUrl = next;
+                        }
                         PageData<U> pageData = executeQuery(new HttpGet(pageUrl), apiHeaders,
                                 dataClass);
                         more = pageData.hasMore();
-                        offset += pageData.getResults().size();
+                        next = pageData.getNext();
                         pageIterator = pageData.getResults().iterator();
                     }
 
