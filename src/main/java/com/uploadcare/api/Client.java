@@ -203,10 +203,11 @@ public class Client {
     /**
      * Closes client.
      *
-     * Ensures that all connections kept alive by the manager get closed and system resources allocated by those connections are released.
+     * Ensures that all connections kept alive by the manager get closed and system resources
+     * allocated by those connections are released.
      */
     public void close() {
-        if(httpClient!=null){
+        if (httpClient != null) {
             try {
                 httpClient.close();
             } catch (IOException e) {
@@ -214,11 +215,10 @@ public class Client {
             }
         }
     }
+
     /**
-     *
-     * @param fileId Resource UUID
+     * @param fileId  Resource UUID
      * @param storage Target storage name
-     *
      * @return An object containing the results of the copy request
      */
     public CopyFileData copyFile(String fileId, String storage) {

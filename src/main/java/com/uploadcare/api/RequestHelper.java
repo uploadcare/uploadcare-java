@@ -97,7 +97,8 @@ public class RequestHelper {
 
         request.setHeader("Accept", "application/vnd.uploadcare-v0.4+json");
         request.setHeader("Date", formattedDate);
-        request.setHeader("User-Agent",String.format("javauploadcare/%s/%s",LIBRARY_VERSION,client.getPublicKey()));
+        request.setHeader("User-Agent",
+                String.format("javauploadcare/%s/%s", LIBRARY_VERSION, client.getPublicKey()));
 
         String authorization;
         if (client.isSimpleAuth()) {
@@ -148,9 +149,10 @@ public class RequestHelper {
         return new Iterable<T>() {
             public Iterator<T> iterator() {
                 return new Iterator<T>() {
-                    private URI next =null;
+                    private URI next = null;
 
                     private boolean more;
+
                     private Iterator<U> pageIterator;
 
                     {
@@ -159,12 +161,12 @@ public class RequestHelper {
 
                     private void getNext() {
                         URI pageUrl;
-                        if(next==null) {
+                        if (next == null) {
                             URIBuilder builder = new URIBuilder(url);
                             setQueryParameters(builder, urlParameters);
 
                             pageUrl = trustedBuild(builder);
-                        }else{
+                        } else {
                             pageUrl = next;
                         }
                         PageData<U> pageData = executeQuery(new HttpGet(pageUrl), apiHeaders,
@@ -218,7 +220,7 @@ public class RequestHelper {
             try {
                 checkResponseStatus(response);
                 return response;
-            }finally {
+            } finally {
                 response.close();
             }
         } catch (IOException e) {
@@ -240,7 +242,8 @@ public class RequestHelper {
         if (statusCode >= 200 && statusCode < 300) {
             return;
         } else if (statusCode >= 300 && statusCode < 400) {
-            throw new UploadcareInvalidRequestException(streamToString(response.getEntity().getContent()));
+            throw new UploadcareInvalidRequestException(
+                    streamToString(response.getEntity().getContent()));
         } else if (statusCode == 401 || statusCode == 403) {
             throw new UploadcareAuthenticationException(
                     streamToString(response.getEntity().getContent()));

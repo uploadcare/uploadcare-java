@@ -19,9 +19,13 @@ import java.net.URI;
 public class FileUploader implements Uploader {
 
     private final Client client;
+
     private final java.io.File file;
+
     private final byte[] bytes;
+
     private final String filename;
+
     private String store = "auto";
 
     /**
@@ -29,7 +33,7 @@ public class FileUploader implements Uploader {
      * (not to be confused with a file resource from Uploadcare API).
      *
      * @param client Uploadcare client
-     * @param file File on disk
+     * @param file   File on disk
      */
     public FileUploader(Client client, java.io.File file) {
         this.client = client;
@@ -41,8 +45,8 @@ public class FileUploader implements Uploader {
     /**
      * Creates a new uploader from binary data.
      *
-     * @param client Uploadcare client
-     * @param bytes File contents as binary data
+     * @param client   Uploadcare client
+     * @param bytes    File contents as binary data
      * @param filename Original filename
      */
     public FileUploader(Client client, byte[] bytes, String filename) {
@@ -58,7 +62,6 @@ public class FileUploader implements Uploader {
      * The calling thread will be busy until the upload is finished.
      *
      * @return An Uploadcare file
-     * @throws UploadFailureException
      */
     public File upload() throws UploadFailureException {
         URI uploadUrl = Urls.uploadBase();
@@ -76,7 +79,8 @@ public class FileUploader implements Uploader {
         }
         request.setEntity(entity);
 
-        String fileId = client.getRequestHelper().executeQuery(request, false, UploadBaseData.class).file;
+        String fileId = client.getRequestHelper()
+                .executeQuery(request, false, UploadBaseData.class).file;
         return client.getFile(fileId);
     }
 
