@@ -4,6 +4,7 @@
 - Support Uploadcare REST API v0.4
 - Fixed Threading problem with HttpClient.
 - Updated some of deprecated classes.
+- Added Image Operations to CdnPathBuilder: blur, sharp, preview, format, quality.
 
 ## 2.0
 - Support Uploadcare REST API v0.3
