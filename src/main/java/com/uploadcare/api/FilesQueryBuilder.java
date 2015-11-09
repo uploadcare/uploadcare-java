@@ -1,13 +1,16 @@
 package com.uploadcare.api;
 
 import com.uploadcare.data.FilePageData;
+import com.uploadcare.urls.FilesFromParameter;
 import com.uploadcare.urls.FilesRemovedParameter;
 import com.uploadcare.urls.FilesStoredParameter;
+import com.uploadcare.urls.FilesToParameter;
 import com.uploadcare.urls.UrlParameter;
 import com.uploadcare.urls.Urls;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -46,6 +49,26 @@ public class FilesQueryBuilder implements PaginatedQueryBuilder<File> {
      */
     public FilesQueryBuilder stored(boolean stored) {
         parameters.add(new FilesStoredParameter(stored));
+        return this;
+    }
+
+    /**
+     * Adds a filter for datetime from objects will be returned.
+     *
+     * @param from A uploading datetime from which objects will be returned.
+     */
+    public FilesQueryBuilder from(Date from) {
+        parameters.add(new FilesFromParameter(from));
+        return this;
+    }
+
+    /**
+     * Adds a filter for datetime to which objects will be returned.
+     *
+     * @param to A uploading datetime to which objects will be returned.
+     */
+    public FilesQueryBuilder to(Date to) {
+        parameters.add(new FilesToParameter(to));
         return this;
     }
 

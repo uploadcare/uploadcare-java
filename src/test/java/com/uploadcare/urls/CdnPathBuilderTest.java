@@ -1,6 +1,7 @@
 package com.uploadcare.urls;
 
 import com.uploadcare.api.File;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,6 +47,13 @@ public class CdnPathBuilderTest {
                 .grayscale()
                 .invert()
                 .mirror()
+                .blur()
+                .blur(5500)
+                .sharp()
+                .sharp(25)
+                .preview(100,150)
+                .format(CdnPathBuilder.ImageFormat.FORMAT_JPEG)
+                .quality(CdnPathBuilder.ImageQuality.QUALITY_BEST)
                 .build();
         assertEquals("/" + FILE_ID +
                 "/-/crop/100x110" +
@@ -57,10 +65,17 @@ public class CdnPathBuilderTest {
                 "/-/resize/x130" +
                 "/-/scale_crop/100x110" +
                 "/-/scale_crop/120x130/center" +
-                "/-/effect/flip" +
-                "/-/effect/grayscale" +
-                "/-/effect/invert" +
-                "/-/effect/mirror" +
+                "/-/flip" +
+                "/-/grayscale" +
+                "/-/invert" +
+                "/-/mirror" +
+                "/-/blur" +
+                "/-/blur/10" +
+                "/-/sharp" +
+                "/-/sharp/5" +
+                "/-/preview/100x150" +
+                "/-/format/jpeg" +
+                "/-/quality/best" +
                 "/",
                 path
         );
@@ -69,12 +84,12 @@ public class CdnPathBuilderTest {
     @Test
     public void test_dimensionGuard() {
         builder.resizeWidth(1);
-        builder.resizeWidth(1024);
+        builder.resizeWidth(2048);
         try {
             builder.resizeWidth(0);
         } catch (IllegalArgumentException e1) {
             try {
-                builder.resizeWidth(1025);
+                builder.resizeWidth(2049);
             } catch (IllegalArgumentException e2) {
                 return;
             }

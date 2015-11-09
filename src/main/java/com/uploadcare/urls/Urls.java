@@ -78,14 +78,16 @@ public class Urls {
      *
      * @param sourceUrl URL to upload from
      * @param pubKey Public key
+     * @param store Store the file upon uploading.
      *
      * @see com.uploadcare.upload.UrlUploader
      */
-    public static URI uploadFromUrl(String sourceUrl, String pubKey) {
+    public static URI uploadFromUrl(String sourceUrl, String pubKey, String store) {
         URIBuilder builder = new URIBuilder(URI.create(UPLOAD_BASE));
         builder.setPath("/from_url/")
                 .setParameter("source_url", sourceUrl)
-                .setParameter("pub_key", pubKey);
+                .setParameter("pub_key", pubKey)
+                .setParameter("store", store);
         return trustedBuild(builder);
     }
 

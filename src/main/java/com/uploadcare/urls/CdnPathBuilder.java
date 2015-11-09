@@ -6,6 +6,50 @@ import java.awt.*;
 
 public class CdnPathBuilder {
 
+    public enum ImageFormat {
+        FORMAT_JPEG {
+            public String toString() {
+                return "jpeg";
+            }
+        },
+
+        FORMAT_PNG {
+            public String toString() {
+                return "png";
+            }
+        }
+    }
+
+    public enum ImageQuality {
+        QUALITY_NORMAL {
+            public String toString() {
+                return "normal";
+            }
+        },
+
+        QUALITY_BETTER {
+            public String toString() {
+                return "better";
+            }
+        },
+        QUALITY_BEST {
+            public String toString() {
+                return "best";
+            }
+        },
+
+        QUALITY_LIGHTER {
+            public String toString() {
+                return "lighter";
+            }
+        },
+        QUALITY_LIGHTEST {
+            public String toString() {
+                return "lightest";
+            }
+        }
+    }
+
     private final StringBuilder sb = new StringBuilder("/");
 
     /**
@@ -20,8 +64,8 @@ public class CdnPathBuilder {
     }
 
     private void dimensionGuard(int dim) {
-        if (dim < 1 || dim > 1024) {
-            throw new IllegalArgumentException("Dimensions must be in the range 1-1024");
+        if (dim < 1 || dim > 2048) {
+            throw new IllegalArgumentException("Dimensions must be in the range 1-2048");
         }
     }
 
@@ -182,7 +226,7 @@ public class CdnPathBuilder {
      * Flips the image.
      */
     public CdnPathBuilder flip() {
-        sb.append("/-/effect/flip");
+        sb.append("/-/flip");
         return this;
     }
 
@@ -190,7 +234,7 @@ public class CdnPathBuilder {
      * Adds a grayscale effect.
      */
     public CdnPathBuilder grayscale() {
-        sb.append("/-/effect/grayscale");
+        sb.append("/-/grayscale");
         return this;
     }
 
@@ -198,7 +242,7 @@ public class CdnPathBuilder {
      * Inverts colors.
      */
     public CdnPathBuilder invert() {
-        sb.append("/-/effect/invert");
+        sb.append("/-/invert");
         return this;
     }
 
@@ -206,7 +250,94 @@ public class CdnPathBuilder {
      * Horizontally mirror image.
      */
     public CdnPathBuilder mirror() {
-        sb.append("/-/effect/mirror");
+        sb.append("/-/mirror");
+        return this;
+    }
+
+    /**
+     * Performs Gaussian blur on result image.
+     */
+    public CdnPathBuilder blur() {
+        sb.append("/-/blur");
+        return this;
+    }
+
+    /**
+     * Performs Gaussian blur on result image.
+     *
+     * @param strength Strength is standard deviation (aka blur radius) multiplied by ten. Strength
+     *                 can be up to 5000. Default is 10.
+     */
+    public CdnPathBuilder blur(int strength) {
+        if (strength < 0 || strength > 5000) {
+            strength = 10;
+        }
+        sb.append("/-/blur/")
+                .append(strength);
+        return this;
+    }
+
+    /**
+     * Performs sharpening on result image. This can be useful after scaling down.
+     */
+    public CdnPathBuilder sharp() {
+        sb.append("/-/sharp");
+        return this;
+    }
+
+    /**
+     * Performs sharpening on result image. This can be useful after scaling down.
+     *
+     * @param strength Strength can be from 0 to 20. Default is 5.
+     */
+    public CdnPathBuilder sharp(int strength) {
+        if (strength < 0 || strength > 20) {
+            strength = 5;
+        }
+        sb.append("/-/sharp/")
+                .append(strength);
+        return this;
+    }
+
+    /**
+     * Reduces an image proportionally in order to fit it into given dimensions.
+     *
+     * @param width New width
+     * @param height New height
+     */
+    public CdnPathBuilder preview(int width, int height) {
+        dimensionsGuard(width, height);
+        sb.append("/-/preview/")
+                .append(width)
+                .append("x")
+                .append(height);
+        return this;
+    }
+
+    /**
+     * Turn an image to one of the following formats: FORMAT_JPEG or FORMAT_PNG.
+     *
+     * @param format @link ImageFormat.
+     */
+    public CdnPathBuilder format(ImageFormat format) {
+        sb.append("/-/format/")
+                .append(format.toString());
+        return this;
+    }
+
+    /**
+     * Image quality affects size of image and loading speed. Has no effect on non-JPEG images, but does not force format to JPEG.
+     *
+     * @param quality @link ImageQuality
+     * QUALITY_NORMAL – used by default. Fine in most cases.
+     * QUALITY_BETTER – can be used on relatively small previews with lots of details. ≈125% file size compared to normal image.
+     * QUALITY_BEST – useful if you're a photography god and you want to get perfect quality without paying attention to size. ≈170% file size.
+     * QUALITY_LIGHTER – can be used on relatively large images to save traffic without significant quality loss. ≈80% file size.
+     * QUALITY_LIGHTEST — useful for retina resolutions, when you don't wory about quality of each pixel. ≈50% file size.
+     */
+    public CdnPathBuilder quality(ImageQuality quality) {
+        sb.append("/-/quality/")
+                .append(quality.toString());
         return this;
     }
 

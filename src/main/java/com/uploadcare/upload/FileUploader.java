@@ -1,6 +1,9 @@
 package com.uploadcare.upload;
 
-import java.net.URI;
+import com.uploadcare.api.Client;
+import com.uploadcare.api.File;
+import com.uploadcare.data.UploadBaseData;
+import com.uploadcare.urls.Urls;
 
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntity;
@@ -8,10 +11,7 @@ import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 
-import com.uploadcare.api.Client;
-import com.uploadcare.api.File;
-import com.uploadcare.data.UploadBaseData;
-import com.uploadcare.urls.Urls;
+import java.net.URI;
 
 /**
  * Uploadcare uploader for files and binary data.
@@ -19,16 +19,21 @@ import com.uploadcare.urls.Urls;
 public class FileUploader implements Uploader {
 
     private final Client client;
+
     private final java.io.File file;
+
     private final byte[] bytes;
+
     private final String filename;
+
+    private String store = "auto";
 
     /**
      * Creates a new uploader from a file on disk
      * (not to be confused with a file resource from Uploadcare API).
      *
      * @param client Uploadcare client
-     * @param file File on disk
+     * @param file   File on disk
      */
     public FileUploader(Client client, java.io.File file) {
         this.client = client;
@@ -40,8 +45,8 @@ public class FileUploader implements Uploader {
     /**
      * Creates a new uploader from binary data.
      *
-     * @param client Uploadcare client
-     * @param bytes File contents as binary data
+     * @param client   Uploadcare client
+     * @param bytes    File contents as binary data
      * @param filename Original filename
      */
     public FileUploader(Client client, byte[] bytes, String filename) {
@@ -57,7 +62,6 @@ public class FileUploader implements Uploader {
      * The calling thread will be busy until the upload is finished.
      *
      * @return An Uploadcare file
-     * @throws UploadFailureException
      */
     public File upload() throws UploadFailureException {
         URI uploadUrl = Urls.uploadBase();
@@ -65,7 +69,9 @@ public class FileUploader implements Uploader {
 
         MultipartEntity entity = new MultipartEntity();
         StringBody pubKeyBody = StringBody.create(client.getPublicKey(), "text/plain", null);
+        StringBody storeBody = StringBody.create(store, "text/plain", null);
         entity.addPart("UPLOADCARE_PUB_KEY", pubKeyBody);
+        entity.addPart("UPLOADCARE_STORE", storeBody);
         if (file != null) {
             entity.addPart("file", new FileBody(file));
         } else {
@@ -73,7 +79,20 @@ public class FileUploader implements Uploader {
         }
         request.setEntity(entity);
 
-        String fileId = client.getRequestHelper().executeQuery(request, false, UploadBaseData.class).file;
+        String fileId = client.getRequestHelper()
+                .executeQuery(request, false, UploadBaseData.class).file;
         return client.getFile(fileId);
+    }
+
+    /**
+     * Store the file upon uploading.
+     *
+     * @param store is set true - store the file upon uploading. Requires “automatic file storing”
+     *              setting to be enabled.
+     *              is set false - do not store file upon uploading.
+     */
+    public FileUploader store(boolean store) {
+        this.store = store ? String.valueOf(1) : String.valueOf(0);
+        return this;
     }
 }
