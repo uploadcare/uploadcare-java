@@ -241,9 +241,6 @@ public class RequestHelper {
 
         if (statusCode >= 200 && statusCode < 300) {
             return;
-        } else if (statusCode >= 300 && statusCode < 400) {
-            throw new UploadcareInvalidRequestException(
-                    streamToString(response.getEntity().getContent()));
         } else if (statusCode == 401 || statusCode == 403) {
             throw new UploadcareAuthenticationException(
                     streamToString(response.getEntity().getContent()));
