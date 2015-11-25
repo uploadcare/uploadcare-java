@@ -7,7 +7,7 @@ This is a Java library for Uploadcare.
 
 Supported features:
 
-- Complete file and project API v0.3
+- Complete file and project API v0.4
 - Paginated resources fetched as `List<T>`
 - CDN path builder
 - File uploads from disk, byte array, and URL
@@ -23,7 +23,7 @@ of the project's pom.xml file:
 <dependency>
     <groupId>com.uploadcare</groupId>
     <artifactId>uploadcare</artifactId>
-    <version>2.0</version>
+    <version>3.0</version>
 </dependency>
 ```
 

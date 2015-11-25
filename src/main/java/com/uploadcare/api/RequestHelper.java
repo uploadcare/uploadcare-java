@@ -7,18 +7,17 @@ import com.uploadcare.exceptions.UploadcareAuthenticationException;
 import com.uploadcare.exceptions.UploadcareInvalidRequestException;
 import com.uploadcare.exceptions.UploadcareNetworkException;
 import com.uploadcare.urls.UrlParameter;
+
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.util.EntityUtils;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -26,12 +25,20 @@ import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.List;
+import java.util.TimeZone;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 import static com.uploadcare.urls.UrlUtils.trustedBuild;
 
 /**
- * A helper class for doing API calls to the Uploadcare API. Supports API version 0.3.
+ * A helper class for doing API calls to the Uploadcare API. Supports API version 0.4.
  *
  * TODO Support of throttled requests needs to be added
  */
@@ -39,9 +46,16 @@ public class RequestHelper {
 
     private final Client client;
 
+    public static final String LIBRARY_VERSION = "3.0";
+
     public static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss Z";
+
+    public static final String DATE_FORMAT_ISO_8601 = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+
     public static final TimeZone UTC = TimeZone.getTimeZone("UTC");
+
     private static final String EMPTY_MD5 = DigestUtils.md5Hex("");
+
     private static final String JSON_CONTENT_TYPE = "application/json";
 
     RequestHelper(Client client) {
@@ -50,6 +64,12 @@ public class RequestHelper {
 
     public static String rfc2822(Date date) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(RequestHelper.DATE_FORMAT);
+        dateFormat.setTimeZone(UTC);
+        return dateFormat.format(date);
+    }
+
+    public static String iso8601(Date date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(RequestHelper.DATE_FORMAT_ISO_8601);
         dateFormat.setTimeZone(UTC);
         return dateFormat.format(date);
     }
@@ -75,12 +95,15 @@ public class RequestHelper {
         Calendar calendar = new GregorianCalendar(UTC);
         String formattedDate = rfc2822(calendar.getTime());
 
-		request.setHeader("Accept", "application/vnd.uploadcare-v0.3+json");
-		request.setHeader("Date", formattedDate);
+        request.setHeader("Accept", "application/vnd.uploadcare-v0.4+json");
+        request.setHeader("Date", formattedDate);
+        request.setHeader("User-Agent",
+                String.format("javauploadcare/%s/%s", LIBRARY_VERSION, client.getPublicKey()));
 
         String authorization;
         if (client.isSimpleAuth()) {
-            authorization = "Uploadcare.Simple " + client.getPublicKey() + ":" + client.getPrivateKey();
+            authorization = "Uploadcare.Simple " + client.getPublicKey() + ":" + client
+                    .getPrivateKey();
         } else {
             try {
                 String signature = makeSignature(request, formattedDate);
@@ -97,13 +120,15 @@ public class RequestHelper {
             setApiHeaders(request);
         }
         try {
-            HttpResponse response = client.getHttpClient().execute(request);
-
-			checkResponseStatus(response);
-
-			HttpEntity entity = response.getEntity();
-			String data = EntityUtils.toString(entity);
-			return client.getObjectMapper().readValue(data, dataClass);
+            CloseableHttpResponse response = client.getHttpClient().execute(request);
+            checkResponseStatus(response);
+            try {
+                HttpEntity entity = response.getEntity();
+                String data = EntityUtils.toString(entity);
+                return client.getObjectMapper().readValue(data, dataClass);
+            } finally {
+                response.close();
+            }
         } catch (IOException e) {
             throw new UploadcareNetworkException(e);
         }
@@ -124,8 +149,10 @@ public class RequestHelper {
         return new Iterable<T>() {
             public Iterator<T> iterator() {
                 return new Iterator<T>() {
-                    private int page = 0;
+                    private URI next = null;
+
                     private boolean more;
+
                     private Iterator<U> pageIterator;
 
                     {
@@ -133,12 +160,19 @@ public class RequestHelper {
                     }
 
                     private void getNext() {
-                        URIBuilder builder = new URIBuilder(url);
-                        setQueryParameters(builder, urlParameters);
-                        builder.setParameter("page", Integer.toString(++page));
-                        URI pageUrl = trustedBuild(builder);
-                        PageData<U> pageData = executeQuery(new HttpGet(pageUrl), apiHeaders, dataClass);
+                        URI pageUrl;
+                        if (next == null) {
+                            URIBuilder builder = new URIBuilder(url);
+                            setQueryParameters(builder, urlParameters);
+
+                            pageUrl = trustedBuild(builder);
+                        } else {
+                            pageUrl = next;
+                        }
+                        PageData<U> pageData = executeQuery(new HttpGet(pageUrl), apiHeaders,
+                                dataClass);
                         more = pageData.hasMore();
+                        next = pageData.getNext();
                         pageIterator = pageData.getResults().iterator();
                     }
 
@@ -165,62 +199,69 @@ public class RequestHelper {
         };
     }
 
-	/**
-	 * Executes the request et the Uploadcare API and return the HTTP Response object.
-	 *
-	 * The existence of this method(and it's return type) enables the end user to extend the functionality of the
-	 * Uploadcare API client by creating a subclass of {@link com.uploadcare.api.Client}.
-	 *
-	 * @param request request to be sent to the API
-	 * @param apiHeaders TRUE if the default API headers should be set
-	 *
-	 * @return HTTP Response object
-	 */
+    /**
+     * Executes the request et the Uploadcare API and return the HTTP Response object.
+     *
+     * The existence of this method(and it's return type) enables the end user to extend the
+     * functionality of the
+     * Uploadcare API client by creating a subclass of {@link com.uploadcare.api.Client}.
+     *
+     * @param request    request to be sent to the API
+     * @param apiHeaders TRUE if the default API headers should be set
+     * @return HTTP Response object
+     */
     public HttpResponse executeCommand(HttpUriRequest request, boolean apiHeaders) {
         if (apiHeaders) {
             setApiHeaders(request);
         }
 
         try {
-            HttpResponse response = client.getHttpClient().execute(request);
-
-			checkResponseStatus(response);
-
-			return response;
-		} catch (IOException e) {
+            CloseableHttpResponse response = client.getHttpClient().execute(request);
+            try {
+                checkResponseStatus(response);
+                return response;
+            } finally {
+                response.close();
+            }
+        } catch (IOException e) {
             throw new UploadcareNetworkException(e);
         }
     }
 
-	/**
-	 * Verifies that the response status codes are within acceptable boundaries and throws corresponding exceptions
-	 * otherwise.
-	 *
-	 * @param response The response object to be checked
-	 * @throws IOException
-	 */
-	private void checkResponseStatus(HttpResponse response) throws IOException {
+    /**
+     * Verifies that the response status codes are within acceptable boundaries and throws
+     * corresponding exceptions
+     * otherwise.
+     *
+     * @param response The response object to be checked
+     */
+    private void checkResponseStatus(HttpResponse response) throws IOException {
 
-		int statusCode = response.getStatusLine().getStatusCode();
+        int statusCode = response.getStatusLine().getStatusCode();
 
-		if(statusCode >= 200 && statusCode < 300) {
-			return;
-		} else if(statusCode == 401 || statusCode == 403) {
-			throw new UploadcareAuthenticationException(streamToString(response.getEntity().getContent()));
-		} else if(statusCode == 400 || statusCode == 404) {
-			throw new UploadcareInvalidRequestException(streamToString(response.getEntity().getContent()));
-		} else {
-			throw new UploadcareApiException("Unknown exception during an API call, response:" + streamToString(response.getEntity().getContent()));
-		}
-	}
+        if (statusCode >= 200 && statusCode < 300) {
+            return;
+        } else if (statusCode == 401 || statusCode == 403) {
+            throw new UploadcareAuthenticationException(
+                    streamToString(response.getEntity().getContent()));
+        } else if (statusCode == 400 || statusCode == 404) {
+            throw new UploadcareInvalidRequestException(
+                    streamToString(response.getEntity().getContent()));
+        } else {
+            throw new UploadcareApiException(
+                    "Unknown exception during an API call, response:" + streamToString(
+                            response.getEntity().getContent()));
+        }
+    }
 
-	/**
-	 * Convert an InputStream into a String object. Method taken from http://stackoverflow.com/a/5445161/521535
-	 * @param is The stream to be converted
-	 * @return The resulting String
-	 */
-	private static String streamToString(InputStream is) {
-		java.util.Scanner s = new java.util.Scanner(is, "UTF-8").useDelimiter("\\A");
-		return s.hasNext() ? s.next() : "";
-	}
+    /**
+     * Convert an InputStream into a String object. Method taken from http://stackoverflow.com/a/5445161/521535
+     *
+     * @param is The stream to be converted
+     * @return The resulting String
+     */
+    private static String streamToString(InputStream is) {
+        java.util.Scanner s = new java.util.Scanner(is, "UTF-8").useDelimiter("\\A");
+        return s.hasNext() ? s.next() : "";
+    }
 }

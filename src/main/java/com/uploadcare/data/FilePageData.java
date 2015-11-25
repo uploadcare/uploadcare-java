@@ -1,11 +1,18 @@
 package com.uploadcare.data;
 
+import java.net.URI;
 import java.util.List;
 
 public class FilePageData implements PageData<FileData> {
 
-    public int page;
-    public int pages;
+    public URI next;
+
+    public URI previous;
+
+    public int total;
+
+    public int perPage;
+
     public List<FileData> results;
 
     public List<FileData> getResults() {
@@ -13,7 +20,11 @@ public class FilePageData implements PageData<FileData> {
     }
 
     public boolean hasMore() {
-        return page < pages;
+        return next != null;
+    }
+
+    public URI getNext() {
+        return next;
     }
 
 }
