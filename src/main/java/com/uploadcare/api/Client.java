@@ -54,6 +54,17 @@ public class Client {
     }
 
     /**
+     * Initializes a client with custom access keys and simple authentication.
+     *
+     * @param publicKey Public key
+     * @param privateKey Private key
+     * @param privateKey CloseableHttpClient
+     */
+    public Client(String publicKey, String privateKey, CloseableHttpClient httpClient) {
+        this(publicKey, privateKey, true, null, httpClient);
+    }
+
+    /**
      * Initializes a client with custom access keys.
      * Can use simple or secure authentication.
      *
@@ -67,25 +78,49 @@ public class Client {
             String privateKey,
             boolean simpleAuth,
             RequestHelperProvider requestHelperProvider) {
+        this(publicKey, privateKey, simpleAuth, requestHelperProvider, null);
+    }
+
+    /**
+     * Initializes a client with custom access keys.
+     * Can use simple or secure authentication.
+     *
+     * @param publicKey Public key
+     * @param privateKey Private key
+     * @param simpleAuth If {@code false}, HMAC-based authentication is used
+     * @param requestHelperProvider Should be {@code null} to use {@link DefaultRequestHelperProvider}
+     * @param httpClient Custom HttpClient
+     */
+    public Client(
+            String publicKey,
+            String privateKey,
+            boolean simpleAuth,
+            RequestHelperProvider requestHelperProvider,
+            CloseableHttpClient httpClient) {
         this.publicKey = publicKey;
         this.privateKey = privateKey;
         this.simpleAuth = simpleAuth;
 
         if (requestHelperProvider != null) {
             this.requestHelperProvider = requestHelperProvider;
-            httpClient = null;
-            objectMapper = null;
+            this.httpClient = null;
+            this.objectMapper = null;
         } else {
             this.requestHelperProvider = new DefaultRequestHelperProvider();
-            PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
-            cm.setMaxTotal(200);
-            cm.setDefaultMaxPerRoute(20);
-            httpClient = HttpClients.custom()
-                    .setConnectionManager(cm)
-                    .build();
-            objectMapper = new ObjectMapper();
-            objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
-            objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+
+            if (httpClient != null) {
+                this.httpClient = httpClient;
+            } else {
+                PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
+                cm.setMaxTotal(200);
+                cm.setDefaultMaxPerRoute(20);
+                this.httpClient = HttpClients.custom()
+                        .setConnectionManager(cm)
+                        .build();
+            }
+            this.objectMapper = new ObjectMapper();
+            this.objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
+            this.objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         }
     }
 
