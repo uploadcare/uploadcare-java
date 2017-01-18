@@ -1,5 +1,4 @@
-uploadcare-java
-===============
+# uploadcare-java
 
 [![Build Status](https://travis-ci.org/uploadcare/uploadcare-java.png?branch=master)](https://travis-ci.org/uploadcare/uploadcare-java)
 
@@ -7,17 +6,19 @@ This is a Java library for Uploadcare.
 
 Supported features:
 
-- Complete file and project API v0.4
-- Paginated resources fetched as `List<T>`
+- Complete file and project APIs v0.4
+- Paginated resources are fetched as `List<T>`
 - CDN path builder
-- File uploads from disk, byte array, and URL
+- File uploads from local storages, byte arrays or URLs
 
 ## Maven
 
-Latest stable version is available from Maven Central.
+The latest stable version of the lib is available from
+[Maven Central](https://search.maven.org/#search%7Cga%7C1%7Cuploadcare).
 
-To include it in your build, add this to the `<dependencies />` section
-of the project's pom.xml file:
+Including it in your build is done through adding the
+following to the `<dependencies />` section of your
+project's `pom.xml` file.
 
 ```xml
 <dependency>
@@ -28,6 +29,9 @@ of the project's pom.xml file:
 ```
 
 ## Examples
+
+Don't forget to [grab](https://uploadcare.com/documentation/keys/)
+your API keys prior to trying out the examples.
 
 ### Basic API Usage
 
@@ -45,7 +49,7 @@ for (File file : files) {
 }
 ```
 
-See documentation for details:
+Check out the docs for details:
 
 * [Client](http://uploadcare.github.io/uploadcare-java/apidocs/com/uploadcare/api/Client.html)
 * [File](http://uploadcare.github.io/uploadcare-java/apidocs/com/uploadcare/api/File.html)
@@ -62,7 +66,7 @@ CdnPathBuilder builder = file.cdnPath()
 URI url = Urls.cdn(builder);
 ```
 
-See documentation for details:
+Check out the docs for details:
 
 * [CdnPathBuilder](http://uploadcare.github.io/uploadcare-java/apidocs/com/uploadcare/urls/CdnPathBuilder.html)
 * [Urls](http://uploadcare.github.io/uploadcare-java/apidocs/com/uploadcare/urls/Urls.html)
@@ -81,7 +85,26 @@ try {
 }
 ```
 
-See documentation for details:
+Check out the docs for details:
 
 * [FileUploader](http://uploadcare.github.io/uploadcare-java/apidocs/com/uploadcare/upload/FileUploader.html)
 * [UrlUploader](http://uploadcare.github.io/uploadcare-java/apidocs/com/uploadcare/upload/UrlUploader.html)
+
+## Contributors
+
+- [@disolovyov](https://github.com/disolovyov)
+- [@raphaelnew](https://github.com/raphaelnew)
+- [@dmitry-mukhin](https://github.com/dmitry-mukhin)
+- [@dnavre](https://github.com/dnavre)
+- [@alchernin](https://github.com/alchernin)
+- [@joeyvmason](https://github.com/joeyvmason)
+
+## Security issues
+
+If you think you ran into something in Uploadcare libraries
+which might have security implications, please hit us up at
+[bugbounty@uploadcare.com](mailto:bugbounty@uploadcare.com)
+or Hackerone.
+
+We'll contact you personally in a short time to fix an issue
+through co-op and prior to any public disclosure.
