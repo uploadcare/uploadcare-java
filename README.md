@@ -78,7 +78,7 @@ Check out the docs for details:
 ```java
 Client client = Client.demoClient();
 java.io.File file = new java.io.File("olympia.jpg");
-Uploader uploader = new FileUploader(client, sourceFile);
+Uploader uploader = new FileUploader(client, file);
 try {
     File file = uploader.upload().save();
     System.out.println(file.getOriginalFileUrl());
