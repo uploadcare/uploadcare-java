@@ -1,6 +1,8 @@
 # uploadcare-java
 
 [![Build Status](https://travis-ci.org/uploadcare/uploadcare-java.png?branch=master)](https://travis-ci.org/uploadcare/uploadcare-java)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.uploadcare/uploadcare/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.uploadcare/uploadcare)
+[![Javadoc](https://javadoc-emblem.rhcloud.com/doc/com.uploadcare/uploadcare/badge.svg)](http://www.javadoc.io/doc/com.uploadcare/uploadcare)
 
 This is a Java library for Uploadcare.
 
