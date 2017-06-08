@@ -198,6 +198,8 @@ public class Client {
         URI url = Urls.apiFile(fileId);
         RequestHelper requestHelper = getRequestHelper();
         FileData fileData = requestHelper.executeQuery(new HttpGet(url), true, FileData.class);
+        if(fileData.imageInfo != null)
+            return new Image(this, fileData);
         return new File(this, fileData);
     }
 

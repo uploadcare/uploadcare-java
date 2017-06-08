@@ -16,6 +16,6 @@ public class FileData {
     public boolean isImage;
     public Date datetimeStored;
     public Date datetimeRemoved;
-    
+    public ImageInfo imageInfo;
 
 }
