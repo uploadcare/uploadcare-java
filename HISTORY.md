@@ -1,5 +1,8 @@
 # History
 
+## 3.1
+- Support image data field in file
+
 ## 3.0
 - Support Uploadcare REST API v0.4
 - Fixed Threading problem with HttpClient.

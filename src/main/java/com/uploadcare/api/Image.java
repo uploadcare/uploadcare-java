@@ -5,12 +5,7 @@ import com.uploadcare.data.ImageInfo;
 
 import java.util.Date;
 
-/**
- * Created by Egor Petushkov
- * on 09.06.17.
- */
 public class Image extends File {
-    public static final int UNKNOW_DPI = -1;
     public enum Orientation {
         /**
          * Image doesn't have orientation data
@@ -90,13 +85,17 @@ public class Image extends File {
         return Orientation.getOrientation(imageInfo.orientation);
     }
 
-    public int getXResolution() {
-        return imageInfo.dpi != null && imageInfo.dpi.length == 1 ? imageInfo.dpi[0] : UNKNOW_DPI;
+    public boolean hasResolution() {
+        return imageInfo.dpi != null && imageInfo.dpi.length == 1;
     }
 
-    public int getYResolution() {
+    public Integer getXResolution() {
+        return imageInfo.dpi != null && imageInfo.dpi.length == 1 ? imageInfo.dpi[0] : null;
+    }
+
+    public Integer getYResolution() {
         if(imageInfo.dpi == null)
-            return UNKNOW_DPI;
+            return null;
         return imageInfo.dpi.length == 2 ? imageInfo.dpi[1] : getXResolution();
     }
 
@@ -108,11 +107,11 @@ public class Image extends File {
         return imageInfo.geoLocation != null;
     }
 
-    public double getLatitude() {
-        return imageInfo.geoLocation != null ? imageInfo.geoLocation.latitude : Double.NaN;
+    public Double getLatitude() {
+        return imageInfo.geoLocation != null ? imageInfo.geoLocation.latitude : null;
     }
 
-    public double getLongitude() {
-        return imageInfo.geoLocation != null ? imageInfo.geoLocation.longitude : Double.NaN;
+    public Double getLongitude() {
+        return imageInfo.geoLocation != null ? imageInfo.geoLocation.longitude : null;
     }
 }
