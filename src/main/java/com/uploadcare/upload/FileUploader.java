@@ -6,10 +6,9 @@ import com.uploadcare.data.UploadBaseData;
 import com.uploadcare.urls.Urls;
 
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
 
 import java.net.URI;
 
@@ -67,17 +66,15 @@ public class FileUploader implements Uploader {
         URI uploadUrl = Urls.uploadBase();
         HttpPost request = new HttpPost(uploadUrl);
 
-        MultipartEntity entity = new MultipartEntity();
-        StringBody pubKeyBody = StringBody.create(client.getPublicKey(), "text/plain", null);
-        StringBody storeBody = StringBody.create(store, "text/plain", null);
-        entity.addPart("UPLOADCARE_PUB_KEY", pubKeyBody);
-        entity.addPart("UPLOADCARE_STORE", storeBody);
+        MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
+        entityBuilder.addTextBody("UPLOADCARE_PUB_KEY", client.getPublicKey());
+        entityBuilder.addTextBody("UPLOADCARE_STORE", store);
         if (file != null) {
-            entity.addPart("file", new FileBody(file));
+            entityBuilder.addPart("file", new FileBody(file));
         } else {
-            entity.addPart("file", new ByteArrayBody(bytes, filename));
+            entityBuilder.addPart("file", new ByteArrayBody(bytes, filename));
         }
-        request.setEntity(entity);
+        request.setEntity(entityBuilder.build());
 
         String fileId = client.getRequestHelper()
                 .executeQuery(request, false, UploadBaseData.class).file;
