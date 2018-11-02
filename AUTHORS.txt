@@ -1,6 +1,6 @@
 # git log --format='%aN <%aE>' | sort -u
 
-alchernin <alchernin@gmail.com>
+Alexander Tchernin <alchernin@gmail.com>
 Artemis <artemix@artemix.org>
 Dimitry Solovyov <dimituri@gmail.com>
 Dmitry Mukhin <dm@uploadcare.com>
