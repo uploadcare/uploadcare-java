@@ -5,7 +5,7 @@ Artemis <artemix@artemix.org>
 Dimitry Solovyov <dimituri@gmail.com>
 Dmitry Mukhin <dm@uploadcare.com>
 Elijah <ilya@uploadcare.com>
-GIlyazitdinov Raphael <iraphaele@gmail.com>
-joeyvmason <joeyvmason@gmail.com>
-Valeriy.Vyrva <valery1707@gmail.com>
+Raphael Gilyazitdinov <iraphaele@gmail.com>
+Joseph Mason <joeyvmason@gmail.com>
+Valeriy Vyrva <valery1707@gmail.com>
 Yervand Aghababyan <yervand.aghababyan@sflpro.com>
