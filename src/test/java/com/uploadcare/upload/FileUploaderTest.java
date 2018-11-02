@@ -51,6 +51,30 @@ public class FileUploaderTest {
         inOrder.verify(requestHelper).executeQuery(requestThat(Urls.apiFile(FILE_ID)), eq(true), eq(FileData.class));
     }
 
+    @Test
+    public void test_upload_stream() throws UploadFailureException, IOException {
+        final RequestHelper requestHelper = mock(RequestHelper.class);
+
+        when(requestHelper.executeQuery(requestThat(Urls.uploadBase()), eq(false), eq(UploadBaseData.class)))
+                .thenReturn(uploadBaseData());
+
+        Client client = new Client("public", "private", true, new RequestHelperProvider() {
+            public RequestHelper get(Client client) {
+                return requestHelper;
+            }
+        });
+
+        String filename = "olympia.jpg";
+        InputStream is = getClass().getClassLoader().getResourceAsStream(filename);
+
+        Uploader uploader = new FileUploader(client, is, filename);
+        File file = uploader.upload();
+
+        InOrder inOrder = inOrder(requestHelper);
+        inOrder.verify(requestHelper).executeQuery(requestThat(Urls.uploadBase()), eq(false), eq(UploadBaseData.class));
+        inOrder.verify(requestHelper).executeQuery(requestThat(Urls.apiFile(FILE_ID)), eq(true), eq(FileData.class));
+    }
+
     private HttpUriRequest requestThat(final URI uri) {
         return argThat(new BaseMatcher<HttpUriRequest>() {
             public boolean matches(Object o) {
