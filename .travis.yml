@@ -1,13 +1,13 @@
 sudo: false
 language: java
 install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -B -V
-addons:
-  apt:
-    packages:
-      - openjdk-6-jdk
+
 jdk:
   - oraclejdk8
   - oraclejdk9
-  - openjdk6
+  - oraclejdk11
   - openjdk7
   - openjdk8
+  - openjdk9
+  - openjdk10
+  - openjdk11
