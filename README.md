@@ -3,6 +3,11 @@
 [![Build Status](https://travis-ci.org/uploadcare/uploadcare-java.svg?branch=master)](https://travis-ci.org/uploadcare/uploadcare-java)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.uploadcare/uploadcare/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.uploadcare/uploadcare)
 [![Javadocs](https://www.javadoc.io/badge/com.uploadcare/uploadcare.svg)](https://www.javadoc.io/doc/com.uploadcare/uploadcare)
+[![Uploadcare stack on StackShare][stack-img]][stack]
+
+[stack-img]: http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat
+[stack]: https://stackshare.io/uploadcare/stacks/
+
 
 This is a Java library for Uploadcare.
 
@@ -94,12 +99,7 @@ Check out the docs for details:
 
 ## Contributors
 
-- [@disolovyov](https://github.com/disolovyov)
-- [@raphaelnew](https://github.com/raphaelnew)
-- [@dmitry-mukhin](https://github.com/dmitry-mukhin)
-- [@dnavre](https://github.com/dnavre)
-- [@alchernin](https://github.com/alchernin)
-- [@joeyvmason](https://github.com/joeyvmason)
+See `AUTHORS.txt` and [here](https://github.com/uploadcare/uploadcare-java/graphs/contributors).
 
 ## Security issues
 
