@@ -95,7 +95,7 @@ public class RequestHelper {
         Calendar calendar = new GregorianCalendar(UTC);
         String formattedDate = rfc2822(calendar.getTime());
 
-        request.setHeader("Accept", "application/vnd.uploadcare-v0.4+json");
+        request.setHeader("Accept", "application/vnd.uploadcare-v0.5+json");
         request.setHeader("Date", formattedDate);
         request.setHeader("User-Agent",
                 String.format("javauploadcare/%s/%s", LIBRARY_VERSION, client.getPublicKey()));
