@@ -46,7 +46,7 @@ public class RequestHelper {
 
     private final Client client;
 
-    public static final String LIBRARY_VERSION = "3.1";
+    public static final String LIBRARY_VERSION = "4.0";
 
     public static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss Z";
 
