@@ -43,7 +43,7 @@ your API keys prior to trying out the examples.
 ### Basic API Usage
 
 ```java
-Client client = new Client("publickey", "privatekey");
+Client client = new Client("publickey", "secretkey");
 Project project = client.getProject();
 Project.Collaborator owner = project.getOwner();
 

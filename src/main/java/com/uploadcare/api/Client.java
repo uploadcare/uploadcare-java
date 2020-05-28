@@ -36,7 +36,7 @@ import java.util.List;
 public class Client {
 
     private final String publicKey;
-    private final String privateKey;
+    private final String secretKey;
     private final boolean simpleAuth;
 
     private final CloseableHttpClient httpClient;
@@ -47,21 +47,21 @@ public class Client {
      * Initializes a client with custom access keys and simple authentication.
      *
      * @param publicKey Public key
-     * @param privateKey Private key
+     * @param secretKey Secret key
      */
-    public Client(String publicKey, String privateKey) {
-        this(publicKey, privateKey, true, null);
+    public Client(String publicKey, String secretKey) {
+        this(publicKey, secretKey, true, null);
     }
 
     /**
      * Initializes a client with custom access keys and simple authentication.
      *
      * @param publicKey Public key
-     * @param privateKey Private key
-     * @param privateKey CloseableHttpClient
+     * @param secretKey Secret key
+     * @param httpClient CloseableHttpClient
      */
-    public Client(String publicKey, String privateKey, CloseableHttpClient httpClient) {
-        this(publicKey, privateKey, true, null, httpClient);
+    public Client(String publicKey, String secretKey, CloseableHttpClient httpClient) {
+        this(publicKey, secretKey, true, null, httpClient);
     }
 
     /**
@@ -69,16 +69,16 @@ public class Client {
      * Can use simple or secure authentication.
      *
      * @param publicKey Public key
-     * @param privateKey Private key
+     * @param secretKey Secret key
      * @param simpleAuth If {@code false}, HMAC-based authentication is used
      * @param requestHelperProvider Should be {@code null} to use {@link DefaultRequestHelperProvider}
      */
     public Client(
             String publicKey,
-            String privateKey,
+            String secretKey,
             boolean simpleAuth,
             RequestHelperProvider requestHelperProvider) {
-        this(publicKey, privateKey, simpleAuth, requestHelperProvider, null);
+        this(publicKey, secretKey, simpleAuth, requestHelperProvider, null);
     }
 
     /**
@@ -86,19 +86,19 @@ public class Client {
      * Can use simple or secure authentication.
      *
      * @param publicKey Public key
-     * @param privateKey Private key
+     * @param secretKey Secret key
      * @param simpleAuth If {@code false}, HMAC-based authentication is used
      * @param requestHelperProvider Should be {@code null} to use {@link DefaultRequestHelperProvider}
      * @param httpClient Custom HttpClient
      */
     public Client(
             String publicKey,
-            String privateKey,
+            String secretKey,
             boolean simpleAuth,
             RequestHelperProvider requestHelperProvider,
             CloseableHttpClient httpClient) {
         this.publicKey = publicKey;
-        this.privateKey = privateKey;
+        this.secretKey = secretKey;
         this.simpleAuth = simpleAuth;
 
         if (requestHelperProvider != null) {
@@ -134,7 +134,7 @@ public class Client {
      * @return A demo client
      */
     public static Client demoClient() {
-        return new Client("demopublickey", "demoprivatekey");
+        return new Client("demopublickey", "demosecretkey");
     }
 
     /**
@@ -147,12 +147,12 @@ public class Client {
     }
 
     /**
-     * Returns the private key.
+     * Returns the Secret key.
      *
-     * @return Private key
+     * @return Secret key
      */
-    public String getPrivateKey() {
-        return privateKey;
+    public String getSecretKey() {
+        return secretKey;
     }
 
     /**

@@ -83,8 +83,8 @@ public class RequestHelper {
                 .append("\n").append(date)
                 .append("\n").append(request.getURI().getPath());
 
-        byte[] privateKeyBytes = client.getPrivateKey().getBytes();
-        SecretKeySpec signingKey = new SecretKeySpec(privateKeyBytes, "HmacSHA1");
+        byte[] secretKeyBytes = client.getSecretKey().getBytes();
+        SecretKeySpec signingKey = new SecretKeySpec(secretKeyBytes, "HmacSHA1");
         Mac mac = Mac.getInstance("HmacSHA1");
         mac.init(signingKey);
         byte[] hmacBytes = mac.doFinal(sb.toString().getBytes());
@@ -103,7 +103,7 @@ public class RequestHelper {
         String authorization;
         if (client.isSimpleAuth()) {
             authorization = "Uploadcare.Simple " + client.getPublicKey() + ":" + client
-                    .getPrivateKey();
+                    .getSecretKey();
         } else {
             try {
                 String signature = makeSignature(request, formattedDate);
