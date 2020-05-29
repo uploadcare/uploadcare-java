@@ -42,6 +42,12 @@ public class Project {
         return collaborators;
     }
 
+    @Override
+    public String toString() {
+        return "Project{" +
+                "projectData=" + projectData +
+                '}';
+    }
 
     public class Collaborator {
 

@@ -13,4 +13,12 @@ public class ProjectData {
         public String email;
     }
 
+    @Override
+    public String toString() {
+        return "ProjectData{" +
+                "name='" + name + '\'' +
+                ", pubKey='" + pubKey + '\'' +
+                ", collaborators=" + collaborators +
+                '}';
+    }
 }
