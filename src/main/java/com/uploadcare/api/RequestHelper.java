@@ -36,6 +36,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import static com.uploadcare.urls.UrlUtils.trustedBuild;
+import static org.apache.http.client.utils.DateUtils.GMT;
 
 /**
  * A helper class for doing API calls to the Uploadcare API. Supports API version 0.4.
@@ -92,7 +93,7 @@ public class RequestHelper {
     }
 
     public void setApiHeaders(HttpUriRequest request) {
-        Calendar calendar = new GregorianCalendar(UTC);
+        Calendar calendar = new GregorianCalendar(GMT);
         String formattedDate = rfc2822(calendar.getTime());
 
         request.setHeader("Accept", "application/vnd.uploadcare-v0.4+json");
