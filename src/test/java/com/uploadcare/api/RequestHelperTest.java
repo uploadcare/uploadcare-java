@@ -37,7 +37,7 @@ public class RequestHelperTest {
     @Test
     public void test_makeSignature() throws InvalidKeyException, NoSuchAlgorithmException {
         URI url = Urls.apiFile(FILE_ID);
-        String signature = requestHelper.makeSignature(new HttpGet(url), FORMATTED_DATE);
+        String signature = requestHelper.makeSignature(new HttpGet(url), FORMATTED_DATE, null);
         assertEquals("535e263808dd38599343f04aab3c9f34bb15573c", signature);
     }
 
