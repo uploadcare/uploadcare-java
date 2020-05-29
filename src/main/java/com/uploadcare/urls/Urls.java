@@ -25,6 +25,15 @@ public class Urls {
     }
 
     /**
+     * Creates a URL to a group resource.
+     *
+     * @see com.uploadcare.api.Client
+     */
+    public static URI apiGroup(String groupId) {
+        return URI.create(API_BASE + "/groups/" + groupId + "/");
+    }
+
+    /**
      * Creates a URL to a file resource.
      *
      * @param fileId File UUID

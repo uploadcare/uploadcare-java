@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.uploadcare.data.CopyFileData;
 import com.uploadcare.data.FileData;
+import com.uploadcare.data.GroupData;
 import com.uploadcare.data.ProjectData;
 import com.uploadcare.exceptions.UploadcareApiException;
 import com.uploadcare.urls.Urls;
@@ -56,8 +57,8 @@ public class Client {
     /**
      * Initializes a client with custom access keys and simple authentication.
      *
-     * @param publicKey Public key
-     * @param secretKey Secret key
+     * @param publicKey  Public key
+     * @param secretKey  Secret key
      * @param httpClient CloseableHttpClient
      */
     public Client(String publicKey, String secretKey, CloseableHttpClient httpClient) {
@@ -68,9 +69,9 @@ public class Client {
      * Initializes a client with custom access keys.
      * Can use simple or secure authentication.
      *
-     * @param publicKey Public key
-     * @param secretKey Secret key
-     * @param simpleAuth If {@code false}, HMAC-based authentication is used
+     * @param publicKey             Public key
+     * @param secretKey             Secret key
+     * @param simpleAuth            If {@code false}, HMAC-based authentication is used
      * @param requestHelperProvider Should be {@code null} to use {@link DefaultRequestHelperProvider}
      */
     public Client(
@@ -85,11 +86,11 @@ public class Client {
      * Initializes a client with custom access keys.
      * Can use simple or secure authentication.
      *
-     * @param publicKey Public key
-     * @param secretKey Secret key
-     * @param simpleAuth If {@code false}, HMAC-based authentication is used
+     * @param publicKey             Public key
+     * @param secretKey             Secret key
+     * @param simpleAuth            If {@code false}, HMAC-based authentication is used
      * @param requestHelperProvider Should be {@code null} to use {@link DefaultRequestHelperProvider}
-     * @param httpClient Custom HttpClient
+     * @param httpClient            Custom HttpClient
      */
     public Client(
             String publicKey,
@@ -186,6 +187,19 @@ public class Client {
         RequestHelper requestHelper = getRequestHelper();
         ProjectData projectData = requestHelper.executeQuery(new HttpGet(url), true, ProjectData.class);
         return new Project(this, projectData);
+    }
+
+    /**
+     * Requests group info from the API.
+     *
+     * @param groupId
+     * @return Group resource
+     */
+    public Group getGroup(String groupId) {
+        URI url = Urls.apiGroup(groupId);
+        RequestHelper requestHelper = getRequestHelper();
+        GroupData groupData = requestHelper.executeQuery(new HttpGet(url), true, GroupData.class);
+        return new Group(this, groupData);
     }
 
     /**
