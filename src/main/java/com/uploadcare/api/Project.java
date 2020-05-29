@@ -49,7 +49,7 @@ public class Project {
                 '}';
     }
 
-    public class Collaborator {
+    public static class Collaborator {
 
         private final Project project;
         private final ProjectData.CollaboratorData collaboratorData;
@@ -65,6 +65,13 @@ public class Project {
 
         public String getEmail() {
             return collaboratorData.email;
+        }
+
+        @Override
+        public String toString() {
+            return "Collaborator{" +
+                    "collaboratorData=" + collaboratorData +
+                    '}';
         }
     }
 }

@@ -6,11 +6,19 @@ public class ProjectData {
 
     public String name;
     public String pubKey;
-
     public List<CollaboratorData> collaborators;
-    public class CollaboratorData {
+
+    public static class CollaboratorData {
         public String name;
         public String email;
+
+        @Override
+        public String toString() {
+            return "CollaboratorData{" +
+                    "name='" + name + '\'' +
+                    ", email='" + email + '\'' +
+                    '}';
+        }
     }
 
     @Override
