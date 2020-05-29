@@ -1,12 +1,7 @@
 package com.uploadcare.api;
 
 import com.uploadcare.data.FilePageData;
-import com.uploadcare.urls.FilesFromParameter;
-import com.uploadcare.urls.FilesRemovedParameter;
-import com.uploadcare.urls.FilesStoredParameter;
-import com.uploadcare.urls.FilesToParameter;
-import com.uploadcare.urls.UrlParameter;
-import com.uploadcare.urls.Urls;
+import com.uploadcare.urls.*;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -69,6 +64,17 @@ public class FilesQueryBuilder implements PaginatedQueryBuilder<File> {
      */
     public FilesQueryBuilder to(Date to) {
         parameters.add(new FilesToParameter(to));
+        return this;
+    }
+
+    /**
+     * Specifies the way files are sorted.
+     *
+     * @param order [Order]
+     * @see com.uploadcare.urls.UrlParameter.Order
+     */
+    public FilesQueryBuilder ordering(UrlParameter.Order order){
+        parameters.add(new FilesOrderParameter(order));
         return this;
     }
 
