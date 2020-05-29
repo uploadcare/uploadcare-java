@@ -36,7 +36,6 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import static com.uploadcare.urls.UrlUtils.trustedBuild;
-import static org.apache.http.client.utils.DateUtils.GMT;
 
 /**
  * A helper class for doing API calls to the Uploadcare API. Supports API version 0.4.
@@ -55,9 +54,13 @@ public class RequestHelper {
 
     public static final TimeZone UTC = TimeZone.getTimeZone("UTC");
 
+    public static final TimeZone GMT = TimeZone.getTimeZone("GMT");
+
     private static final String EMPTY_MD5 = DigestUtils.md5Hex("");
 
     private static final String JSON_CONTENT_TYPE = "application/json";
+
+    private static final String MAC_ALGORITHM = "HmacSHA1";
 
     RequestHelper(Client client) {
         this.client = client;
@@ -65,7 +68,7 @@ public class RequestHelper {
 
     public static String rfc2822(Date date) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(RequestHelper.DATE_FORMAT);
-        dateFormat.setTimeZone(UTC);
+        dateFormat.setTimeZone(GMT);
         return dateFormat.format(date);
     }
 
@@ -85,8 +88,8 @@ public class RequestHelper {
                 .append("\n").append(request.getURI().getPath());
 
         byte[] secretKeyBytes = client.getSecretKey().getBytes();
-        SecretKeySpec signingKey = new SecretKeySpec(secretKeyBytes, "HmacSHA1");
-        Mac mac = Mac.getInstance("HmacSHA1");
+        SecretKeySpec signingKey = new SecretKeySpec(secretKeyBytes, MAC_ALGORITHM);
+        Mac mac = Mac.getInstance(MAC_ALGORITHM);
         mac.init(signingKey);
         byte[] hmacBytes = mac.doFinal(sb.toString().getBytes());
         return Hex.encodeHexString(hmacBytes);
@@ -96,6 +99,7 @@ public class RequestHelper {
         Calendar calendar = new GregorianCalendar(GMT);
         String formattedDate = rfc2822(calendar.getTime());
 
+        request.addHeader("Content-Type", JSON_CONTENT_TYPE);
         request.setHeader("Accept", "application/vnd.uploadcare-v0.4+json");
         request.setHeader("Date", formattedDate);
         request.setHeader("User-Agent",
