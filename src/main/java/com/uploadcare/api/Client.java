@@ -51,7 +51,7 @@ public class Client {
      * @param secretKey Secret key
      */
     public Client(String publicKey, String secretKey) {
-        this(publicKey, secretKey, true, null);
+        this(publicKey, secretKey, false, null);
     }
 
     /**
@@ -62,7 +62,7 @@ public class Client {
      * @param httpClient CloseableHttpClient
      */
     public Client(String publicKey, String secretKey, CloseableHttpClient httpClient) {
-        this(publicKey, secretKey, true, null, httpClient);
+        this(publicKey, secretKey, false, null, httpClient);
     }
 
     /**
@@ -71,7 +71,8 @@ public class Client {
      *
      * @param publicKey             Public key
      * @param secretKey             Secret key
-     * @param simpleAuth            If {@code false}, HMAC-based authentication is used
+     * @param simpleAuth            If {@code false}, HMAC-based authentication is used, otherwise simple
+     *                              authentication is used.
      * @param requestHelperProvider Should be {@code null} to use {@link DefaultRequestHelperProvider}
      */
     public Client(
@@ -88,7 +89,8 @@ public class Client {
      *
      * @param publicKey             Public key
      * @param secretKey             Secret key
-     * @param simpleAuth            If {@code false}, HMAC-based authentication is used
+     * @param simpleAuth            If {@code false}, HMAC-based authentication is used, otherwise simple
+     *                              authentication is used.
      * @param requestHelperProvider Should be {@code null} to use {@link DefaultRequestHelperProvider}
      * @param httpClient            Custom HttpClient
      */
