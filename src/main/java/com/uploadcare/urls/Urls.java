@@ -65,6 +65,15 @@ public class Urls {
     }
 
     /**
+     * Creates a URL to the group collection resource.
+     *
+     * @see com.uploadcare.api.Client
+     */
+    public static URI apiGroups(){
+        return URI.create(API_BASE + "/groups/");
+    }
+
+    /**
      * Creates a full CDN URL with a CDN path builder.
      *
      * @param builder Configured CDN path builder

@@ -225,6 +225,15 @@ public class Client {
     }
 
     /**
+     * Begins to build a request for groups for the current account.
+     *
+     * @return Group resource request builder
+     */
+    public GroupQueryBuilder getGroups() {
+        return new GroupQueryBuilder(this);
+    }
+
+    /**
      * Marks a file as deleted.
      *
      * @param fileId Resource UUID
