@@ -65,6 +65,15 @@ public class Urls {
     }
 
     /**
+     * Creates a URL to the storage action for a multiple files (saving/deleting the files).
+     *
+     * @see com.uploadcare.api.Client
+     */
+    public static URI apiFilesBatch() {
+        return URI.create(API_BASE + "/files/storage/");
+    }
+
+    /**
      * Creates a URL to the group collection resource.
      *
      * @see com.uploadcare.api.Client

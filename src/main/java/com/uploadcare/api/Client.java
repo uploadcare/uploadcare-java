@@ -1,5 +1,6 @@
 package com.uploadcare.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
@@ -10,11 +11,12 @@ import com.uploadcare.data.ProjectData;
 import com.uploadcare.exceptions.UploadcareApiException;
 import com.uploadcare.urls.Urls;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.*;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
@@ -43,6 +45,8 @@ public class Client {
     private final CloseableHttpClient httpClient;
     private final ObjectMapper objectMapper;
     private final RequestHelperProvider requestHelperProvider;
+
+    private final int MAX_SAVE_DELETE_BATCH_SIZE = 100;
 
     /**
      * Initializes a client with custom access keys and simple authentication.
@@ -247,6 +251,32 @@ public class Client {
     }
 
     /**
+     * Marks a files as deleted.
+     * Maximum 100 file id's can be provided.
+     *
+     * @param fileIds Resource UUIDs
+     */
+    public void deleteFiles(List<String> fileIds) {
+        if (fileIds.size() <= MAX_SAVE_DELETE_BATCH_SIZE) {
+            // Make single request.
+            URI url = Urls.apiFilesBatch();
+            RequestHelper requestHelper = getRequestHelper();
+            String requestBodyContent = trySerializeRequestBodyContent(fileIds);
+            StringEntity requestEntity = new StringEntity(
+                    requestBodyContent,
+                    ContentType.APPLICATION_JSON);
+
+            HttpDeleteWithBody request = new HttpDeleteWithBody(url);
+            request.setEntity(requestEntity);
+            requestHelper.executeCommand(request, true, DigestUtils.md5Hex(requestBodyContent));
+        } else {
+            // Make batch requests.
+            executeSaveDeleteBatchCommand(false, fileIds);
+        }
+
+    }
+
+    /**
      * Marks a file as saved.
      *
      * This has to be done for all files you want to keep.
@@ -258,6 +288,33 @@ public class Client {
         URI url = Urls.apiFileStorage(fileId);
         RequestHelper requestHelper = getRequestHelper();
         requestHelper.executeCommand(new HttpPost(url), true);
+    }
+
+    /**
+     * Marks multiple files as saved.
+     *
+     * This has to be done for all files you want to keep.
+     * Unsaved files are eventually purged.
+     *
+     * @param fileIds Resource UUIDs
+     */
+    public void saveFiles(List<String> fileIds) {
+        if (fileIds.size() <= MAX_SAVE_DELETE_BATCH_SIZE) {
+            // Make single request.
+            URI url = Urls.apiFilesBatch();
+            RequestHelper requestHelper = getRequestHelper();
+            String requestBodyContent = trySerializeRequestBodyContent(fileIds);
+            StringEntity requestEntity = new StringEntity(
+                    requestBodyContent,
+                    ContentType.APPLICATION_JSON);
+
+            HttpPut request = new HttpPut(url);
+            request.setEntity(requestEntity);
+            requestHelper.executeCommand(request, true, DigestUtils.md5Hex(requestBodyContent));
+        } else {
+            // Make batch requests.
+            executeSaveDeleteBatchCommand(true, fileIds);
+        }
     }
 
     /**
@@ -298,5 +355,44 @@ public class Client {
         }
 
         return requestHelper.executeQuery(request, true, CopyFileData.class);
+    }
+
+    private void executeSaveDeleteBatchCommand(boolean save, List<String> fileIds) {
+        URI url = Urls.apiFilesBatch();
+
+        for (int offset = 0; offset < fileIds.size(); offset += MAX_SAVE_DELETE_BATCH_SIZE) {
+            int endIndex = offset + MAX_SAVE_DELETE_BATCH_SIZE;
+            if (endIndex > fileIds.size()) {
+                endIndex = fileIds.size();
+            }
+
+            HttpEntityEnclosingRequestBase request;
+            if (save) {
+                request = new HttpPut(url);
+            } else {
+                request = new HttpDeleteWithBody(url);
+            }
+
+            List<String> ids = fileIds.subList(offset, endIndex);
+            String requestBodyContent = trySerializeRequestBodyContent(ids);
+            StringEntity requestEntity = new StringEntity(
+                    requestBodyContent,
+                    ContentType.APPLICATION_JSON);
+            request.setEntity(requestEntity);
+
+            RequestHelper requestHelper = getRequestHelper();
+            requestHelper.executeCommand(request, true, DigestUtils.md5Hex(requestBodyContent));
+        }
+    }
+
+    private String trySerializeRequestBodyContent(Object object) {
+        String requestBodyContent = null;
+        try {
+            requestBodyContent = getObjectMapper().writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            throw new UploadcareApiException("Error input arguments", e);
+        }
+
+        return requestBodyContent;
     }
 }
