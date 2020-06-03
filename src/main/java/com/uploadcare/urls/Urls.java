@@ -81,6 +81,24 @@ public class Urls {
     }
 
     /**
+     * Creates a URL to the file local copy resource.
+     *
+     * @see com.uploadcare.api.Client
+     */
+    public static URI apiFileLocalCopy() {
+        return URI.create(API_BASE + "/files/local_copy/");
+    }
+
+    /**
+     * Creates a URL to the file remote copy resource.
+     *
+     * @see com.uploadcare.api.Client
+     */
+    public static URI apiFileRemoteCopy() {
+        return URI.create(API_BASE + "/files/remote_copy/");
+    }
+
+    /**
      * Creates a URL to the storage action for a multiple files (saving/deleting the files).
      *
      * @see com.uploadcare.api.Client

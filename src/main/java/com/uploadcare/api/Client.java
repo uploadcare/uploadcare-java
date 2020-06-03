@@ -360,24 +360,68 @@ public class Client {
     }
 
     /**
-     * @param fileId  Resource UUID
-     * @param storage Target storage name
+     * Copy file to local storage. Copy original files or their modified versions to default storage. Source files MAY
+     * either be stored or just uploaded and MUST NOT be deleted.
+     *
+     * @param fileId     Resource UUID
+     * @param store      The parameter only applies to the Uploadcare storage and MUST be either true or false.
+     * @param makePublic Applicable to custom storage only. MUST be either true or false. true to make copied files
+     *                   available via public links, false to reverse the behavior.
+     *
      * @return An object containing the results of the copy request
      */
-    public CopyFileData copyFile(String fileId, String storage) {
+    public CopyFileData copyFileLocalStorage(String fileId, Boolean store, Boolean makePublic) {
         RequestHelper requestHelper = getRequestHelper();
-        HttpPost request = new HttpPost(Urls.apiFiles());
+        HttpPost request = new HttpPost(Urls.apiFileLocalCopy());
 
         List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
         nameValuePairs.add(new BasicNameValuePair("source", fileId));
-        if (storage != null && !storage.isEmpty()) {
-            nameValuePairs.add(new BasicNameValuePair("target", storage));
-        }
+        nameValuePairs.add(new BasicNameValuePair("store", store.toString()));
+        nameValuePairs.add(new BasicNameValuePair("make_public", makePublic.toString()));
 
         try {
             request.setEntity(new UrlEncodedFormEntity(nameValuePairs));
         } catch (UnsupportedEncodingException e) {
-            throw new UploadcareApiException("Error during copyFile request creation", e);
+            throw new UploadcareApiException("Illegal argument exception", e);
+        }
+
+        return requestHelper.executeQuery(
+                request,
+                true,
+                CopyFileData.class,
+                RequestHelper.getFormMD5(nameValuePairs));
+    }
+
+    /**
+     * Copy file to remote storage. Copy original files or their modified versions to a custom storage. Source files
+     * MAY either be stored or just uploaded and MUST NOT be deleted.
+     *
+     * @param fileId     Resource UUID
+     * @param target     Identifies a custom storage name related to your project. Implies you are copying a file to a
+     *                   specified custom storage. Keep in mind you can have multiple storages associated with a single
+     *                   S3 bucket.
+     * @param makePublic MUST be either true or false. true to make copied files available via public links, false to
+     *                   reverse the behavior.
+     * @param pattern    The parameter is used to specify file names Uploadcare passes to a custom storage. In case the
+     *                   parameter is omitted, we use pattern of your custom storage. Use any combination of allowed
+     *                   values.
+     *
+     * @return An object containing the results of the copy request
+     */
+    public CopyFileData copyFileRemoteStorage(String fileId, String target, Boolean makePublic, String pattern) {
+        RequestHelper requestHelper = getRequestHelper();
+        HttpPost request = new HttpPost(Urls.apiFileRemoteCopy());
+
+        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+        nameValuePairs.add(new BasicNameValuePair("source", fileId));
+        nameValuePairs.add(new BasicNameValuePair("target", target));
+        nameValuePairs.add(new BasicNameValuePair("make_public", makePublic.toString()));
+        nameValuePairs.add(new BasicNameValuePair("pattern", pattern));
+
+        try {
+            request.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+        } catch (UnsupportedEncodingException e) {
+            throw new UploadcareApiException("Illegal argument exception", e);
         }
 
         return requestHelper.executeQuery(
