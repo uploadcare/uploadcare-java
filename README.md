@@ -13,10 +13,10 @@ This is a Java library for Uploadcare.
 
 Supported features:
 
-- Complete file and project APIs v0.4
+- Complete file and project APIs v0.6
 - Paginated resources are fetched as `List<T>`
 - CDN path builder
-- File uploads from local storages, byte arrays or URLs
+- File uploads from local storages, byte arrays or URLs, signed uploads
 
 ## Maven
 

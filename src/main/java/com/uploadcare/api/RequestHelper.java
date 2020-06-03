@@ -34,7 +34,7 @@ import javax.crypto.spec.SecretKeySpec;
 import static com.uploadcare.urls.UrlUtils.trustedBuild;
 
 /**
- * A helper class for doing API calls to the Uploadcare API. Supports API version 0.4.
+ * A helper class for doing API calls to the Uploadcare API. Supports API version 0.6.
  *
  * TODO Support of throttled requests needs to be added
  */
@@ -119,7 +119,7 @@ public class RequestHelper {
         String formattedDate = rfc2822(calendar.getTime());
 
         request.addHeader("Content-Type", JSON_CONTENT_TYPE);
-        request.setHeader("Accept", "application/vnd.uploadcare-v0.4+json");
+        request.setHeader("Accept", "application/vnd.uploadcare-v0.6+json");
         request.setHeader("Date", formattedDate);
         request.setHeader("User-Agent",
                 String.format("javauploadcare/%s/%s", LIBRARY_VERSION, client.getPublicKey()));
