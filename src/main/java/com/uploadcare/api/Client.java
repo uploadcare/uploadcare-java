@@ -354,7 +354,11 @@ public class Client {
             throw new UploadcareApiException("Error during copyFile request creation", e);
         }
 
-        return requestHelper.executeQuery(request, true, CopyFileData.class);
+        return requestHelper.executeQuery(
+                request,
+                true,
+                CopyFileData.class,
+                RequestHelper.getFormMD5(nameValuePairs));
     }
 
     private void executeSaveDeleteBatchCommand(boolean save, List<String> fileIds) {

@@ -12,6 +12,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -73,9 +74,22 @@ public class RequestHelper {
         return dateFormat.format(date);
     }
 
+    public static String getFormMD5(List<NameValuePair> nameValuePairs) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < nameValuePairs.size(); i++) {
+            if (i > 0) {
+                sb.append("&");
+            }
+            sb.append(nameValuePairs.get(i).getName());
+            sb.append("=");
+            sb.append(nameValuePairs.get(i).getValue());
+        }
+        return DigestUtils.md5Hex(sb.toString());
+    }
+
     public String makeSignature(HttpUriRequest request, String date, String requestBodyMD5)
             throws NoSuchAlgorithmException, InvalidKeyException {
-        if(requestBodyMD5 == null){
+        if (requestBodyMD5 == null) {
             requestBodyMD5 = EMPTY_MD5;
         }
 
@@ -236,8 +250,8 @@ public class RequestHelper {
      * functionality of the
      * Uploadcare API client by creating a subclass of {@link com.uploadcare.api.Client}.
      *
-     * @param request    request to be sent to the API
-     * @param apiHeaders TRUE if the default API headers should be set
+     * @param request        request to be sent to the API
+     * @param apiHeaders     TRUE if the default API headers should be set
      * @param requestBodyMD5 MD5
      * @return HTTP Response object
      */
