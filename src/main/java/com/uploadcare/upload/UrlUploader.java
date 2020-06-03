@@ -65,15 +65,24 @@ public class UrlUploader implements Uploader {
      */
     public File upload(int pollingInterval) throws UploadFailureException {
         RequestHelper requestHelper = client.getRequestHelper();
-        URI uploadUrl = Urls.uploadFromUrl(sourceUrl, client.getPublicKey(),store);
+        URI uploadUrl = Urls.uploadFromUrl(sourceUrl, client.getPublicKey(), store);
         String token = requestHelper.executeQuery(new HttpGet(uploadUrl), false, UploadFromUrlData.class).token;
         URI statusUrl = Urls.uploadFromUrlStatus(token);
         while (true) {
             sleep(pollingInterval);
             HttpGet request = new HttpGet(statusUrl);
-            UploadFromUrlStatusData data = requestHelper.executeQuery(request, false, UploadFromUrlStatusData.class);
+            UploadFromUrlStatusData data = requestHelper.executeQuery(
+                    request,
+                    false,
+                    UploadFromUrlStatusData.class);
             if (data.status.equals("success")) {
-                return client.getFile(data.fileId);
+                if (client.getSecretKey() != null) {
+                    // If Client have "secretkey", we use Rest API to get full file info.
+                    return client.getFile(data.fileId);
+                } else {
+                    // If Client doesn't have "secretkey" info about file might not have all info.
+                    return client.getUploadedFile(data.fileId);
+                }
             } else if (data.status.equals("error") || data.status.equals("failed")) {
                 throw new UploadFailureException();
             }

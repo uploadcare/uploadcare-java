@@ -9,7 +9,7 @@ import com.uploadcare.data.FileData;
 import com.uploadcare.data.GroupData;
 import com.uploadcare.data.ProjectData;
 import com.uploadcare.exceptions.UploadcareApiException;
-import com.uploadcare.urls.Urls;
+import com.uploadcare.urls.*;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.NameValuePair;
@@ -52,7 +52,7 @@ public class Client {
      * Initializes a client with custom access keys and simple authentication.
      *
      * @param publicKey Public key
-     * @param secretKey Secret key
+     * @param secretKey Secret key, if {@code null}, client will only be able to upload files and get info about them.
      */
     public Client(String publicKey, String secretKey) {
         this(publicKey, secretKey, false, null);
@@ -74,7 +74,8 @@ public class Client {
      * Can use simple or secure authentication.
      *
      * @param publicKey             Public key
-     * @param secretKey             Secret key
+     * @param secretKey             Secret key, if {@code null}, client will only be able to upload files and get info
+     *                              about them.
      * @param simpleAuth            If {@code false}, HMAC-based authentication is used, otherwise simple
      *                              authentication is used.
      * @param requestHelperProvider Should be {@code null} to use {@link DefaultRequestHelperProvider}
@@ -92,7 +93,8 @@ public class Client {
      * Can use simple or secure authentication.
      *
      * @param publicKey             Public key
-     * @param secretKey             Secret key
+     * @param secretKey             Secret key, if {@code null}, client will only be able to upload files and get info
+     *                              about them.
      * @param simpleAuth            If {@code false}, HMAC-based authentication is used, otherwise simple
      *                              authentication is used.
      * @param requestHelperProvider Should be {@code null} to use {@link DefaultRequestHelperProvider}
@@ -142,6 +144,19 @@ public class Client {
      */
     public static Client demoClient() {
         return new Client("demopublickey", "demosecretkey");
+    }
+
+    /**
+     * Creates a client with demo credentials for uploading files only, Rest API cannot be accessed using this client.
+     * Useful for testing uploading.
+     *
+     * <b>Warning!</b> Do not use in production.
+     * All demo account files are eventually purged.
+     *
+     * @return A demo client for uploading files
+     */
+    public static Client demoClientUploadOnly() {
+        return new Client("demopublickey", null);
     }
 
     /**
@@ -206,6 +221,17 @@ public class Client {
         RequestHelper requestHelper = getRequestHelper();
         GroupData groupData = requestHelper.executeQuery(new HttpGet(url), true, GroupData.class);
         return new Group(this, groupData);
+    }
+
+    /**
+     * Request file data for uploaded file. Does not require "privatekey" set for UploadcareClient.
+     */
+    public File getUploadedFile(String fileId) {
+        URI url = Urls.apiUploadedFile(getPublicKey(), fileId);
+
+        RequestHelper requestHelper = getRequestHelper();
+        FileData fileData = requestHelper.executeQuery(new HttpGet(url), false, FileData.class);
+        return new File(this, fileData);
     }
 
     /**

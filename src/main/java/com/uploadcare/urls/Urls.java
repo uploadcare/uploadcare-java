@@ -34,6 +34,22 @@ public class Urls {
     }
 
     /**
+     * Creates a URL to a uploaded file resource.
+     *
+     * @param publicKey
+     * @param fileId File UUID
+     *
+     * @see com.uploadcare.api.Client
+     */
+    public static URI apiUploadedFile(String publicKey, String fileId) {
+        URIBuilder builder = new URIBuilder(URI.create(UPLOAD_BASE));
+        builder.setPath("/info/")
+                .setParameter("pub_key", publicKey)
+                .setParameter("file_id", fileId);
+        return trustedBuild(builder);
+    }
+
+    /**
      * Creates a URL to a file resource.
      *
      * @param fileId File UUID

@@ -100,7 +100,13 @@ public class RequestHelper {
                 .append("\n").append(date)
                 .append("\n").append(request.getURI().getPath());
 
-        byte[] secretKeyBytes = client.getSecretKey().getBytes();
+        byte[] secretKeyBytes;
+        if (client.getSecretKey() != null) {
+            secretKeyBytes = client.getSecretKey().getBytes();
+        } else {
+            throw new UploadcareAuthenticationException("Secret key is required for this request.");
+        }
+
         SecretKeySpec signingKey = new SecretKeySpec(secretKeyBytes, MAC_ALGORITHM);
         Mac mac = Mac.getInstance(MAC_ALGORITHM);
         mac.init(signingKey);

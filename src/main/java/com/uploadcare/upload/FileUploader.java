@@ -93,7 +93,13 @@ public class FileUploader implements Uploader {
 
         String fileId = client.getRequestHelper()
                 .executeQuery(request, false, UploadBaseData.class).file;
-        return client.getFile(fileId);
+        if (client.getSecretKey() != null) {
+            // If Client have "secretkey", we use Rest API to get full file info.
+            return client.getFile(fileId);
+        } else {
+            // If Client doesn't have "secretkey" info about file might not have all info.
+            return client.getUploadedFile(fileId);
+        }
     }
 
     /**
