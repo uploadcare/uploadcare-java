@@ -9,6 +9,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.util.TextUtils;
 
 import java.io.InputStream;
 import java.net.URI;
@@ -29,6 +30,10 @@ public class FileUploader implements Uploader {
     private final String filename;
 
     private String store = "auto";
+
+    private String signature = null;
+
+    private String expire = null;
 
     /**
      * Creates a new uploader from a file on disk
@@ -82,6 +87,12 @@ public class FileUploader implements Uploader {
         MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
         entityBuilder.addTextBody("UPLOADCARE_PUB_KEY", client.getPublicKey());
         entityBuilder.addTextBody("UPLOADCARE_STORE", store);
+
+        if (!TextUtils.isEmpty(signature) && !TextUtils.isEmpty(expire)) {
+            entityBuilder.addTextBody("signature", signature);
+            entityBuilder.addTextBody("expire", expire);
+        }
+
         if (file != null) {
             entityBuilder.addPart("file", new FileBody(file));
         } else if (stream != null) {
@@ -111,6 +122,20 @@ public class FileUploader implements Uploader {
      */
     public FileUploader store(boolean store) {
         this.store = store ? String.valueOf(1) : String.valueOf(0);
+        return this;
+    }
+
+    /**
+     * Signed Upload - let you control who and when can upload files to a specified Uploadcare
+     * project.
+     *
+     * @param signature is a string sent along with your upload request. It requires your Uploadcare
+     *                  project secret key and hence should be crafted on your back end.
+     * @param expire    sets the time until your signature is valid. It is a Unix time.(ex 1454902434)
+     */
+    public FileUploader signedUpload(String signature, String expire) {
+        this.signature = signature;
+        this.expire = expire;
         return this;
     }
 }
