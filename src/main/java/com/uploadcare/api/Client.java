@@ -248,6 +248,19 @@ public class Client {
     }
 
     /**
+     * Requests file data, with Rekognition Info if available.
+     *
+     * @param fileId Resource UUID
+     * @return File resource
+     */
+    public File getFileWithRekognitionInfo(String fileId) {
+        URI url = Urls.getFileWithFields(fileId, "rekognition_info");
+        RequestHelper requestHelper = getRequestHelper();
+        FileData fileData = requestHelper.executeQuery(new HttpGet(url), true, FileData.class);
+        return new File(this, fileData);
+    }
+
+    /**
      * Begins to build a request for uploaded files for the current account.
      *
      * @return File resource request builder

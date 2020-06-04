@@ -68,6 +68,16 @@ public class FilesQueryBuilder implements PaginatedQueryBuilder<File> {
         return this;
     }
 
+    /**
+     * Add special fields to the file object in the result.
+     *
+     * @param fields Example: "rekognition_info"
+     */
+    public FilesQueryBuilder addFields(String fields) {
+        parameters.add(new AddFieldsParameter(fields));
+        return this;
+    }
+
     public Iterable<File> asIterable() {
         URI url = Urls.apiFiles();
         RequestHelper requestHelper = client.getRequestHelper();

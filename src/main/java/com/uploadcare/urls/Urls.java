@@ -61,6 +61,21 @@ public class Urls {
     }
 
     /**
+     * Creates a URL to a file resource with specific fields.
+     *
+     * @param fileId File UUID
+     * @param fields Add special fields to the file object, such as: rekognition_info.
+     *
+     * @see com.uploadcare.api.Client
+     */
+    public static URI getFileWithFields(String fileId, String fields) {
+        URIBuilder builder = new URIBuilder(URI.create(API_BASE));
+        builder.setPath("/files/" + fileId + "/")
+                .setParameter("add_fields", fields);
+        return trustedBuild(builder);
+    }
+
+    /**
      * Creates a URL to the storage action for a file (saving the file).
      *
      * @param fileId File UUID
