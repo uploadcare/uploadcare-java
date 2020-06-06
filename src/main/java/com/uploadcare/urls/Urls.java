@@ -181,4 +181,30 @@ public class Urls {
         return trustedBuild(builder);
     }
 
+    /**
+     * Creates a URL to the file upload using multipart.
+     *
+     * @see com.uploadcare.upload.FileUploader
+     */
+    public static URI uploadMultipartStart() {
+        return URI.create(UPLOAD_BASE + "/multipart/start/");
+    }
+
+    /**
+     * Creates a URL to the file chunk upload using multipart.
+     *
+     * @see com.uploadcare.upload.FileUploader
+     */
+    public static URI uploadMultipartPart(String preSignedPartUrl) {
+        return URI.create(preSignedPartUrl);
+    }
+
+    /**
+     * Creates a URL for multipart upload complete.
+     *
+     * @see com.uploadcare.upload.FileUploader
+     */
+    public static URI uploadMultipartComplete() {
+        return URI.create(UPLOAD_BASE + "/multipart/complete/");
+    }
 }

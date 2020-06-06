@@ -28,6 +28,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import javax.activation.MimetypesFileTypeMap;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -85,6 +86,11 @@ public class RequestHelper {
             sb.append(nameValuePairs.get(i).getValue());
         }
         return DigestUtils.md5Hex(sb.toString());
+    }
+
+    public static String getMimeType(String fileName) {
+        MimetypesFileTypeMap fileTypeMap = new MimetypesFileTypeMap();
+        return fileTypeMap.getContentType(fileName);
     }
 
     public String makeSignature(HttpUriRequest request, String date, String requestBodyMD5)
