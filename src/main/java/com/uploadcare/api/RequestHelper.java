@@ -1,5 +1,6 @@
 package com.uploadcare.api;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.uploadcare.data.DataWrapper;
 import com.uploadcare.data.PageData;
 import com.uploadcare.exceptions.UploadcareApiException;
@@ -155,6 +156,13 @@ public class RequestHelper {
     public <T> T executeQuery(
             HttpUriRequest request,
             boolean apiHeaders,
+            TypeReference<T> dataType) {
+        return executeQuery(request, apiHeaders, dataType, null);
+    }
+
+    public <T> T executeQuery(
+            HttpUriRequest request,
+            boolean apiHeaders,
             Class<T> dataClass,
             String requestBodyMD5) {
         if (apiHeaders) {
@@ -167,6 +175,29 @@ public class RequestHelper {
                 HttpEntity entity = response.getEntity();
                 String data = EntityUtils.toString(entity);
                 return client.getObjectMapper().readValue(data, dataClass);
+            } finally {
+                response.close();
+            }
+        } catch (IOException e) {
+            throw new UploadcareNetworkException(e);
+        }
+    }
+
+    public <T> T executeQuery(
+            HttpUriRequest request,
+            boolean apiHeaders,
+            TypeReference<T> dataType,
+            String requestBodyMD5) {
+        if (apiHeaders) {
+            setApiHeaders(request, requestBodyMD5);
+        }
+        try {
+            CloseableHttpResponse response = client.getHttpClient().execute(request);
+            checkResponseStatus(response);
+            try {
+                HttpEntity entity = response.getEntity();
+                String data = EntityUtils.toString(entity);
+                return client.getObjectMapper().readValue(data, dataType);
             } finally {
                 response.close();
             }

@@ -132,6 +132,33 @@ public class Urls {
     }
 
     /**
+     * Creates a URL to the webhook collection resource.
+     *
+     * @see com.uploadcare.api.Client
+     */
+    public static URI apiWebhooks(){
+        return URI.create(API_BASE + "/webhooks/");
+    }
+
+    /**
+     * Creates a URL for the webhook delete.
+     *
+     * @see com.uploadcare.api.Client
+     */
+    public static URI apiWebhook(int webhookId) {
+        return URI.create(API_BASE + "/webhooks/"+webhookId+"/");
+    }
+
+    /**
+     * Creates a URL for the webhook delete.
+     *
+     * @see com.uploadcare.api.Client
+     */
+    public static URI apiDeleteWebhook() {
+        return URI.create(API_BASE + "/webhooks/unsubscribe/");
+    }
+
+    /**
      * Creates a full CDN URL with a CDN path builder.
      *
      * @param builder Configured CDN path builder

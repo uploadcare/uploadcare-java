@@ -1,13 +1,11 @@
 package com.uploadcare.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.uploadcare.data.CopyFileData;
-import com.uploadcare.data.FileData;
-import com.uploadcare.data.GroupData;
-import com.uploadcare.data.ProjectData;
+import com.uploadcare.data.*;
 import com.uploadcare.exceptions.UploadcareApiException;
 import com.uploadcare.urls.*;
 
@@ -279,6 +277,29 @@ public class Client {
     }
 
     /**
+     * Requests Webhooks data.
+     *
+     * @return list of Webhooks resources.
+     */
+    public List<Webhook> getWebhooks() {
+        List<Webhook> result = new ArrayList<Webhook>();
+        URI url = Urls.apiWebhooks();
+
+        WebhookDataWrapper dataWrapper = new WebhookDataWrapper(this);
+        RequestHelper requestHelper = getRequestHelper();
+        List<WebhookData> webhookDataList = requestHelper.executeQuery(
+                new HttpGet(url),
+                true,
+                new TypeReference<ArrayList<WebhookData>>() {
+                });
+        for (WebhookData webhookData : webhookDataList) {
+            result.add(dataWrapper.wrap(webhookData));
+        }
+
+        return result;
+    }
+
+    /**
      * Marks a file as deleted.
      *
      * @param fileId Resource UUID
@@ -287,6 +308,28 @@ public class Client {
         URI url = Urls.apiFile(fileId);
         RequestHelper requestHelper = getRequestHelper();
         requestHelper.executeCommand(new HttpDelete(url), true);
+    }
+
+    /**
+     * Unsubscribe and delete webhook.
+     *
+     * @param targetUrl A URL that is triggered by an event from Webhook.
+     */
+    public void deleteWebhook(URI targetUrl) {
+        WebhookOptionsData tempWebhookData = new WebhookOptionsData();
+        tempWebhookData.targetUrl = targetUrl;
+
+        String requestBodyContent = trySerializeRequestBodyContent(tempWebhookData);
+        StringEntity requestEntity = new StringEntity(
+                requestBodyContent,
+                ContentType.APPLICATION_JSON);
+
+        URI url = Urls.apiDeleteWebhook();
+        HttpDeleteWithBody request = new HttpDeleteWithBody(url);
+        request.setEntity(requestEntity);
+
+        RequestHelper requestHelper = getRequestHelper();
+        requestHelper.executeCommand(request, true, DigestUtils.md5Hex(requestBodyContent));
     }
 
     /**
@@ -312,7 +355,73 @@ public class Client {
             // Make batch requests.
             executeSaveDeleteBatchCommand(false, fileIds);
         }
+    }
 
+    /**
+     * Create and subscribe to webhook.
+     *
+     * @param targetUrl A URL that is triggered by an event.
+     * @param event An event you subscribe to. Only "file.uploaded" event supported.
+     * @param isActive Marks a subscription as either active or not.
+     * @return New created webhook resource instance.
+     */
+    public Webhook createWebhook(URI targetUrl, String event, boolean isActive) {
+        WebhookOptionsData tempWebhookData = new WebhookOptionsData();
+        tempWebhookData.targetUrl = targetUrl;
+        tempWebhookData.event = event;
+        tempWebhookData.isActive = isActive;
+
+        String requestBodyContent = trySerializeRequestBodyContent(tempWebhookData);
+        StringEntity requestEntity = new StringEntity(
+                requestBodyContent,
+                ContentType.APPLICATION_JSON);
+
+        URI url = Urls.apiWebhooks();
+        HttpPost request = new HttpPost(url);
+        request.setEntity(requestEntity);
+
+        RequestHelper requestHelper = getRequestHelper();
+        WebhookData webhookData = requestHelper.executeQuery(
+                request,
+                true,
+                WebhookData.class,
+                DigestUtils.md5Hex(requestBodyContent));
+        return new Webhook(this, webhookData);
+    }
+
+    /**
+     * Update webhook attributes.
+     *
+     * @param webhookId Webhook id. If {@code null} then this field won't be updated.
+     * @param targetUrl A URL that is triggered by an event. If {@code null} then this field won't be updated.
+     * @param event     An event you subscribe to. Only "file.uploaded" event supported. If {@code null} then this field
+     *                  won't be updated.
+     * @param isActive  Marks a subscription as either active or not. If {@code null} then this field won't be updated.
+     *
+     * @return New webhook resource instance.
+     */
+    public Webhook updateWebhook(int webhookId, URI targetUrl, String event, Boolean isActive) {
+        WebhookOptionsData tempWebhookData = new WebhookOptionsData();
+        tempWebhookData.targetUrl = targetUrl;
+        tempWebhookData.event = event;
+        tempWebhookData.isActive = isActive;
+
+        String requestBodyContent = trySerializeRequestBodyContent(tempWebhookData);
+        StringEntity requestEntity = new StringEntity(
+                requestBodyContent,
+                ContentType.APPLICATION_JSON);
+
+        URI url = Urls.apiWebhook(webhookId);
+        HttpPut request = new HttpPut(url);
+        request.setEntity(requestEntity);
+
+        RequestHelper requestHelper = getRequestHelper();
+        WebhookData webhookData = requestHelper.executeQuery(
+                request,
+                true,
+                WebhookData.class,
+                DigestUtils.md5Hex(requestBodyContent));
+        return new Webhook(this, webhookData);
     }
 
     /**
