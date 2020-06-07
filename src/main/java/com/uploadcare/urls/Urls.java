@@ -139,6 +139,15 @@ public class Urls {
     }
 
     /**
+     * Creates a URL to the group resource.
+     *
+     * @see com.uploadcare.api.Client
+     */
+    public static URI apiCreateGroup(){
+        return URI.create(UPLOAD_BASE + "/group/");
+    }
+
+    /**
      * Creates a URL to the group collection resource.
      *
      * @see com.uploadcare.api.Client

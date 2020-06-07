@@ -15,10 +15,12 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.TextUtils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -372,6 +374,65 @@ public class Client {
             // Make batch requests.
             executeSaveDeleteBatchCommand(false, fileIds);
         }
+    }
+
+    /**
+     * Create files group from a set of files by using their UUIDs.
+     *
+     * @param fileIds  That parameter defines a set of files you want to join in a group.
+     *
+     * @return New created Group resource instance.
+     */
+    public Group createGroup(List<String> fileIds) {
+        return createGroupSigned(fileIds, null, null, null);
+    }
+
+    /**
+     * Create files group from a set of files by using their UUIDs.
+     *
+     * @param fileIds  That parameter defines a set of files you want to join in a group.
+     * @param callback Sets the name of your JSONP callback function.
+     *
+     * @return New created Group resource instance.
+     */
+    public Group createGroup(List<String> fileIds, String callback) {
+        return createGroupSigned(fileIds, callback, null, null);
+    }
+
+    /**
+     * Create files group from a set of files by using their UUIDs. Using Signed Uploads.
+     *
+     * @param fileIds   That parameter defines a set of files you want to join in a group.
+     * @param callback  Sets the name of your JSONP callback function.
+     * @param signature is a string sent along with your upload request. It requires your Uploadcare
+     *                  project secret key and hence should be crafted on your back end.
+     * @param expire    sets the time until your signature is valid. It is a Unix time.(ex 1454902434)
+     *
+     * @return New created Group resource instance.
+     */
+    public Group createGroupSigned(List<String> fileIds, String callback, String signature, String expire) {
+        MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
+        entityBuilder.addTextBody("pub_key", getPublicKey());
+
+        if (callback != null) {
+            entityBuilder.addTextBody("callback", callback);
+        }
+
+        if (!TextUtils.isEmpty(signature) && !TextUtils.isEmpty(expire)) {
+            entityBuilder.addTextBody("signature", signature);
+            entityBuilder.addTextBody("expire", expire);
+        }
+
+        for (int i = 0; i < fileIds.size(); i++) {
+            entityBuilder.addTextBody("files[" + i + "]", fileIds.get(i));
+        }
+
+        URI createUrl = Urls.apiCreateGroup();
+        HttpPost createRequest = new HttpPost(createUrl);
+        createRequest.setEntity(entityBuilder.build());
+        GroupData groupData = getRequestHelper().executeQuery(createRequest, false, GroupData.class);
+
+        return new Group(this, groupData);
     }
 
     /**
