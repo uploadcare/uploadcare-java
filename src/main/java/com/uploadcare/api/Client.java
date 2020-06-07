@@ -435,7 +435,18 @@ public class Client {
     public void saveFile(String fileId) {
         URI url = Urls.apiFileStorage(fileId);
         RequestHelper requestHelper = getRequestHelper();
-        requestHelper.executeCommand(new HttpPost(url), true);
+        requestHelper.executeCommand(new HttpPut(url), true);
+    }
+
+    /**
+     * Mark all files in a group as stored.
+     *
+     * @param groupId Group Resource Id
+     */
+    public void saveGroup(String groupId) {
+        URI url = Urls.apiGroupStorage(groupId);
+        RequestHelper requestHelper = getRequestHelper();
+        requestHelper.executeCommand(new HttpPut(url), true);
     }
 
     /**

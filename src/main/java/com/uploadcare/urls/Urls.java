@@ -132,6 +132,17 @@ public class Urls {
     }
 
     /**
+     * Creates a URL to the storage action for a group (saving the group).
+     *
+     * @param groupId Group Id
+     *
+     * @see com.uploadcare.api.Client
+     */
+    public static URI apiGroupStorage(String groupId) {
+        return URI.create(API_BASE + "/groups/" + groupId + "/storage/");
+    }
+
+    /**
      * Creates a URL to the webhook collection resource.
      *
      * @see com.uploadcare.api.Client

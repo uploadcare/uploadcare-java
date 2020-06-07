@@ -42,6 +42,19 @@ public class Group {
         return groupData.cdnUrl;
     }
 
+    /**
+     * Mark all files in a group as stored.
+     *
+     * This does not mutate the current {@code Group} instance,
+     * but creates a new one.
+     *
+     * @return New Group resource instance
+     */
+    public Group save() {
+        client.saveGroup(getId());
+        return client.getGroup(getId());
+    }
+
     @Override
     public String toString() {
         return "Group{" +
