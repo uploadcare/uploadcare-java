@@ -224,7 +224,7 @@ public class Client {
     }
 
     /**
-     * Request group info. Does not require "privatekey" set for UploadcareClient.
+     * Request group info. Does not require "secretKey" set for UploadcareClient.
      *
      * @param groupId Resource UUID
      * @return Group resource
@@ -238,7 +238,7 @@ public class Client {
     }
 
     /**
-     * Request file data for uploaded file. Does not require "privatekey" set for UploadcareClient.
+     * Request file data for uploaded file. Does not require "secretKey" set for UploadcareClient.
      *
      * @param fileId Resource UUID
      * @return File resource
