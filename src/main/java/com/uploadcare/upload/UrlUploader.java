@@ -34,10 +34,14 @@ public class UrlUploader implements Uploader {
 
     private String expire = null;
 
+    private static final long DEFAULT_POLLING_INTERVAL = 500L;
+
+    public static final int MAX_UPLOAD_STATUS_ATTEMPTS = 25;
+
     /**
      * Create a new uploader from a URL.
      *
-     * @param client Uploadcare client
+     * @param client    Uploadcare client
      * @param sourceUrl URL to upload from
      */
     public UrlUploader(Client client, String sourceUrl) {
@@ -55,7 +59,7 @@ public class UrlUploader implements Uploader {
      * @throws UploadFailureException
      */
     public File upload() throws UploadFailureException {
-        return upload(500);
+        return upload(DEFAULT_POLLING_INTERVAL);
     }
 
     /**
@@ -97,7 +101,7 @@ public class UrlUploader implements Uploader {
      *
      * @param filename name for a file uploaded from URL.
      */
-    public UrlUploader fileName(String filename){
+    public UrlUploader fileName(String filename) {
         this.filename = filename;
         return this;
     }
@@ -121,12 +125,13 @@ public class UrlUploader implements Uploader {
      *
      * The calling thread will be busy until the upload is finished.
      *
-     * @param pollingInterval Progress polling interval in ms
+     * @param pollingInterval Progress polling interval in ms, default is 500ms.
+     *
      * @return An Uploadcare file
      *
      * @throws UploadFailureException
      */
-    public File upload(int pollingInterval) throws UploadFailureException {
+    public File upload(long pollingInterval) throws UploadFailureException {
         MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
         entityBuilder.addTextBody("pub_key", client.getPublicKey());
         entityBuilder.addTextBody("source_url", sourceUrl);
@@ -157,14 +162,20 @@ public class UrlUploader implements Uploader {
         String token = requestHelper.executeQuery(uploadRequest, false, UploadFromUrlData.class).token;
 
         URI statusUrl = Urls.uploadFromUrlStatus(token);
+
+        long waitTime = pollingInterval;
+        int retries = 0;
+        long progress = 0L;
+
         while (true) {
-            sleep(pollingInterval);
+            sleep(waitTime);
             HttpGet request = new HttpGet(statusUrl);
             UploadFromUrlStatusData data = requestHelper.executeQuery(
                     request,
                     false,
                     UploadFromUrlStatusData.class);
             if (data.status.equals("success")) {
+                // Success
                 if (client.getSecretKey() != null) {
                     // If Client have "secretkey", we use Rest API to get full file info.
                     return client.getFile(data.fileId);
@@ -172,10 +183,37 @@ public class UrlUploader implements Uploader {
                     // If Client doesn't have "secretkey" info about file might not have all info.
                     return client.getUploadedFile(data.fileId);
                 }
+            } else if (data.status.equals("progress")) {
+                // Upload is in progress we make sure that progress changing and not stuck, otherwise start exponential
+                // backoff and timeout.
+                long currentProgress = data.done * 100L / data.total;
+                if (retries >= MAX_UPLOAD_STATUS_ATTEMPTS) {
+                    break;
+                } else if (currentProgress > progress) {
+                    //reset backoff because progress is changing.
+                    retries = 0;
+                    waitTime = pollingInterval;
+                    progress = currentProgress;
+                } else {
+                    waitTime = calculateTimeToWait(retries);
+                    retries++;
+                }
+            } else if (data.status.equals("waiting") || data.status.equals("unknown")) {
+                // Upload is in unknown state, do exponential backoff and timeout.
+                if (retries >= MAX_UPLOAD_STATUS_ATTEMPTS) {
+                    break;
+                } else {
+                    waitTime = calculateTimeToWait(retries);
+                    retries++;
+                }
             } else if (data.status.equals("error") || data.status.equals("failed")) {
+                // Error
                 throw new UploadFailureException(data.error);
             }
         }
+
+        // If upload status not success or error, and we tried MAX_UPLOAD_STATUS_ATTEMPTS with exponential backoff.
+        throw new UploadFailureException("Timeout");
     }
 
     private void sleep(long millis) {
@@ -184,6 +222,18 @@ public class UrlUploader implements Uploader {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+    }
+
+    /*
+     * Returns the next wait interval, in milliseconds, using an exponential
+     * backoff algorithm.
+     */
+    public static long calculateTimeToWait(int retryCount) {
+        if (0 == retryCount) {
+            return DEFAULT_POLLING_INTERVAL;
+        }
+
+        return ((long) Math.pow(2, retryCount) * DEFAULT_POLLING_INTERVAL);
     }
 
 }
