@@ -211,7 +211,7 @@ public class Client {
     /**
      * Requests group info from the API.
      *
-     * @param groupId
+     * @param groupId Resource UUID
      * @return Group resource
      */
     public Group getGroup(String groupId) {
@@ -222,7 +222,24 @@ public class Client {
     }
 
     /**
+     * Request group info. Does not require "privatekey" set for UploadcareClient.
+     *
+     * @param groupId Resource UUID
+     * @return Group resource
+     */
+    public Group getUploadedGroup(String groupId) {
+        URI url = Urls.apiUploadedGroup(getPublicKey(), groupId);
+
+        RequestHelper requestHelper = getRequestHelper();
+        GroupData groupData = requestHelper.executeQuery(new HttpGet(url), false, GroupData.class);
+        return new Group(this, groupData);
+    }
+
+    /**
      * Request file data for uploaded file. Does not require "privatekey" set for UploadcareClient.
+     *
+     * @param fileId Resource UUID
+     * @return File resource
      */
     public File getUploadedFile(String fileId) {
         URI url = Urls.apiUploadedFile(getPublicKey(), fileId);

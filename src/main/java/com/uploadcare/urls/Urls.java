@@ -34,6 +34,22 @@ public class Urls {
     }
 
     /**
+     * Creates a URL to a group resource with files included.
+     *
+     * @param publicKey
+     * @param groupId   File UUID
+     *
+     * @see com.uploadcare.api.Client
+     */
+    public static URI apiUploadedGroup(String publicKey, String groupId) {
+        URIBuilder builder = new URIBuilder(URI.create(UPLOAD_BASE));
+        builder.setPath("/group/info/")
+                .setParameter("pub_key", publicKey)
+                .setParameter("group_id", groupId);
+        return trustedBuild(builder);
+    }
+
+    /**
      * Creates a URL to a uploaded file resource.
      *
      * @param publicKey

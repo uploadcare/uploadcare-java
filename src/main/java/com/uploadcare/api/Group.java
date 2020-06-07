@@ -1,9 +1,12 @@
 package com.uploadcare.api;
 
+import com.uploadcare.data.FileData;
 import com.uploadcare.data.GroupData;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * The resource for group.
@@ -40,6 +43,16 @@ public class Group {
 
     public URI getCdnUrl() {
         return groupData.cdnUrl;
+    }
+
+    public List<File> getFiles() {
+        FileDataWrapper dataWrapper = new FileDataWrapper(client);
+        List<File> files = new ArrayList<File>();
+        for (FileData fileData : groupData.files) {
+            files.add(dataWrapper.wrap(fileData));
+        }
+
+        return files;
     }
 
     /**
