@@ -595,25 +595,25 @@ public class Client {
      * @return An object containing the results of the copy request
      */
     public CopyFileData copyFileLocalStorage(String fileId, Boolean store, Boolean makePublic) {
+        CopyOptionsData copyOptionsData = new CopyOptionsData();
+        copyOptionsData.source = fileId;
+        copyOptionsData.store = store;
+        copyOptionsData.makePublic = makePublic;
+
+        String requestBodyContent = trySerializeRequestBodyContent(copyOptionsData);
+        StringEntity requestEntity = new StringEntity(
+                requestBodyContent,
+                ContentType.APPLICATION_JSON);
+
         RequestHelper requestHelper = getRequestHelper();
         HttpPost request = new HttpPost(Urls.apiFileLocalCopy());
-
-        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-        nameValuePairs.add(new BasicNameValuePair("source", fileId));
-        nameValuePairs.add(new BasicNameValuePair("store", store.toString()));
-        nameValuePairs.add(new BasicNameValuePair("make_public", makePublic.toString()));
-
-        try {
-            request.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-        } catch (UnsupportedEncodingException e) {
-            throw new UploadcareApiException("Illegal argument exception", e);
-        }
+        request.setEntity(requestEntity);
 
         return requestHelper.executeQuery(
                 request,
                 true,
                 CopyFileData.class,
-                RequestHelper.getFormMD5(nameValuePairs));
+                DigestUtils.md5Hex(requestBodyContent));
     }
 
     /**
@@ -633,28 +633,26 @@ public class Client {
      * @return An object containing the results of the copy request
      */
     public CopyFileData copyFileRemoteStorage(String fileId, String target, Boolean makePublic, String pattern) {
+        CopyOptionsData copyOptionsData = new CopyOptionsData();
+        copyOptionsData.source = fileId;
+        copyOptionsData.target = target;
+        copyOptionsData.makePublic = makePublic;
+        copyOptionsData.pattern = pattern;
+
+        String requestBodyContent = trySerializeRequestBodyContent(copyOptionsData);
+        StringEntity requestEntity = new StringEntity(
+                requestBodyContent,
+                ContentType.APPLICATION_JSON);
+
         RequestHelper requestHelper = getRequestHelper();
         HttpPost request = new HttpPost(Urls.apiFileRemoteCopy());
-
-        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-        nameValuePairs.add(new BasicNameValuePair("source", fileId));
-        nameValuePairs.add(new BasicNameValuePair("target", target));
-        nameValuePairs.add(new BasicNameValuePair("make_public", makePublic.toString()));
-        if (pattern != null) {
-            nameValuePairs.add(new BasicNameValuePair("pattern", pattern));
-        }
-
-        try {
-            request.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-        } catch (UnsupportedEncodingException e) {
-            throw new UploadcareApiException("Illegal argument exception", e);
-        }
+        request.setEntity(requestEntity);
 
         return requestHelper.executeQuery(
                 request,
                 true,
                 CopyFileData.class,
-                RequestHelper.getFormMD5(nameValuePairs));
+                DigestUtils.md5Hex(requestBodyContent));
     }
 
     private void executeSaveDeleteBatchCommand(boolean save, List<String> fileIds) {
