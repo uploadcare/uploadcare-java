@@ -44,7 +44,7 @@ public class RequestHelper {
 
     private final Client client;
 
-    public static final String LIBRARY_VERSION = "3.2.0";
+    public static final String LIBRARY_VERSION = "3.3.0";
 
     public static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss Z";
 
@@ -334,6 +334,9 @@ public class RequestHelper {
                     streamToString(response.getEntity().getContent()));
         } else if (statusCode == 400 || statusCode == 404) {
             throw new UploadcareInvalidRequestException(
+                    streamToString(response.getEntity().getContent()));
+        } else if(statusCode == 429 ){
+            throw new UploadcareApiException(
                     streamToString(response.getEntity().getContent()));
         } else {
             throw new UploadcareApiException(
