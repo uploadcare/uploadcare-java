@@ -571,6 +571,19 @@ public class Client {
     }
 
     /**
+     * @deprecated Use {@link #copyFileLocalStorage(String, Boolean, Boolean)}
+     * or {@link #copyFileRemoteStorage(String, String, Boolean, String)} instead.
+     *
+     * @param fileId  Resource UUID
+     * @param storage Target storage name
+     * @return An object containing the results of the copy request
+     */
+    @Deprecated
+    public CopyFileData copyFile(String fileId, String storage) {
+        return copyFileRemoteStorage(fileId, storage, true, null);
+    }
+
+    /**
      * Copy file to local storage. Copy original files or their modified versions to default storage. Source files MAY
      * either be stored or just uploaded and MUST NOT be deleted.
      *
@@ -627,7 +640,9 @@ public class Client {
         nameValuePairs.add(new BasicNameValuePair("source", fileId));
         nameValuePairs.add(new BasicNameValuePair("target", target));
         nameValuePairs.add(new BasicNameValuePair("make_public", makePublic.toString()));
-        nameValuePairs.add(new BasicNameValuePair("pattern", pattern));
+        if (pattern != null) {
+            nameValuePairs.add(new BasicNameValuePair("pattern", pattern));
+        }
 
         try {
             request.setEntity(new UrlEncodedFormEntity(nameValuePairs));
