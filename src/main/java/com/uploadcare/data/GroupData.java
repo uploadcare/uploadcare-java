@@ -18,12 +18,6 @@ public class GroupData {
     public String toString() {
         return "GroupData{" +
                 "id='" + id + '\'' +
-                ", url=" + url +
-                ", datetimeCreated=" + datetimeCreated +
-                ", datetimeStored=" + datetimeStored +
-                ", filesCount=" + filesCount +
-                ", cdnUrl=" + cdnUrl +
-                ", files=" + files +
                 '}';
     }
 }

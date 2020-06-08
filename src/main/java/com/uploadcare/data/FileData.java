@@ -29,21 +29,6 @@ public class FileData {
     public String toString() {
         return "FileData{" +
                 "uuid='" + uuid + '\'' +
-                ", url=" + url +
-                ", size=" + size +
-                ", source='" + source + '\'' +
-                ", isReady=" + isReady +
-                ", isImage=" + isImage +
-                ", mimeType='" + mimeType + '\'' +
-                ", originalFilename='" + originalFilename + '\'' +
-                ", originalFileUrl=" + originalFileUrl +
-                ", datetimeUploaded=" + datetimeUploaded +
-                ", datetimeStored=" + datetimeStored +
-                ", datetimeRemoved=" + datetimeRemoved +
-                ", imageInfo=" + imageInfo +
-                ", videoInfo=" + videoInfo +
-                ", rekognitionInfo=" + rekognitionInfo +
-                ", variations=" + variations +
                 '}';
     }
 }
