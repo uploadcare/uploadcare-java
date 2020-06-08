@@ -58,6 +58,17 @@ public class FilesQueryBuilder implements PaginatedQueryBuilder<File> {
     }
 
     /**
+     * @deprecated Adds a filter for datetime to which objects will be returned.
+     *
+     * @param to A uploading datetime to which objects will be returned.
+     */
+    @Deprecated
+    public FilesQueryBuilder to(Date to) {
+        parameters.add(new FilesToParameter(to));
+        return this;
+    }
+
+    /**
      * Specifies the way files are sorted.
      *
      * @param order [Order]
