@@ -48,7 +48,7 @@ public class RequestHelper {
 
     public static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss Z";
 
-    public static final String DATE_FORMAT_ISO_8601 = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+    public static final String DATE_FORMAT_ISO_8601 = "yyyy-MM-dd'T'HH:mm:ss";
 
     public static final TimeZone UTC = TimeZone.getTimeZone("UTC");
 
@@ -74,19 +74,6 @@ public class RequestHelper {
         SimpleDateFormat dateFormat = new SimpleDateFormat(RequestHelper.DATE_FORMAT_ISO_8601, Locale.US);
         dateFormat.setTimeZone(UTC);
         return dateFormat.format(date);
-    }
-
-    public static String getFormMD5(List<NameValuePair> nameValuePairs) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < nameValuePairs.size(); i++) {
-            if (i > 0) {
-                sb.append("&");
-            }
-            sb.append(nameValuePairs.get(i).getName());
-            sb.append("=");
-            sb.append(nameValuePairs.get(i).getValue());
-        }
-        return DigestUtils.md5Hex(sb.toString());
     }
 
     public static String getMimeType(String fileName) {
