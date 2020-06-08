@@ -193,7 +193,7 @@ public class RequestHelper {
         }
     }
 
-    public static void setQueryParameters(URIBuilder builder, List<UrlParameter> parameters) {
+    public static void setQueryParameters(URIBuilder builder, Collection<UrlParameter> parameters) {
         for (UrlParameter parameter : parameters) {
             builder.setParameter(parameter.getParam(), parameter.getValue());
         }
@@ -201,7 +201,7 @@ public class RequestHelper {
 
     public <T, U> Iterable<T> executePaginatedQuery(
             final URI url,
-            final List<UrlParameter> urlParameters,
+            final Collection<UrlParameter> urlParameters,
             final boolean apiHeaders,
             final Class<? extends PageData<U>> dataClass,
             final DataWrapper<T, U> dataWrapper) {
