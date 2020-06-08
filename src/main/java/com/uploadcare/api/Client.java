@@ -143,7 +143,7 @@ public class Client {
      * @return A demo client
      */
     public static Client demoClient() {
-        return new Client("demopublickey", "demosecretkey");
+        return new Client("demopublickey", "demosecretkey", true, null);
     }
 
     /**
