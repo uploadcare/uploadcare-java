@@ -10,8 +10,6 @@ import com.uploadcare.exceptions.UploadcareApiException;
 import com.uploadcare.urls.*;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -19,11 +17,9 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.TextUtils;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -574,16 +570,17 @@ public class Client {
      * @deprecated Use {@link #copyFileLocalStorage(String, Boolean, Boolean)}
      * or {@link #copyFileRemoteStorage(String, String, Boolean, String)} instead.
      *
-     * @param fileId  Resource UUID
+     * @param source  File Resource UUID or A CDN URL.
      * @param storage Target storage name
-     * @return An object containing the results of the copy request
+     *
+     * @return CopyFile resource with result of Copy operation
      */
     @Deprecated
-    public CopyFileData copyFile(String fileId, String storage) {
+    public CopyFile copyFile(String source, String storage) {
         if (storage != null && !storage.isEmpty()) {
-            return copyFileRemoteStorage(fileId, storage, true, null);
+            return copyFileRemoteStorage(source, storage, true, null);
         } else {
-            return copyFileLocalStorage(fileId, true, true);
+            return copyFileLocalStorage(source, true, true);
         }
     }
 
@@ -591,16 +588,16 @@ public class Client {
      * Copy file to local storage. Copy original files or their modified versions to default storage. Source files MAY
      * either be stored or just uploaded and MUST NOT be deleted.
      *
-     * @param fileId     Resource UUID
+     * @param source     File Resource UUID or A CDN URL.
      * @param store      The parameter only applies to the Uploadcare storage and MUST be either true or false.
      * @param makePublic Applicable to custom storage only. MUST be either true or false. true to make copied files
      *                   available via public links, false to reverse the behavior.
      *
      * @return An object containing the results of the copy request
      */
-    public CopyFileData copyFileLocalStorage(String fileId, Boolean store, Boolean makePublic) {
+    public CopyFile copyFileLocalStorage(String source, Boolean store, Boolean makePublic) {
         CopyOptionsData copyOptionsData = new CopyOptionsData();
-        copyOptionsData.source = fileId;
+        copyOptionsData.source = source;
         copyOptionsData.store = store;
         copyOptionsData.makePublic = makePublic;
 
@@ -613,18 +610,20 @@ public class Client {
         HttpPost request = new HttpPost(Urls.apiFileLocalCopy());
         request.setEntity(requestEntity);
 
-        return requestHelper.executeQuery(
+        CopyFileData copyFileData = requestHelper.executeQuery(
                 request,
                 true,
                 CopyFileData.class,
                 DigestUtils.md5Hex(requestBodyContent));
+
+        return new CopyFile(this, copyFileData);
     }
 
     /**
      * Copy file to remote storage. Copy original files or their modified versions to a custom storage. Source files
      * MAY either be stored or just uploaded and MUST NOT be deleted.
      *
-     * @param fileId     Resource UUID
+     * @param source     File Resource UUID or A CDN URL.
      * @param target     Identifies a custom storage name related to your project. Implies you are copying a file to a
      *                   specified custom storage. Keep in mind you can have multiple storages associated with a single
      *                   S3 bucket.
@@ -636,9 +635,9 @@ public class Client {
      *
      * @return An object containing the results of the copy request
      */
-    public CopyFileData copyFileRemoteStorage(String fileId, String target, Boolean makePublic, String pattern) {
+    public CopyFile copyFileRemoteStorage(String source, String target, Boolean makePublic, String pattern) {
         CopyOptionsData copyOptionsData = new CopyOptionsData();
-        copyOptionsData.source = fileId;
+        copyOptionsData.source = source;
         copyOptionsData.target = target;
         copyOptionsData.makePublic = makePublic;
         copyOptionsData.pattern = pattern;
@@ -652,11 +651,13 @@ public class Client {
         HttpPost request = new HttpPost(Urls.apiFileRemoteCopy());
         request.setEntity(requestEntity);
 
-        return requestHelper.executeQuery(
+        CopyFileData copyFileData = requestHelper.executeQuery(
                 request,
                 true,
                 CopyFileData.class,
                 DigestUtils.md5Hex(requestBodyContent));
+
+        return new CopyFile(this, copyFileData);
     }
 
     private void executeSaveDeleteBatchCommand(boolean save, List<String> fileIds) {
