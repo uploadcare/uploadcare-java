@@ -580,7 +580,11 @@ public class Client {
      */
     @Deprecated
     public CopyFileData copyFile(String fileId, String storage) {
-        return copyFileRemoteStorage(fileId, storage, true, null);
+        if (storage != null && !storage.isEmpty()) {
+            return copyFileRemoteStorage(fileId, storage, true, null);
+        } else {
+            return copyFileLocalStorage(fileId, true, true);
+        }
     }
 
     /**
