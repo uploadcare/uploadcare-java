@@ -567,7 +567,7 @@ public class Client {
     }
 
     /**
-     * @deprecated Use {@link #copyFileLocalStorage(String, Boolean, Boolean)}
+     * @deprecated Use {@link #copyFileLocalStorage(String, Boolean)}
      * or {@link #copyFileRemoteStorage(String, String, Boolean, String)} instead.
      *
      * @param source  File Resource UUID or A CDN URL.
@@ -580,7 +580,7 @@ public class Client {
         if (storage != null && !storage.isEmpty()) {
             return copyFileRemoteStorage(source, storage, true, null);
         } else {
-            return copyFileLocalStorage(source, true, true);
+            return copyFileLocalStorage(source, true);
         }
     }
 
@@ -590,16 +590,13 @@ public class Client {
      *
      * @param source     File Resource UUID or A CDN URL.
      * @param store      The parameter only applies to the Uploadcare storage and MUST be either true or false.
-     * @param makePublic Applicable to custom storage only. MUST be either true or false. true to make copied files
-     *                   available via public links, false to reverse the behavior.
      *
      * @return An object containing the results of the copy request
      */
-    public CopyFile copyFileLocalStorage(String source, Boolean store, Boolean makePublic) {
+    public CopyFile copyFileLocalStorage(String source, Boolean store) {
         CopyOptionsData copyOptionsData = new CopyOptionsData();
         copyOptionsData.source = source;
         copyOptionsData.store = store;
-        copyOptionsData.makePublic = makePublic;
 
         String requestBodyContent = trySerializeRequestBodyContent(copyOptionsData);
         StringEntity requestEntity = new StringEntity(
