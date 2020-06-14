@@ -28,7 +28,7 @@ public class Project {
 
     public Collaborator getOwner() {
         if (projectData.collaborators.size() > 0) {
-            return new Collaborator(this, projectData.collaborators.get(0));
+            return new Collaborator(projectData.collaborators.get(0));
         } else {
             return null;
         }
@@ -37,19 +37,23 @@ public class Project {
     public List<Collaborator> getCollaborators() {
         ArrayList<Collaborator> collaborators = new ArrayList<Collaborator>(projectData.collaborators.size());
         for (ProjectData.CollaboratorData collaboratorData : projectData.collaborators) {
-            collaborators.add(new Collaborator(this, collaboratorData));
+            collaborators.add(new Collaborator(collaboratorData));
         }
         return collaborators;
     }
 
+    @Override
+    public String toString() {
+        return "Project{" +
+                "projectData=" + projectData +
+                '}';
+    }
 
-    public class Collaborator {
+    public static class Collaborator {
 
-        private final Project project;
         private final ProjectData.CollaboratorData collaboratorData;
 
-        private Collaborator(Project project, ProjectData.CollaboratorData collaboratorData) {
-            this.project = project;
+        private Collaborator(ProjectData.CollaboratorData collaboratorData) {
             this.collaboratorData = collaboratorData;
         }
 
@@ -59,6 +63,13 @@ public class Project {
 
         public String getEmail() {
             return collaboratorData.email;
+        }
+
+        @Override
+        public String toString() {
+            return "Collaborator{" +
+                    "collaboratorData=" + collaboratorData +
+                    '}';
         }
     }
 }

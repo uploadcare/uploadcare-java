@@ -5,6 +5,8 @@ import com.uploadcare.urls.CdnPathBuilder;
 
 import java.net.URI;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The main Uploadcare resource, represents a user-uploaded file.
@@ -57,6 +59,42 @@ public class File {
 
     public Date getUploadDate() {
         return fileData.datetimeUploaded;
+    }
+
+    public Date getStoredDate() {
+        return fileData.datetimeStored;
+    }
+
+    public Date getRemovedDate() {
+        return fileData.datetimeRemoved;
+    }
+
+    public String getSource() {
+        return fileData.source;
+    }
+
+    public boolean isReady() {
+        return fileData.isReady;
+    }
+
+    public boolean isImage() {
+        return fileData.isImage;
+    }
+
+    public ImageInfo getImageInfo() {
+        return fileData.imageInfo;
+    }
+
+    public VideoInfo getVideoInfo() {
+        return fileData.videoInfo;
+    }
+
+    public Map<String, Float> getRekognitionInfo() {
+        return fileData.rekognitionInfo;
+    }
+
+    public Map<String, String> getVariations() {
+        return fileData.variations;
     }
 
     /**
@@ -115,5 +153,109 @@ public class File {
      */
     public CdnPathBuilder cdnPath() {
         return new CdnPathBuilder(this);
+    }
+
+    @Override
+    public String toString() {
+        return "File{" +
+                "fileData=" + fileData +
+                '}';
+    }
+
+    public static class ImageInfo {
+        public String format;
+        public int height;
+        public int width;
+        public int orientation;
+        public boolean sequence;
+        public ColorMode colorMode;
+        public GeoLocation geoLocation;
+        public List<Float> dpi;
+
+        @Override
+        public String toString() {
+            return "ImageInfo{" +
+                    "format='" + format + '\'' +
+                    ", height=" + height +
+                    ", width=" + width +
+                    ", orientation=" + orientation +
+                    ", sequence=" + sequence +
+                    ", colorMode=" + colorMode +
+                    ", geoLocation=" + geoLocation +
+                    ", dpi=" + dpi +
+                    '}';
+        }
+    }
+
+    public static class VideoInfo {
+        public String format;
+        public int duration;
+        public int bitrate;
+        public Audio audio;
+        public Video video;
+
+        @Override
+        public String toString() {
+            return "VideoInfo{" +
+                    "format='" + format + '\'' +
+                    ", duration=" + duration +
+                    ", bitrate=" + bitrate +
+                    ", audio=" + audio +
+                    ", video=" + video +
+                    '}';
+        }
+    }
+
+    public static class GeoLocation {
+        public float latitude;
+        public float longitude;
+
+        @Override
+        public String toString() {
+            return "GeoLocation{" +
+                    "latitude=" + latitude +
+                    ", longitude=" + longitude +
+                    '}';
+        }
+    }
+
+    public static class Audio {
+        public int bitrate;
+        public String codec;
+        public String channels;
+        public int sampleRate;
+
+        @Override
+        public String toString() {
+            return "Audio{" +
+                    "bitrate=" + bitrate +
+                    ", codec='" + codec + '\'' +
+                    ", channels='" + channels + '\'' +
+                    ", sampleRate=" + sampleRate +
+                    '}';
+        }
+    }
+
+    public static class Video {
+        public int bitrate;
+        public String codec;
+        public int height;
+        public int width;
+        public float frameRate;
+
+        @Override
+        public String toString() {
+            return "Video{" +
+                    "bitrate=" + bitrate +
+                    ", codec='" + codec + '\'' +
+                    ", height=" + height +
+                    ", width=" + width +
+                    ", frameRate=" + frameRate +
+                    '}';
+        }
+    }
+
+    public enum ColorMode {
+        RGB, RGBA, RGBa, RGBX, L, LA, La, P, PA, CMYK, YCbCr, HSV, LAB
     }
 }

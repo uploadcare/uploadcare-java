@@ -4,6 +4,7 @@ import com.uploadcare.api.RequestHelper;
 
 import java.util.Date;
 
+@Deprecated
 public class FilesToParameter implements UrlParameter {
 
     private final Date to;

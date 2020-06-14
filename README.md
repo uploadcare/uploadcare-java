@@ -13,10 +13,10 @@ This is a Java library for Uploadcare.
 
 Supported features:
 
-- Complete file and project APIs v0.4
+- Complete file and project APIs v0.6
 - Paginated resources are fetched as `List<T>`
 - CDN path builder
-- File uploads from local storages, byte arrays or URLs
+- File uploads from local storages, byte arrays or URLs, signed uploads
 
 ## Maven
 
@@ -31,7 +31,7 @@ project's `pom.xml` file.
 <dependency>
     <groupId>com.uploadcare</groupId>
     <artifactId>uploadcare</artifactId>
-    <version>3.2.0</version>
+    <version>3.3.0</version>
 </dependency>
 ```
 
@@ -43,7 +43,7 @@ your API keys prior to trying out the examples.
 ### Basic API Usage
 
 ```java
-Client client = new Client("publickey", "privatekey");
+Client client = new Client("publickey", "secretkey");
 Project project = client.getProject();
 Project.Collaborator owner = project.getOwner();
 
