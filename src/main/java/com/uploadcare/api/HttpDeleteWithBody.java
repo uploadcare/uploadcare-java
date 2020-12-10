@@ -1,11 +1,9 @@
 package com.uploadcare.api;
 
-import org.apache.http.annotation.NotThreadSafe;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 
 import java.net.URI;
 
-@NotThreadSafe
 public class HttpDeleteWithBody extends HttpEntityEnclosingRequestBase {
     private static final String METHOD_DELETE = "DELETE";
 
