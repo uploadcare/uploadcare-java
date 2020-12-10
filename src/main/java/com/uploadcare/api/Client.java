@@ -10,6 +10,7 @@ import com.uploadcare.exceptions.UploadcareApiException;
 import com.uploadcare.urls.*;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -117,10 +118,19 @@ public class Client {
                 this.httpClient = httpClient;
             } else {
                 PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
-                cm.setMaxTotal(200);
-                cm.setDefaultMaxPerRoute(20);
+                cm.setMaxTotal(400);
+                cm.setDefaultMaxPerRoute(50);
+
+                int timeout = 5 * 60; // seconds (5 minutes)
+                RequestConfig requestConfig = RequestConfig.custom()
+                        .setConnectTimeout(timeout * 1000)
+                        .setConnectionRequestTimeout(timeout * 1000)
+                        .setSocketTimeout(timeout * 1000)
+                        .build();
+
                 this.httpClient = HttpClients.custom()
                         .setConnectionManager(cm)
+                        .setDefaultRequestConfig(requestConfig)
                         .build();
             }
             this.objectMapper = new ObjectMapper();
