@@ -31,7 +31,7 @@ project's `pom.xml` file.
 <dependency>
     <groupId>com.uploadcare</groupId>
     <artifactId>uploadcare</artifactId>
-    <version>3.3.0</version>
+    <version>3.3.1</version>
 </dependency>
 ```
 
