@@ -11,7 +11,7 @@ import static com.uploadcare.urls.UrlUtils.trustedBuild;
  */
 public class Urls {
 
-    private static final String API_BASE = "https://api.uploadcare.com";
+    public static final String API_BASE = "https://api.uploadcare.com";
     private static final String CDN_BASE = "https://ucarecdn.com";
     private static final String UPLOAD_BASE = "https://upload.uploadcare.com";
 
