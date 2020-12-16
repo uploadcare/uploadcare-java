@@ -5,10 +5,11 @@ The format is based now on [Keep a Changelog](http://keepachangelog.com/en/1.0.0
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## 3.3.1
+### Updated
+- Apache httpclient and httpmime dependencies to v4.5.13, fixes network related issues.
 ### Fixed
-- Update apache httpclient and httpmime dependencies to v4.5.13, fixes network related issues.
-- Fix signature for requests with query parameters was incorrect.
-- Fix: possible issue with using default timeout values from machine that running UploadCareClient. Set our custom timeouts for connections, socket timeouts.
+- Signature for requests with query parameters was incorrect.
+- Possible issue with using default timeout values from machine that running UploadcareClient. Set custom timeouts for connections, sockets.
 
 ## 3.3.0
 ### Added
