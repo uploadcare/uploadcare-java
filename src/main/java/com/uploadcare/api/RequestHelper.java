@@ -88,9 +88,11 @@ public class RequestHelper {
         }
 
         StringBuilder sb = new StringBuilder();
-        String uriString = request.getURI().toString();
-        int uriStartIndex = uriString.indexOf(Urls.API_BASE) + Urls.API_BASE.length();
-        String uriWithoutBase = uriString.substring(uriStartIndex);
+        String uriWithoutBase = request.getURI().getRawPath();
+        String query = request.getURI().getRawQuery();
+        if (query != null) {
+            uriWithoutBase += String.format("?%s", query);
+        }
         sb.append(request.getMethod())
                 .append("\n").append(requestBodyMD5)
                 .append("\n").append(JSON_CONTENT_TYPE)
