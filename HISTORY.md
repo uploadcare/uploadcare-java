@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based now on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## 3.3.1
+### Updated
+- Apache httpclient and httpmime dependencies to v4.5.13, fixes network related issues.
+### Fixed
+- Signature for requests with query parameters was incorrect.
+- Possible issue with using default timeout values from machine that running UploadcareClient. Set custom timeouts for connections, sockets.
+
 ## 3.3.0
 ### Added
 - Support Uploadcare REST API v0.6

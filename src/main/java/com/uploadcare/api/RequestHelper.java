@@ -9,11 +9,11 @@ import com.uploadcare.exceptions.UploadcareInvalidRequestException;
 import com.uploadcare.exceptions.UploadcareNetworkException;
 import com.uploadcare.urls.UrlParameter;
 
+import com.uploadcare.urls.Urls;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -44,7 +44,7 @@ public class RequestHelper {
 
     private final Client client;
 
-    public static final String LIBRARY_VERSION = "3.3.0";
+    public static final String LIBRARY_VERSION = "3.3.1";
 
     public static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss Z";
 
@@ -88,12 +88,16 @@ public class RequestHelper {
         }
 
         StringBuilder sb = new StringBuilder();
+        String uriWithoutBase = request.getURI().getRawPath();
+        String query = request.getURI().getRawQuery();
+        if (query != null) {
+            uriWithoutBase += String.format("?%s", query);
+        }
         sb.append(request.getMethod())
                 .append("\n").append(requestBodyMD5)
                 .append("\n").append(JSON_CONTENT_TYPE)
                 .append("\n").append(date)
-                .append("\n").append(request.getURI().getPath());
-
+                .append("\n").append(uriWithoutBase);
         byte[] secretKeyBytes;
         if (client.getSecretKey() != null) {
             secretKeyBytes = client.getSecretKey().getBytes();
