@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## 3.3.1
 ### Updated
-- Apache HTTP client and HTTP MIME dependencies to v4.5.13, fixes network related issues.
+- Apache `httpclient` and `httpmime` dependencies to v4.5.13, fixes network related issues.
 ### Fixed
 - Signature for requests with query parameters was incorrect.
 - Possible issue with using default timeout values from a machine that's running UploadcareClient. Set custom timeouts for connections, sockets.
