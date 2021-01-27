@@ -23,8 +23,8 @@ Supported features:
 The latest stable library version is available at
 [Maven Central](https://search.maven.org/#search%7Cga%7C1%7Cuploadcare).
 
-Include it in your build by adding the following dependencies into your
-project's `pom.xml` file.
+Include the following code into your build by adding the following dependencies
+into `pom.xml` for your project.
 
 ```xml
 <dependency>
@@ -104,6 +104,4 @@ See `AUTHORS.txt` and our [contributors](https://github.com/uploadcare/uploadcar
 
 If you spotted or experienced any security implications while using Uploadcare
 libraries, hit us up at [bugbounty@uploadcare.com](mailto:bugbounty@uploadcare.com)
-or Hackerone.
-
-We'll contact you shortly to fix this issue. Security is our top priority.
+or Hackerone. We'll contact you shortly to fix this security issue.
