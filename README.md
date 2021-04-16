@@ -8,7 +8,6 @@
 [stack-img]: http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat
 [stack]: https://stackshare.io/uploadcare/stacks/
 
-
 This is a Java library for Uploadcare.
 
 Supported features:
@@ -36,7 +35,7 @@ into `pom.xml` for your project.
 
 ## Examples
 
-Get your [API keys](https://uploadcare.com/documentation/keys/) to proceed with
+Get your [API keys](https://uploadcare.com/docs/start/settings/#keys) to proceed with
 the examples below.
 
 ### Basic API Usage
