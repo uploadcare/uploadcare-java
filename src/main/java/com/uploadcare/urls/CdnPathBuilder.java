@@ -342,6 +342,15 @@ public class CdnPathBuilder {
     }
 
     /**
+     * Runs faces detection on the image
+     *
+     */
+    public CdnPathBuilder detectFaces() {
+        this.sb.append("/detect_faces");
+        return this;
+    }
+
+    /**
      * Returns the current CDN path as a string.
      *
      * Avoid using directly.
