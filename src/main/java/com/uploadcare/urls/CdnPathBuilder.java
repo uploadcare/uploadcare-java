@@ -17,6 +17,18 @@ public class CdnPathBuilder {
             public String toString() {
                 return "png";
             }
+        },
+
+        FORMAT_WEBP {
+            public String toString() {
+                return "webp";
+            }
+        },
+
+        FORMAT_AUTO {
+            public String toString() {
+                return "auto";
+            }
         }
     }
 
@@ -46,6 +58,17 @@ public class CdnPathBuilder {
         QUALITY_LIGHTEST {
             public String toString() {
                 return "lightest";
+            }
+        },
+
+        QUALITY_SMART {
+            public String toString() {
+                return "smart";
+            }
+        },
+        QUALITY_SMART_RETINA {
+            public String toString() {
+                return "smart_retina";
             }
         }
     }
@@ -315,7 +338,11 @@ public class CdnPathBuilder {
     }
 
     /**
-     * Turn an image to one of the following formats: FORMAT_JPEG or FORMAT_PNG.
+     * Turn an image to one of the following formats:
+     *   FORMAT_JPEG
+     *   FORMAT_PNG
+     *   FORMAT_WEBP
+     *   FORMAT_AUTO
      *
      * @param format @link ImageFormat.
      */
@@ -334,6 +361,8 @@ public class CdnPathBuilder {
      * QUALITY_BEST – useful if you're a photography god and you want to get perfect quality without paying attention to size. ≈170% file size.
      * QUALITY_LIGHTER – can be used on relatively large images to save traffic without significant quality loss. ≈80% file size.
      * QUALITY_LIGHTEST — useful for retina resolutions, when you don't wory about quality of each pixel. ≈50% file size.
+     * QUALITY_SMART – adjusts compression and format automatically to preserve visual quality while minimizing the file size.
+     * QUALITY_SMART_RETINA — similar to smart, yet optimized for high pixel ratios.
      */
     public CdnPathBuilder quality(ImageQuality quality) {
         sb.append("/-/quality/")
