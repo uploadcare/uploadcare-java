@@ -19,4 +19,4 @@ jobs:
           java-version: ${{ matrix.java }}
           distribution: 'adopt'
       - name: Verify
-        run: mvn -B verify
+        run: mvn -B test
