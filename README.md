@@ -1,6 +1,6 @@
 # uploadcare-java
 
-[![Build Status](https://travis-ci.com/uploadcare/uploadcare-java.svg?branch=master)](https://travis-ci.com/uploadcare/uploadcare-java)
+[![Build Status](https://github.com/uploadcare/uploadcare-java/actions/workflows/maven.yml/badge.svg?branch=master)](https://github.com/uploadcare/uploadcare-java/actions/workflows/maven.yml)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.uploadcare/uploadcare/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.uploadcare/uploadcare)
 [![Javadocs](https://www.javadoc.io/badge/com.uploadcare/uploadcare.svg)](https://www.javadoc.io/doc/com.uploadcare/uploadcare)
 [![Uploadcare stack on StackShare][stack-img]][stack]
