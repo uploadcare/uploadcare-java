@@ -10,7 +10,12 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        java: [ '8', '9', '10', '11', '12', '13', '14', '15' ]
+        # https://en.wikipedia.org/wiki/Java_version_history
+        java: [
+          '8', '11', # LTS
+          '15',      # recent
+          '16',      # current
+        ]
 
     steps:
       - uses: actions/checkout@v2
