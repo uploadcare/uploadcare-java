@@ -171,6 +171,7 @@ public class File {
         public ColorMode colorMode;
         public GeoLocation geoLocation;
         public List<Float> dpi;
+        public Date datetimeOriginal;
 
         @Override
         public String toString() {
@@ -183,6 +184,7 @@ public class File {
                     ", colorMode=" + colorMode +
                     ", geoLocation=" + geoLocation +
                     ", dpi=" + dpi +
+                    ", datetimeOriginal=" + datetimeOriginal +
                     '}';
         }
     }

@@ -82,6 +82,12 @@ public class CdnPathBuilderTest {
     }
 
     @Test
+    public void test_detectFaces() {
+        String path = builder.detectFaces().build();
+        assertEquals("/" + FILE_ID + "/detect_faces/", path);
+    }
+
+    @Test
     public void test_dimensionGuard() {
         builder.resizeWidth(1);
         builder.resizeWidth(2048);
