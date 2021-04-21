@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based now on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## 3.4.0
+### Added
+- datetimeOriginal in ImageInfo
+- face detection to CdnPathBuilder
+- new options for format and quality ops
+
+### Changed
+- Tests moved from Travis CI to GitHub Actions
+
 ## 3.3.1
 ### Updated
 - Apache `httpclient` and `httpmime` dependencies to v4.5.13, fixes network related issues.
