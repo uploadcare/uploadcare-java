@@ -38,7 +38,7 @@ into `pom.xml` for your project.
 Get your [API keys](https://uploadcare.com/docs/start/settings/#keys) to proceed with
 the examples below.
 
-Read full documentation on [javadoc.io](https://www.javadoc.io/doc/com.uploadcare/uploadcare/latest/index.html).
+Read class documentation on [javadoc.io](https://www.javadoc.io/doc/com.uploadcare/uploadcare/latest/index.html).
 
 ### Basic API Usage
 
