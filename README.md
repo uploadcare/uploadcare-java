@@ -38,6 +38,8 @@ into `pom.xml` for your project.
 Get your [API keys](https://uploadcare.com/docs/start/settings/#keys) to proceed with
 the examples below.
 
+Read full documentation on [javadoc.io](https://www.javadoc.io/doc/com.uploadcare/uploadcare/latest/index.html).
+
 ### Basic API Usage
 
 ```java
@@ -54,12 +56,6 @@ for (File file : files) {
 }
 ```
 
-Read more:
-
-* [Client](http://uploadcare.github.io/uploadcare-java/apidocs/com/uploadcare/api/Client.html)
-* [File](http://uploadcare.github.io/uploadcare-java/apidocs/com/uploadcare/api/File.html)
-* [Project](http://uploadcare.github.io/uploadcare-java/apidocs/com/uploadcare/api/Project.html)
-
 ### Building CDN URLs
 
 ```java
@@ -70,11 +66,6 @@ CdnPathBuilder builder = file.cdnPath()
         .grayscale();
 URI url = Urls.cdn(builder);
 ```
-
-Read more:
-
-* [CdnPathBuilder](http://uploadcare.github.io/uploadcare-java/apidocs/com/uploadcare/urls/CdnPathBuilder.html)
-* [Urls](http://uploadcare.github.io/uploadcare-java/apidocs/com/uploadcare/urls/Urls.html)
 
 ### File uploads
 
@@ -89,11 +80,6 @@ try {
     System.out.println("Upload failed :(");
 }
 ```
-
-Read more:
-
-* [FileUploader](http://uploadcare.github.io/uploadcare-java/apidocs/com/uploadcare/upload/FileUploader.html)
-* [UrlUploader](http://uploadcare.github.io/uploadcare-java/apidocs/com/uploadcare/upload/UrlUploader.html)
 
 ## Contributors
 
