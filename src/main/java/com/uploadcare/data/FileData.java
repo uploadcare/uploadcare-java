@@ -10,7 +10,7 @@ public class FileData {
 
     public String uuid;
     public URI url;
-    public int size;
+    public long size;
     public String source;
     public boolean isReady;
     public boolean isImage;

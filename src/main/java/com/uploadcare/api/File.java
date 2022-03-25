@@ -53,7 +53,7 @@ public class File {
         return fileData.datetimeRemoved;
     }
 
-    public int getSize() {
+    public long getSize() {
         return fileData.size;
     }
 
