@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based now on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## 3.4.1
+### Changed
+- Expand file size property from `int` to `long` to fix an issue with reading files that are larger than 2.1 GB.
+
 ## 3.4.0
 ### Added
 - datetimeOriginal in ImageInfo
@@ -54,7 +58,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 This is a technical version.
 For some reason, the version 3.0 uploaded to Sonatype was broken and used old code.
 
-
 ## 3.0
 ### Added
 - Image Operations to `CdnPathBuilder`: blur, sharp, preview, format, quality.
@@ -65,7 +68,6 @@ For some reason, the version 3.0 uploaded to Sonatype was broken and used old co
 ### Changed
 - Support Uploadcare REST API v0.4
 - Updated some of the deprecated classes.
-
 
 ## 2.0
 ### Changed
