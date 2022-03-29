@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based now on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## 3.5
+## 3.5.0
 ### Changed
 - Expand file size property from `int` to `long` to fix an issue with reading files that are larger than 2.1 GB.
 
