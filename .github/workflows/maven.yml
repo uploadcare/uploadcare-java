@@ -2,9 +2,8 @@ name: Build Test
 on:
   # Build PRs and branches.
   pull_request:
-    # TODO: Uncomment this before merging.
-    #paths-ignore:
-    #  - .github/workflows/deploy-tagged.yml
+    paths-ignore:
+      - .github/workflows/deploy-tagged.yml
   push:
     branches:
       - '**'
