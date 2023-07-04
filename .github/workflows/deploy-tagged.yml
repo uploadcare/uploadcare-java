@@ -1,0 +1,64 @@
+name: Deploy tagged release
+run-name: Deploying tagged release ${{ inputs.TAG != '' && format('refs/tags/{0}', inputs.TAG) || github.ref }}
+
+on:
+  push:
+    # Pattern matched against refs/tags
+    tags:
+      - '*' # Only tags excluding "/" sign (i.e. 1.2.3, v1.2.3, etc)
+
+  workflow_dispatch:
+    inputs:
+      TAG:
+        required: true
+        description: The tag to build and publish (as is)
+
+env:
+  TAG: ${{ inputs.TAG != '' && format('refs/tags/{0}', inputs.TAG) || github.ref }}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ env.TAG }}
+
+      - name: Version check
+        run: |
+          REF=${{ env.TAG }}
+          VERSION=$(cat pom.xml | grep -B10 -A10 -i "<artifactId>uploadcare" | grep -i "<version>" | head -n 1 | awk -F'<version>' '{print $2}' | awk -F '</version>' '{print $1}')          
+          echo $REF
+          echo $VERSION
+          if [[ "$REF" != "refs/tags/$VERSION" ]]; then
+            echo "Version mismatch - pom.xml contains a different version than the git tag! Exiting!"
+            exit 1
+          fi
+
+      - name: Setup JDK and Maven
+        uses: actions/setup-java@v3
+        with:
+          java-version: 11
+          distribution: "temurin"
+          cache: "maven"
+
+      - name: Setup key
+        uses: crazy-max/ghaction-import-gpg@v5
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          fingerprint: ${{ secrets.GPG_KEY_ID }}
+          passphrase: ${{ secrets.GPG_PASS }}
+          trust_level: 5
+
+      - name: Build and deploy
+        env:
+          GPG_KEY_ID: ${{ vars.GPG_KEY_ID }}
+          UPLOADCARE_PUBLISH_SONATYPE_USER: ${{ secrets.UPLOADCARE_PUBLISH_SONATYPE_USER }}
+          UPLOADCARE_PUBLISH_SONATYPE_PASS: ${{ secrets.UPLOADCARE_PUBLISH_SONATYPE_PASS }}
+        run: mvn -B clean install deploy -s $GITHUB_WORKSPACE/settings.xml
+
+      - name: Find signed files.
+        if: ${{ always() }}
+        run: |
+          find . -type f -name "*.asc"

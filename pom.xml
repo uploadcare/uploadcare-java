@@ -4,7 +4,7 @@
 
     <groupId>com.uploadcare</groupId>
     <artifactId>uploadcare</artifactId>
-    <version>3.5.1</version>
+    <version>3.5.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -187,6 +187,9 @@
                   <goals>
                     <goal>sign</goal>
                   </goals>
+                  <configuration>
+                    <keyname>${env.GPG_KEY_ID}</keyname>
+                   </configuration>
                 </execution>
               </executions>
             </plugin>
@@ -198,7 +201,7 @@
               <configuration>
                  <serverId>ossrh</serverId>
                  <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                 <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                 <autoReleaseAfterClose>false</autoReleaseAfterClose>
               </configuration>
             </plugin>
         </plugins>

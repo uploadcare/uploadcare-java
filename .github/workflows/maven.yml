@@ -1,38 +1,36 @@
-# This workflow will build a Java project with Maven
-# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
-
 name: Build Test
-
-on: [push, pull_request]
+on:
+  # Build PRs and branches.
+  pull_request:
+    paths-ignore:
+      - .github/workflows/deploy-tagged.yml
+  push:
+    branches:
+      - '**'
+    tags-ignore:
+      - '**'
+    paths-ignore:
+      - .github/workflows/deploy-tagged.yml
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    name: jdk ${{ matrix.java }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         # https://en.wikipedia.org/wiki/Java_version_history
-        java: [
-          '8', '11', # LTS
-          '15',      # recent
-          # '16',      # current
-        ]
+        java: [ '8', '11' ] # LTS
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup JDK
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           java-version: ${{ matrix.java }}
-          distribution: 'adopt'
-
-      - name: Cache Maven packages
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
+          distribution: 'temurin'
+          cache: 'maven' # automatic cache
 
       - name: Test
-        run: mvn -B test
+        run: mvn -B clean test
