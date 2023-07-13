@@ -28,20 +28,19 @@ jobs:
       - name: Version check
         run: |
           REF=${{ env.TAG }}
-          VERSION=$(cat pom.xml | grep -B10 -A10 -i "<artifactId>uploadcare" | grep -i "<version>" | head -n 1 | awk -F'<version>' '{print $2}' | awk -F '</version>' '{print $1}')          
+          VERSION=$(cat gradle.properties | grep -iE "version([ ]*)=" | cut -f 2 -d "=")          
           echo $REF
           echo $VERSION
           if [[ "$REF" != "refs/tags/$VERSION" ]]; then
-            echo "Version mismatch - pom.xml contains a different version than the git tag! Exiting!"
+            echo "Version mismatch - gradle.properties contains a different version than the git tag! Exiting!"
             exit 1
           fi
 
       - name: Setup JDK and Maven
         uses: actions/setup-java@v3
         with:
-          java-version: 11
+          java-version: 8
           distribution: "temurin"
-          cache: "maven"
 
       - name: Setup key
         uses: crazy-max/ghaction-import-gpg@v5
@@ -53,10 +52,9 @@ jobs:
 
       - name: Build and deploy
         env:
-          GPG_KEY_ID: ${{ vars.GPG_KEY_ID }}
-          UPLOADCARE_PUBLISH_SONATYPE_USER: ${{ secrets.UPLOADCARE_PUBLISH_SONATYPE_USER }}
-          UPLOADCARE_PUBLISH_SONATYPE_PASS: ${{ secrets.UPLOADCARE_PUBLISH_SONATYPE_PASS }}
-        run: mvn -B clean install deploy -s $GITHUB_WORKSPACE/settings.xml
+          UPLOADCARE_PUBLISH_SONATYPE_USER: "${{ secrets.UPLOADCARE_PUBLISH_SONATYPE_USER }}"
+          UPLOADCARE_PUBLISH_SONATYPE_PASS: "${{ secrets.UPLOADCARE_PUBLISH_SONATYPE_PASS }}"
+        run: ./gradlew build publish --warn --stacktrace
 
       - name: Find signed files.
         if: ${{ always() }}
