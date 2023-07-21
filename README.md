@@ -17,6 +17,12 @@ Supported features:
 - CDN path builder.
 - File uploading from a local storage, byte arrays, URLs, and signed uploads.
 
+The minimum requirements to build this project are:
+
+1. Gradle 8.2 (you can use `./gradlew` or `.\gradlew.bat` which will download it for you).
+2. JDK 1.8 (target is 1.7, so don't use much higher version).
+3. Running `./gradlew build` should run successfully.
+
 ## Maven
 
 The latest stable library version is available at
@@ -28,7 +34,7 @@ Include following dependency into your project's `pom.xml`:
 <dependency>
     <groupId>com.uploadcare</groupId>
     <artifactId>uploadcare</artifactId>
-    <version>3.5.1</version>
+    <version>3.5.2</version>
 </dependency>
 ```
 
@@ -48,8 +54,7 @@ implementation("com.uploadcare:uploadcare:3.5.1")
 
 ## Examples
 
-Get your [API keys](https://uploadcare.com/docs/start/settings/#keys) to proceed with
-the examples below.
+Get your [API keys](https://uploadcare.com/docs/start/settings/#keys) to proceed with the examples below.
 
 Read class documentation on [javadoc.io](https://www.javadoc.io/doc/com.uploadcare/uploadcare/latest/index.html).
 
@@ -93,19 +98,3 @@ try {
     System.out.println("Upload failed :(");
 }
 ```
-
-## Contributors
-
-See `AUTHORS.txt` and our [contributors](https://github.com/uploadcare/uploadcare-java/graphs/contributors).
-
-The minimum requirements to build this project are:
-
-1. Gradle 8.2 (you can use `./gradlew` or `.\gradlew.bat` which will download it for you)
-2. JDK 1.8 (target is 1.7, so don't use much higher version)
-3. Running `./gradlew build` should run successfully.
-
-## Security issues
-
-If you spotted or experienced any security implications while using Uploadcare
-libraries, hit us up at [bugbounty@uploadcare.com](mailto:bugbounty@uploadcare.com)
-or Hackerone. We'll contact you shortly to fix this security issue.
