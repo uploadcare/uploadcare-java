@@ -344,7 +344,7 @@ public class CdnPathBuilder {
      *   FORMAT_WEBP
      *   FORMAT_AUTO
      *
-     * @param format @link ImageFormat.
+     * @param format {@link ImageFormat}.
      */
     public CdnPathBuilder format(ImageFormat format) {
         sb.append("/-/format/")
@@ -355,7 +355,7 @@ public class CdnPathBuilder {
     /**
      * Image quality affects size of image and loading speed. Has no effect on non-JPEG images, but does not force format to JPEG.
      *
-     * @param quality @link ImageQuality
+     * @param quality {@link ImageQuality}
      * QUALITY_NORMAL – used by default. Fine in most cases.
      * QUALITY_BETTER – can be used on relatively small previews with lots of details. ≈125% file size compared to normal image.
      * QUALITY_BEST – useful if you're a photography god and you want to get perfect quality without paying attention to size. ≈170% file size.

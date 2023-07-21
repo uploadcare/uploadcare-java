@@ -85,6 +85,12 @@ try {
 
 See `AUTHORS.txt` and our [contributors](https://github.com/uploadcare/uploadcare-java/graphs/contributors).
 
+The minimum requirements to build this projects are:
+
+1. Gradle 8.2 (you can use `./gradlew` or `.\gradlew.bat` which will download it for you)
+2. JDK 1.8 (target is 1.7, so don't use much higher version)
+3. Running `./gradlew build` should run successfully.
+
 ## Security issues
 
 If you spotted or experienced any security implications while using Uploadcare
