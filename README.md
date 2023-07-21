@@ -1,6 +1,6 @@
 # uploadcare-java
 
-[![Build Status](https://github.com/uploadcare/uploadcare-java/actions/workflows/maven.yml/badge.svg?branch=master)](https://github.com/uploadcare/uploadcare-java/actions/workflows/maven.yml)
+[![Build Status](https://github.com/uploadcare/uploadcare-java/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/uploadcare/uploadcare-java/actions/workflows/build.yml)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.uploadcare/uploadcare/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.uploadcare/uploadcare)
 [![Javadocs](https://www.javadoc.io/badge/com.uploadcare/uploadcare.svg)](https://www.javadoc.io/doc/com.uploadcare/uploadcare)
 [![Uploadcare stack on StackShare][stack-img]][stack]
@@ -20,10 +20,9 @@ Supported features:
 ## Maven
 
 The latest stable library version is available at
-[Maven Central](https://search.maven.org/#search%7Cga%7C1%7Cuploadcare).
+[Maven Central](https://central.sonatype.com/artifact/com.uploadcare/uploadcare/).
 
-Include the following code into your build by adding the following dependencies
-into `pom.xml` for your project.
+Include following dependency into your project's `pom.xml`:
 
 ```xml
 <dependency>
@@ -31,6 +30,20 @@ into `pom.xml` for your project.
     <artifactId>uploadcare</artifactId>
     <version>3.5.1</version>
 </dependency>
+```
+
+## Gradle
+
+Include following dependency into your project's `build.gradle`:
+
+```
+implementation 'com.uploadcare:uploadcare:3.5.1'
+```
+
+If you are using the kotlin style `build.gradle.kts`:
+
+```
+implementation("com.uploadcare:uploadcare:3.5.1")
 ```
 
 ## Examples
@@ -85,7 +98,7 @@ try {
 
 See `AUTHORS.txt` and our [contributors](https://github.com/uploadcare/uploadcare-java/graphs/contributors).
 
-The minimum requirements to build this projects are:
+The minimum requirements to build this project are:
 
 1. Gradle 8.2 (you can use `./gradlew` or `.\gradlew.bat` which will download it for you)
 2. JDK 1.8 (target is 1.7, so don't use much higher version)
