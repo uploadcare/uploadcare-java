@@ -20,7 +20,7 @@ java {
 dependencies {
     implementation("org.apache.httpcomponents:httpclient:4.5.13")
     implementation("org.apache.httpcomponents:httpmime:4.5.13")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.12.6.1")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.16.2")
     implementation("commons-codec:commons-codec:1.10")
     implementation("commons-io:commons-io:2.7")
     implementation("com.sun.activation:javax.activation:1.2.0")
