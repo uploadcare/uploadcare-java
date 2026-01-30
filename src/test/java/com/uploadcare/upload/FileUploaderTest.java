@@ -9,25 +9,23 @@ import com.uploadcare.data.UploadBaseData;
 import com.uploadcare.urls.Urls;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-public class FileUploaderTest {
+class FileUploaderTest {
 
     public static final String FILE_ID = "unique_file_id";
 
     @Test
-    public void test_upload() throws UploadFailureException, IOException {
+    void testUpload() throws UploadFailureException, IOException {
         final RequestHelper requestHelper = mock(RequestHelper.class);
 
         when(requestHelper.executeQuery(requestThat(Urls.uploadBase()), eq(false), eq(UploadBaseData.class)))
@@ -52,7 +50,7 @@ public class FileUploaderTest {
     }
 
     @Test
-    public void test_upload_stream() throws UploadFailureException, IOException {
+    void testUploadStream() throws UploadFailureException, IOException {
         final RequestHelper requestHelper = mock(RequestHelper.class);
 
         when(requestHelper.executeQuery(requestThat(Urls.uploadBase()), eq(false), eq(UploadBaseData.class)))
@@ -76,15 +74,7 @@ public class FileUploaderTest {
     }
 
     private HttpUriRequest requestThat(final URI uri) {
-        return argThat(new BaseMatcher<HttpUriRequest>() {
-            public boolean matches(Object o) {
-                HttpUriRequest request = (HttpUriRequest) o;
-                return request.getURI().equals(uri);
-            }
-
-            public void describeTo(Description description) {
-            }
-        });
+        return argThat((HttpUriRequest request) -> request != null && uri.equals(request.getURI()));
     }
 
     private UploadBaseData uploadBaseData() {

@@ -3,14 +3,14 @@ package com.uploadcare.api;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FileTest
+class FileTest
 {
 
     @Test
-    public void enumFails() throws Exception {
+    void enumFails() throws Exception {
         String json = "{ \"color_mode\": \"RGBa\"}";
 
         // duplicate the way the mapper is configured in uploadcare
@@ -20,7 +20,7 @@ public class FileTest
 
         Bug bug = mapper.readValue(json, Bug.class);
 
-        Assert.assertTrue("Color mode was not properly converted!", File.ColorMode.RGBa.equals(bug.colorMode));
+        assertEquals(File.ColorMode.RGBa, bug.colorMode, "Color mode was not properly converted!");
     }
 
     static class Bug {

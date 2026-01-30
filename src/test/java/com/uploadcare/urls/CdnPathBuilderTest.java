@@ -2,23 +2,23 @@ package com.uploadcare.urls;
 
 import com.uploadcare.api.File;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.awt.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class CdnPathBuilderTest {
+class CdnPathBuilderTest {
 
     private static final String FILE_ID = "27c7846b-a019-4516-a5e4-de635f822161";
     private CdnPathBuilder builder;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         File file = mock(File.class);
         when(file.getFileId()).thenReturn(FILE_ID);
 
@@ -26,13 +26,14 @@ public class CdnPathBuilderTest {
     }
 
     @Test
-    public void test_fileUrl() {
+    void testFileUrl() {
         String path = builder.build();
+
         assertEquals("/" + FILE_ID + "/", path);
     }
 
     @Test
-    public void test_allOperations() {
+    void testAllOperations() {
         String path = builder
                 .crop(100, 110)
                 .cropColor(120, 130, Color.BLACK)
@@ -82,13 +83,14 @@ public class CdnPathBuilderTest {
     }
 
     @Test
-    public void test_detectFaces() {
+    void testDetectFaces() {
         String path = builder.detectFaces().build();
+
         assertEquals("/" + FILE_ID + "/detect_faces/", path);
     }
 
     @Test
-    public void test_dimensionGuard() {
+    void testDimensionGuard() {
         builder.resizeWidth(1);
         builder.resizeWidth(2048);
         try {
@@ -104,7 +106,7 @@ public class CdnPathBuilderTest {
     }
 
     @Test
-    public void test_dimensionsGuard() {
+    void testDimensionsGuard() {
         builder.resize(1024, 634);
         builder.resize(634, 1024);
         try {
