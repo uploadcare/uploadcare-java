@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           ref: ${{ env.TAG }}
 
@@ -37,7 +37,7 @@ jobs:
           fi
 
       - name: Setup JDK and Maven
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v5
         with:
           java-version: 8
           distribution: "temurin"

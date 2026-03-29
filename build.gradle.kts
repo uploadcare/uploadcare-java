@@ -31,12 +31,26 @@ dependencies {
 
 // Setup global publishing repository settings.
 signing {
+    setRequired({ isReleaseVersion })
     useGpgCmd()
     sign(publishing.publications)
 }
 
+// Skip signing entirely for non-release (snapshot) builds.
+tasks.withType<Sign>().configureEach {
+    onlyIf { isReleaseVersion }
+}
+
 publishing {
     repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/uploadcare/uploadcare-java")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR") ?: ""
+                password = System.getenv("GITHUB_TOKEN") ?: ""
+            }
+        }
         maven {
             // Dynamically select either Maven Central or na Internal repository depending on the value of uploadcare.publish.type / UPLOADCARE_PUBLISH_TYPE
             name = "selected"

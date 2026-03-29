@@ -1,0 +1,56 @@
+name: Clean up PR snapshot
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  cleanup-snapshot:
+    name: Delete PR snapshot from GitHub Packages
+    runs-on: ubuntu-latest
+    # Only run when the PR was actually merged, not just closed.
+    if: github.event.pull_request.merged == true
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Get base version
+        id: get-version
+        run: |
+          BASE_VERSION=$(grep -iE "version([ ]*)=" gradle.properties | cut -f 2 -d "=" | tr -d '[:space:]')
+          # Strip any existing -SNAPSHOT suffix so we can re-apply it cleanly
+          BASE_VERSION="${BASE_VERSION%-SNAPSHOT}"
+          echo "base_version=${BASE_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Delete PR snapshot from GitHub Packages
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          SNAPSHOT_VERSION="${{ steps.get-version.outputs.base_version }}-PR-${{ github.event.pull_request.number }}-SNAPSHOT"
+          echo "Looking for package version: ${SNAPSHOT_VERSION}"
+
+          # Retrieve the numeric ID of any published version matching this snapshot.
+          # --paginate ensures all pages are scanned; --jq filters on each page.
+          VERSION_IDS=$(gh api \
+            --paginate \
+            -H "Accept: application/vnd.github+json" \
+            "/orgs/${{ github.repository_owner }}/packages/maven/com.uploadcare.uploadcare/versions" \
+            --jq ".[] | select(.name == \"${SNAPSHOT_VERSION}\") | .id" 2>/dev/null || true)
+
+          if [ -z "$VERSION_IDS" ]; then
+            echo "No published version found for ${SNAPSHOT_VERSION} — nothing to delete."
+            exit 0
+          fi
+
+          while IFS= read -r VERSION_ID; do
+            echo "Deleting version ID ${VERSION_ID} (${SNAPSHOT_VERSION}) …"
+            gh api --method DELETE \
+              -H "Accept: application/vnd.github+json" \
+              "/orgs/${{ github.repository_owner }}/packages/maven/com.uploadcare.uploadcare/versions/${VERSION_ID}"
+            echo "Deleted version ID ${VERSION_ID}."
+          done <<< "$VERSION_IDS"
+          echo "Done cleaning up ${SNAPSHOT_VERSION}."
