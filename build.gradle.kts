@@ -37,8 +37,10 @@ signing {
 }
 
 // Skip signing entirely for non-release (snapshot) builds.
-tasks.withType<Sign>().configureEach {
-    onlyIf { isReleaseVersion }
+tasks {
+    withType<Sign>().configureEach {
+        onlyIf { isReleaseVersion }
+    }
 }
 
 publishing {
