@@ -52,6 +52,74 @@ If you are using the kotlin style `build.gradle.kts`:
 implementation("com.uploadcare:uploadcare:3.5.1")
 ```
 
+## Snapshot Builds (Pre-release)
+
+Snapshot builds are published to [GitHub Packages](https://github.com/uploadcare/uploadcare-java/packages) automatically:
+
+- **From pull requests**: version format `{version}-PR-{pr-number}-SNAPSHOT` (e.g. `3.5.3-PR-42-SNAPSHOT`)
+- **From the `master` branch**: version format `{version}-SNAPSHOT` (e.g. `3.5.3-SNAPSHOT`)
+
+To consume a snapshot build, add the GitHub Packages repository and authenticate with a [personal access token](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry#authenticating-to-github-packages) (PAT) that has `read:packages` scope.
+
+### Maven (snapshot)
+
+Add to your `~/.m2/settings.xml`:
+
+```xml
+<settings>
+  <servers>
+    <server>
+      <id>uploadcare-snapshots</id>
+      <username>YOUR_GITHUB_USERNAME</username>
+      <password>YOUR_GITHUB_PAT</password>
+    </server>
+  </servers>
+</settings>
+```
+
+Add to your `pom.xml`:
+
+```xml
+<repositories>
+    <repository>
+        <id>uploadcare-snapshots</id>
+        <url>https://maven.pkg.github.com/uploadcare/uploadcare-java</url>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+</repositories>
+
+<dependencies>
+    <dependency>
+        <groupId>com.uploadcare</groupId>
+        <artifactId>uploadcare</artifactId>
+        <version>3.5.3-SNAPSHOT</version>
+    </dependency>
+</dependencies>
+```
+
+### Gradle (snapshot)
+
+Add to your `build.gradle` (or `build.gradle.kts`):
+
+```groovy
+repositories {
+    maven {
+        name = "GitHubPackages"
+        url = uri("https://maven.pkg.github.com/uploadcare/uploadcare-java")
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+            password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+        }
+   }
+}
+
+dependencies {
+    implementation("com.uploadcare:uploadcare:3.5.3-SNAPSHOT")
+}
+```
+
 ## Examples
 
 Get your [API keys](https://uploadcare.com/docs/start/settings/#keys) to proceed with the examples below.
