@@ -82,11 +82,35 @@ public class File {
     }
 
     public ImageInfo getImageInfo() {
-        return fileData.imageInfo;
+        if (fileData.imageInfo != null) {
+            return fileData.imageInfo;
+        }
+        if (fileData.contentInfo != null) {
+            return fileData.contentInfo.image;
+        }
+        return null;
     }
 
     public VideoInfo getVideoInfo() {
-        return fileData.videoInfo;
+        if (fileData.videoInfo != null) {
+            return fileData.videoInfo;
+        }
+        if (fileData.contentInfo != null) {
+            return fileData.contentInfo.video;
+        }
+        return null;
+    }
+
+    public ContentInfo getContentInfo() {
+        return fileData.contentInfo;
+    }
+
+    public Map<String, String> getMetadata() {
+        return fileData.metadata;
+    }
+
+    public Map<String, AppData> getAppData() {
+        return fileData.appdata;
     }
 
     public Map<String, Float> getRekognitionInfo() {
@@ -259,5 +283,52 @@ public class File {
 
     public enum ColorMode {
         RGB, RGBA, RGBa, RGBX, L, LA, La, P, PA, CMYK, YCbCr, HSV, LAB
+    }
+
+    public static class MimeInfo {
+        public String mime;
+        public String type;
+        public String subtype;
+
+        @Override
+        public String toString() {
+            return "MimeInfo{" +
+                    "mime='" + mime + '\'' +
+                    ", type='" + type + '\'' +
+                    ", subtype='" + subtype + '\'' +
+                    '}';
+        }
+    }
+
+    public static class ContentInfo {
+        public MimeInfo mime;
+        public ImageInfo image;
+        public VideoInfo video;
+
+        @Override
+        public String toString() {
+            return "ContentInfo{" +
+                    "mime=" + mime +
+                    ", image=" + image +
+                    ", video=" + video +
+                    '}';
+        }
+    }
+
+    public static class AppData {
+        public Map<String, Object> data;
+        public String version;
+        public Date datetimeCreated;
+        public Date datetimeUpdated;
+
+        @Override
+        public String toString() {
+            return "AppData{" +
+                    "data=" + data +
+                    ", version='" + version + '\'' +
+                    ", datetimeCreated=" + datetimeCreated +
+                    ", datetimeUpdated=" + datetimeUpdated +
+                    '}';
+        }
     }
 }
