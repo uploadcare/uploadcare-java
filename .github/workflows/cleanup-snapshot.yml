@@ -30,27 +30,52 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -euo pipefail
+
+          PACKAGE_NAME="com.uploadcare.uploadcare"
           SNAPSHOT_VERSION="${{ steps.get-version.outputs.base_version }}-PR-${{ github.event.pull_request.number }}-SNAPSHOT"
           echo "Looking for package version: ${SNAPSHOT_VERSION}"
 
-          # Retrieve the numeric ID of any published version matching this snapshot.
-          # --paginate ensures all pages are scanned; --jq filters on each page.
+          # Fetch ALL versions so we can detect whether the snapshot is the last remaining version.
+          ALL_VERSION_IDS=$(gh api \
+            --paginate \
+            -H "Accept: application/vnd.github+json" \
+            "/orgs/${{ github.repository_owner }}/packages/maven/${PACKAGE_NAME}/versions" \
+            --jq ".[].id" 2>/dev/null || true)
+
+          # Retrieve the numeric ID(s) of any published version matching this snapshot.
           VERSION_IDS=$(gh api \
             --paginate \
             -H "Accept: application/vnd.github+json" \
-            "/orgs/${{ github.repository_owner }}/packages/maven/com.uploadcare.uploadcare/versions" \
+            "/orgs/${{ github.repository_owner }}/packages/maven/${PACKAGE_NAME}/versions" \
             --jq ".[] | select(.name == \"${SNAPSHOT_VERSION}\") | .id" 2>/dev/null || true)
 
-          if [ -z "$VERSION_IDS" ]; then
+          if [ -z "${VERSION_IDS}" ]; then
             echo "No published version found for ${SNAPSHOT_VERSION} — nothing to delete."
             exit 0
           fi
 
+          TOTAL_VERSIONS=$(printf "%s\n" "${ALL_VERSION_IDS}" | sed '/^$/d' | wc -l | tr -d ' ')
+          echo "Total versions in package ${PACKAGE_NAME}: ${TOTAL_VERSIONS}"
+
+          # GitHub Packages does not allow deleting the LAST version of a package (HTTP 400).
+          # If this is the last remaining version, delete the whole package instead.
+          if [ "${TOTAL_VERSIONS}" -le 1 ]; then
+            echo "Snapshot is the last version; deleting the whole package ${PACKAGE_NAME} …"
+            gh api --method DELETE \
+              -H "Accept: application/vnd.github+json" \
+              "/orgs/${{ github.repository_owner }}/packages/maven/${PACKAGE_NAME}"
+            echo "Deleted package ${PACKAGE_NAME}."
+            exit 0
+          fi
+
           while IFS= read -r VERSION_ID; do
+            [ -z "${VERSION_ID}" ] && continue
             echo "Deleting version ID ${VERSION_ID} (${SNAPSHOT_VERSION}) …"
             gh api --method DELETE \
               -H "Accept: application/vnd.github+json" \
-              "/orgs/${{ github.repository_owner }}/packages/maven/com.uploadcare.uploadcare/versions/${VERSION_ID}"
+              "/orgs/${{ github.repository_owner }}/packages/maven/${PACKAGE_NAME}/versions/${VERSION_ID}"
             echo "Deleted version ID ${VERSION_ID}."
-          done <<< "$VERSION_IDS"
+          done <<< "${VERSION_IDS}"
+
           echo "Done cleaning up ${SNAPSHOT_VERSION}."
