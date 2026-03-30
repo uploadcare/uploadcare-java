@@ -24,6 +24,9 @@ public class FileData {
     public File.VideoInfo videoInfo;
     public Map<String, Float> rekognitionInfo;
     public Map<String, String> variations;
+    public File.ContentInfo contentInfo;
+    public Map<String, String> metadata;
+    public Map<String, File.AppData> appdata;
 
     @Override
     public String toString() {
