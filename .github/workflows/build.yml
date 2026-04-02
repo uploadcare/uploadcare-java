@@ -20,7 +20,7 @@ jobs:
     strategy:
       matrix:
         # https://en.wikipedia.org/wiki/Java_version_history
-        java: [ '8', '11' ] # LTS
+        java: [ '22' ] # LTS
 
     steps:
       - name: Checkout

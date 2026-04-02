@@ -7,12 +7,12 @@ plugins {
 
 group = "com.uploadcare"
 
-
 val isReleaseVersion = !version.toString().lowercase().endsWith("snapshot")
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_7
-    targetCompatibility = JavaVersion.VERSION_1_7
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(22))
+    }
     withSourcesJar()
     withJavadocJar()
 }
@@ -21,12 +21,34 @@ dependencies {
     implementation("org.apache.httpcomponents:httpclient:4.5.13")
     implementation("org.apache.httpcomponents:httpmime:4.5.13")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.16.2")
-    implementation("commons-codec:commons-codec:1.10")
-    implementation("commons-io:commons-io:2.7")
+    implementation("commons-codec:commons-codec:1.19.0")
+    implementation("commons-io:commons-io:2.21.0")
     implementation("com.sun.activation:javax.activation:1.2.0")
 
-    testImplementation("junit:junit:4.13.1")
-    testImplementation("org.mockito:mockito-all:1.10.19")
+    testImplementation(platform("org.junit:junit-bom:6.0.1"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+
+    // Ensure the launcher/engine are aligned at runtime
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+
+    testImplementation("org.hamcrest:hamcrest:2.2")
+    testImplementation("org.mockito:mockito-core:5.21.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.21.0")
+}
+
+tasks {
+    withType<JavaCompile>().configureEach {
+        options.release.set(21)
+    }
+
+    withType<Test> {
+        useJUnitPlatform()
+    }
+
+    withType<Test>().configureEach {
+        jvmArgs("--add-opens=java.base/java.lang=ALL-UNNAMED")
+    }
 }
 
 // Setup global publishing repository settings.
@@ -104,8 +126,8 @@ publishing {
                 properties = mapOf(
                     "project.build.sourceEncoding" to "UTF-8",
                     "project.reporting.outputEncoding" to "UTF-8",
-                    "maven.compiler.target" to "1.7",
-                    "maven.compiler.source" to "1.7"
+                    "maven.compiler.target" to "22",
+                    "maven.compiler.source" to "21"
                 )
                 organization {
                     name.set("Uploadcare")
