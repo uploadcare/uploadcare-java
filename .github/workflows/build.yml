@@ -20,7 +20,9 @@ jobs:
     strategy:
       matrix:
         # https://en.wikipedia.org/wiki/Java_version_history
-        java: [ '8', '11' ] # LTS
+        # The tests use JUnit 6, which needs Java 17 or later. The library itself is compiled
+        # for Java 7 with the JDK 17 toolchain (see build.gradle.kts).
+        java: [ '17', '21' ] # LTS
 
     steps:
       - name: Checkout
@@ -47,7 +49,7 @@ jobs:
             jdks
 
       - name: Build and test
-        run: ./gradlew build --stacktrace
+        run: ./gradlew build -PtestJavaVersion=${{ matrix.java }} --stacktrace
 
   publish-snapshot:
     name: Publish snapshot to GitHub Packages
@@ -85,7 +87,7 @@ jobs:
       - name: Setup JDK
         uses: actions/setup-java@v5
         with:
-          java-version: 8
+          java-version: 17
           distribution: 'temurin'
 
       - name: Setup Gradle

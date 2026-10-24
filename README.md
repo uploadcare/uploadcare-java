@@ -19,8 +19,8 @@ Supported features:
 
 The minimum requirements to build this project are:
 
-1. Gradle 8.2 (you can use `./gradlew` or `.\gradlew.bat` which will download it for you).
-2. JDK 1.8 (target is 1.7, so don't use much higher version).
+1. Gradle 8.14.6 (you can use `./gradlew` or `.\gradlew.bat` which will download it for you).
+2. JDK 17 or later to run Gradle. The library targets Java 7. JDK 20 and later cannot compile for Java 7, so Gradle compiles with a JDK 17 toolchain. Gradle downloads JDK 17 if it is not installed.
 3. Running `./gradlew build` should run successfully.
 
 ## Maven

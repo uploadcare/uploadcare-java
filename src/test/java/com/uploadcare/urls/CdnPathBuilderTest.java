@@ -2,24 +2,30 @@ package com.uploadcare.urls;
 
 import com.uploadcare.api.File;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.awt.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 public class CdnPathBuilderTest {
 
     private static final String FILE_ID = "27c7846b-a019-4516-a5e4-de635f822161";
+
+    @Mock
+    private File file;
+
     private CdnPathBuilder builder;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        File file = mock(File.class);
         when(file.getFileId()).thenReturn(FILE_ID);
 
         builder = new CdnPathBuilder(file);
@@ -91,32 +97,16 @@ public class CdnPathBuilderTest {
     public void test_dimensionGuard() {
         builder.resizeWidth(1);
         builder.resizeWidth(2048);
-        try {
-            builder.resizeWidth(0);
-        } catch (IllegalArgumentException e1) {
-            try {
-                builder.resizeWidth(2049);
-            } catch (IllegalArgumentException e2) {
-                return;
-            }
-        }
-        fail();
+        assertThrows(IllegalArgumentException.class, () -> builder.resizeWidth(0));
+        assertThrows(IllegalArgumentException.class, () -> builder.resizeWidth(2049));
     }
 
     @Test
     public void test_dimensionsGuard() {
         builder.resize(1024, 634);
         builder.resize(634, 1024);
-        try {
-            builder.resize(1024, 635);
-        } catch (IllegalArgumentException e1) {
-            try {
-                builder.resize(635, 1024);
-            } catch (IllegalArgumentException e2) {
-                return;
-            }
-        }
-        fail();
+        assertThrows(IllegalArgumentException.class, () -> builder.resize(1024, 635));
+        assertThrows(IllegalArgumentException.class, () -> builder.resize(635, 1024));
     }
 
 }

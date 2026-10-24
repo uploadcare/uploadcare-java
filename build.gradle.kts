@@ -10,23 +10,54 @@ group = "com.uploadcare"
 
 val isReleaseVersion = !version.toString().lowercase().endsWith("snapshot")
 
+// The library targets Java 7. JDK 17 is the newest LTS JDK that can still compile for Java 7,
+// and JUnit 6 needs Java 17 to run the tests.
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_7
-    targetCompatibility = JavaVersion.VERSION_1_7
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
     withSourcesJar()
     withJavadocJar()
 }
 
-dependencies {
-    implementation("org.apache.httpcomponents:httpclient:4.5.13")
-    implementation("org.apache.httpcomponents:httpmime:4.5.13")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.16.2")
-    implementation("commons-codec:commons-codec:1.10")
-    implementation("commons-io:commons-io:2.7")
-    implementation("com.sun.activation:javax.activation:1.2.0")
+// Run the tests on another JDK with -PtestJavaVersion=<version> (for example 21).
+val testJavaVersion = (project.findProperty("testJavaVersion") ?: "17").toString()
 
-    testImplementation("junit:junit:4.13.1")
-    testImplementation("org.mockito:mockito-all:1.10.19")
+// Mockito 5 attaches an agent to the test JVM. Load it at JVM start, as the Mockito
+// documentation advises, so newer JDKs do not warn about dynamic agent loading.
+val mockitoAgent = configurations.create("mockitoAgent")
+
+dependencies {
+    implementation("org.apache.httpcomponents:httpclient:4.5.14")
+    implementation("org.apache.httpcomponents:httpmime:4.5.14")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.21.8")
+    implementation("commons-codec:commons-codec:1.23.0")
+    implementation("commons-io:commons-io:2.22.0")
+
+    testImplementation(platform("org.junit:junit-bom:6.1.3"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.mockito:mockito-core:5.24.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.24.0")
+    mockitoAgent("org.mockito:mockito-core:5.24.0") { isTransitive = false }
+}
+
+tasks {
+    compileJava {
+        options.release.set(7)
+        // JDK 17 warns that release 7 is obsolete.
+        options.compilerArgs.add("-Xlint:-options")
+    }
+    compileTestJava {
+        options.release.set(17)
+    }
+    test {
+        useJUnitPlatform()
+        jvmArgs("-javaagent:${mockitoAgent.asPath}")
+        javaLauncher.set(project.javaToolchains.launcherFor {
+            languageVersion.set(JavaLanguageVersion.of(testJavaVersion))
+        })
+    }
 }
 
 // Setup global publishing repository settings.

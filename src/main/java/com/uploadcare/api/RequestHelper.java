@@ -23,13 +23,13 @@ import org.apache.http.util.EntityUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URLConnection;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import javax.activation.MimetypesFileTypeMap;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -77,8 +77,8 @@ public class RequestHelper {
     }
 
     public static String getMimeType(String fileName) {
-        MimetypesFileTypeMap fileTypeMap = new MimetypesFileTypeMap();
-        return fileTypeMap.getContentType(fileName);
+        String type = fileName == null ? null : URLConnection.getFileNameMap().getContentTypeFor(fileName);
+        return type != null ? type : "application/octet-stream";
     }
 
     public String makeSignature(HttpUriRequest request, String date, String requestBodyMD5)

@@ -9,17 +9,16 @@ import com.uploadcare.data.UploadBaseData;
 import com.uploadcare.urls.Urls;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatcher;
 import org.mockito.InOrder;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 public class FileUploaderTest {
@@ -76,13 +75,9 @@ public class FileUploaderTest {
     }
 
     private HttpUriRequest requestThat(final URI uri) {
-        return argThat(new BaseMatcher<HttpUriRequest>() {
-            public boolean matches(Object o) {
-                HttpUriRequest request = (HttpUriRequest) o;
-                return request.getURI().equals(uri);
-            }
-
-            public void describeTo(Description description) {
+        return argThat(new ArgumentMatcher<HttpUriRequest>() {
+            public boolean matches(HttpUriRequest request) {
+                return request != null && request.getURI().equals(uri);
             }
         });
     }

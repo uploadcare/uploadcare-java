@@ -8,6 +8,11 @@ pluginManagement {
     }
 }
 
+plugins {
+    // Downloads the JDK of the Java toolchain when it is not installed.
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
+
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 dependencyResolutionManagement {

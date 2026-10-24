@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.uploadcare.data.*;
 import com.uploadcare.exceptions.UploadcareApiException;
 import com.uploadcare.urls.*;
@@ -134,7 +134,7 @@ public class Client {
                         .build();
             }
             this.objectMapper = new ObjectMapper();
-            this.objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
+            this.objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
             this.objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         }
     }

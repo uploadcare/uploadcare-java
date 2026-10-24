@@ -2,8 +2,8 @@ package com.uploadcare.api;
 
 import com.uploadcare.urls.Urls;
 import org.apache.http.client.methods.HttpGet;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.net.URI;
 import java.security.InvalidKeyException;
@@ -11,7 +11,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RequestHelperTest {
 
@@ -19,7 +19,7 @@ public class RequestHelperTest {
     private static final String FORMATTED_DATE = "Fri, 17 Nov 1989 00:00:00 +0000";
     private RequestHelper requestHelper;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         Client client = Client.demoClient();
         requestHelper = new RequestHelper(client);
@@ -39,6 +39,16 @@ public class RequestHelperTest {
         URI url = Urls.apiFile(FILE_ID);
         String signature = requestHelper.makeSignature(new HttpGet(url), FORMATTED_DATE, null);
         assertEquals("535e263808dd38599343f04aab3c9f34bb15573c", signature);
+    }
+
+    @Test
+    public void test_getMimeType() {
+        assertEquals("image/png", RequestHelper.getMimeType("olympia.png"));
+        assertEquals("image/jpeg", RequestHelper.getMimeType("olympia.jpg"));
+        assertEquals("text/plain", RequestHelper.getMimeType("notes.txt"));
+        assertEquals("application/octet-stream", RequestHelper.getMimeType("file.unknownext"));
+        assertEquals("application/octet-stream", RequestHelper.getMimeType("noextension"));
+        assertEquals("application/octet-stream", RequestHelper.getMimeType(null));
     }
 
 }
